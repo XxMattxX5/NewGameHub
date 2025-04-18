@@ -1,0 +1,22 @@
+#search_bar_container {
+  width: 100%;
+  background-color: var(--gray);
+  height: 45px;
+  align-content: center;
+}
+
+#search_bar_input_box {
+  background-color: white;
+  border-radius: 8px;
+}
+
+#search_bar_search_btn {
+  background-color: purple;
+  margin-left: 4px;
+  border-radius: 8px;
+
+  padding: 3px;
+}
+#search_bar_search_btn {
+  color: white;
+}

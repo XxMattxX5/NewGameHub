@@ -1,0 +1,12 @@
+.home_landing_container {
+  background-image: url("/images/home_background.jpg");
+  width: 100%;
+  min-height: 1200px;
+  position: relative;
+  background-size: cover;
+}
+.home_landing_box {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
