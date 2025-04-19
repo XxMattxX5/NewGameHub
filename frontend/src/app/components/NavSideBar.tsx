@@ -29,25 +29,45 @@ export default function NavSideBar({ toggleSideBar }: Props) {
       </Grid>
       <Grid id="side_bar_content">
         <Grid>
-          <Link href="/">
+          <Link
+            href="/"
+            onClick={() => {
+              toggleSideBar();
+            }}
+          >
             <HomeIcon />
             <Typography component="p">Home</Typography>
           </Link>
         </Grid>
         <Grid>
-          <Link href="/games">
+          <Link
+            href="/games"
+            onClick={() => {
+              toggleSideBar();
+            }}
+          >
             <SportsEsportsRoundedIcon />
             <Typography component="p">Games</Typography>
           </Link>
         </Grid>
         <Grid>
-          <Link href="#">
+          <Link
+            href="#"
+            onClick={() => {
+              toggleSideBar();
+            }}
+          >
             <Diversity3Icon />
             <Typography component="p">Forum</Typography>
           </Link>
         </Grid>
         <Grid>
-          <Link href="#">
+          <Link
+            href="#"
+            onClick={() => {
+              toggleSideBar();
+            }}
+          >
             <PhoneIcon />
             <Typography component="p">Contact Us</Typography>
           </Link>

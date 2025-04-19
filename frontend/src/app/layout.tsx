@@ -5,6 +5,7 @@ import NavBar from "./components/NavBar";
 import "./globals.css";
 import { headers } from "next/headers";
 import dynamic from "next/dynamic";
+import Footer from "./components/Footer";
 
 const NavBarBackground = dynamic(
   () => import("./components/NavBarBackground"),
@@ -38,7 +39,8 @@ export default function RootLayout({
           <NavBarBackground>
             <NavBar />
           </NavBarBackground>
-          {children}
+          <div id="main">{children}</div>
+          <Footer />
         </AppRouterCacheProvider>
       </body>
     </html>

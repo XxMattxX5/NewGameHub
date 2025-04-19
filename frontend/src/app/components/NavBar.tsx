@@ -15,13 +15,23 @@ export default function NavBar() {
   return (
     <>
       <Grid container id="nav">
-        <Grid container id="side_nav_container">
-          <ToggleSideBarBtn />
-        </Grid>
-        <Link href="/" id="main_nav_logo_container">
+        <Link
+          href="/"
+          className="main_nav_logo_container main_nav_logo_container2"
+        >
           <SportsEsportsRoundedIcon />
           <Typography component={"p"}>Game Hub</Typography>
         </Link>
+
+        <Grid container id="side_nav_container">
+          <ToggleSideBarBtn />
+        </Grid>
+
+        <Link href="/" className="main_nav_logo_container">
+          <SportsEsportsRoundedIcon />
+          <Typography component={"p"}>Game Hub</Typography>
+        </Link>
+
         <Grid container id="nav_link_container">
           <Grid component="div">
             <Link href="/">

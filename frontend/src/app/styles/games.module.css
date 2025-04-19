@@ -3,20 +3,91 @@
   background-color: var(--gray);
   height: 45px;
   align-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 #search_bar_input_box {
   background-color: white;
-  border-radius: 8px;
+  height: fit-content;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  margin-left: 4%;
+  margin-right: 4%;
 }
 
-#search_bar_search_btn {
-  background-color: purple;
-  margin-left: 4px;
-  border-radius: 8px;
-
-  padding: 3px;
+.search_bar_input input {
+  padding: 4px 6px;
+  height: auto;
+  box-sizing: border-box;
+  border-radius: 0;
 }
+
+.search_bar_input_root .MuiInputBase-root {
+  min-height: 0;
+  height: 20px;
+  font-size: 0.75rem;
+  padding: 0;
+  line-height: 1.2;
+  border-radius: 0;
+}
+.search_bar_input_root > div {
+  border-radius: 0;
+}
+
 #search_bar_search_btn {
   color: white;
+  background-color: var(--purple);
+  padding: 0px 5px;
+  display: flex;
+  align-items: center;
+}
+
+#search_bar_filters {
+  display: flex;
+  flex-direction: row;
+  margin-left: 20px;
+}
+#search_bar_filters > div {
+  display: flex;
+  flex-direction: row;
+  margin-right: 20px;
+}
+#search_bar_filters > div > p {
+  color: white;
+  font-size: 18px;
+}
+
+#search_bar_filters > div > div {
+  background-color: white;
+  height: fit-content;
+  width: 130px;
+  margin-left: 5px;
+}
+
+.search_bar_select > div {
+  padding: 4px 6px;
+  line-height: 1.2;
+  align-content: center;
+}
+
+@media (max-width: 1100px) {
+  #search_bar_filters {
+    margin-left: 0px;
+  }
+  #search_bar_filters > div {
+    margin-right: 10px;
+  }
+}
+@media (max-width: 1000px) {
+  #search_bar_filters {
+    display: none;
+  }
+  #search_bar_input_box {
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 95%;
+  }
 }
