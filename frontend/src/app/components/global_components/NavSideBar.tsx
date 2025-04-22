@@ -10,7 +10,7 @@ type Props = {
   toggleSideBar: () => void;
 };
 
-export default function NavSideBar({ toggleSideBar }: Props) {
+const NavSideBar = ({ toggleSideBar }: Props) => {
   return (
     <Grid container>
       <Grid id="side_bar_header">
@@ -31,6 +31,7 @@ export default function NavSideBar({ toggleSideBar }: Props) {
         <Grid>
           <Link
             href="/"
+            passHref
             onClick={() => {
               toggleSideBar();
             }}
@@ -42,6 +43,7 @@ export default function NavSideBar({ toggleSideBar }: Props) {
         <Grid>
           <Link
             href="/games"
+            passHref
             onClick={() => {
               toggleSideBar();
             }}
@@ -53,6 +55,7 @@ export default function NavSideBar({ toggleSideBar }: Props) {
         <Grid>
           <Link
             href="#"
+            passHref
             onClick={() => {
               toggleSideBar();
             }}
@@ -64,6 +67,7 @@ export default function NavSideBar({ toggleSideBar }: Props) {
         <Grid>
           <Link
             href="#"
+            passHref
             onClick={() => {
               toggleSideBar();
             }}
@@ -75,4 +79,6 @@ export default function NavSideBar({ toggleSideBar }: Props) {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default NavSideBar;

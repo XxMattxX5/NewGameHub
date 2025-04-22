@@ -18,7 +18,7 @@ type UserInfo = {
   profile_picture: string | null;
 };
 
-export default function ProfileSection({ loggedIn }: Props) {
+const ProfileSection = ({ loggedIn }: Props) => {
   const path = usePathname();
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -127,4 +127,6 @@ export default function ProfileSection({ loggedIn }: Props) {
       )}
     </Grid>
   );
-}
+};
+
+export default ProfileSection;

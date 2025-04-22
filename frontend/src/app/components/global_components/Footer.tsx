@@ -5,13 +5,20 @@ import XIcon from "@mui/icons-material/X";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
-export default function Footer() {
+const BackToTopWrapper = dynamic(() => import("./BackToTopWrapper"), {
+  ssr: !!false,
+});
+
+const Footer = () => {
   return (
     <Grid container id="footer_container">
-      <Grid id="footer_backtotop_container">
-        <Button>Back To Top</Button>
-      </Grid>
+      <BackToTopWrapper>
+        <Grid id="footer_backtotop_container">
+          <Typography>Back To Top</Typography>
+        </Grid>
+      </BackToTopWrapper>
       <Grid id="footer_content">
         <Grid className="footer_column">
           <Grid id="footer_logo_container">
@@ -65,4 +72,6 @@ export default function Footer() {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default Footer;

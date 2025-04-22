@@ -6,7 +6,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import NavSideBar from "./NavSideBar";
 
-export default function ToggleSideBarBtn() {
+const ToggleSideBarBtn = () => {
   const path = usePathname();
 
   const [showSideBar, setShowSideBar] = useState(false);
@@ -39,4 +39,6 @@ export default function ToggleSideBarBtn() {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default ToggleSideBarBtn;

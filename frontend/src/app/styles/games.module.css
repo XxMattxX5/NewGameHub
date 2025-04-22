@@ -1,93 +1,260 @@
-#search_bar_container {
-  width: 100%;
-  background-color: var(--gray);
-  height: 45px;
-  align-content: center;
+/* Games Page Styles*/
+
+#games_container {
+  margin: 60px 3%;
+  display: flex;
+}
+
+#games_container > div {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  flex-wrap: nowrap;
+  column-gap: 30px;
+  position: relative;
+  flex-grow: 1;
 }
 
-#search_bar_input_box {
-  background-color: white;
-  height: fit-content;
+#games_page_header {
   width: 100%;
-  max-width: 500px;
+  font-size: clamp(35px, 7vw, 70px);
+  text-align: center;
+  margin: 0px 15px;
+  margin-bottom: 60px;
+  font-weight: bold;
+}
+
+#game_list_container {
+  flex-grow: 1;
   display: flex;
-  margin-left: 4%;
-  margin-right: 4%;
+  min-height: 700px;
 }
 
-.search_bar_input input {
-  padding: 4px 6px;
-  height: auto;
-  box-sizing: border-box;
-  border-radius: 0;
+#game_list {
+  padding: 0px 20px;
+  width: 100%;
 }
 
-.search_bar_input_root .MuiInputBase-root {
-  min-height: 0;
-  height: 20px;
-  font-size: 0.75rem;
-  padding: 0;
-  line-height: 1.2;
-  border-radius: 0;
-}
-.search_bar_input_root > div {
-  border-radius: 0;
+#game_list_content > div:nth-child(1) {
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  min-height: 700px;
 }
 
-#search_bar_search_btn {
+#no_games_found {
+  text-align: center;
+  display: flex;
+  flex-grow: 1;
+  margin: auto;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.game_card_box {
+  height: 320px;
+  width: 250px;
+  position: relative;
+  display: flex;
+  overflow-y: hidden;
+}
+
+.game_card_release {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 3px;
   color: white;
-  background-color: var(--purple);
-  padding: 0px 5px;
+  background-color: var(--gray2);
+  z-index: 2;
+}
+.game_card_box > img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--lightGray);
+}
+.game_card_info {
+  margin-top: auto;
+  position: absolute;
+  z-index: 3;
+  top: 70%;
+  width: 100%;
+  color: white;
+  overflow-y: scroll;
+  max-height: 320px;
+}
+
+.game_card_rating {
   display: flex;
+  background-color: var(--gray);
+  width: fit-content;
+  padding: 0px 4px;
   align-items: center;
 }
+.game_card_rating > svg {
+  color: #ffd700;
+}
+.game_card_rating > p {
+  margin-left: 3px;
+}
 
-#search_bar_filters {
-  display: flex;
-  flex-direction: row;
-  margin-left: 20px;
+.game_card_title_container p {
+  background-color: var(--gray);
+  padding: 10px 10px;
+  min-height: 60px;
 }
-#search_bar_filters > div {
-  display: flex;
-  flex-direction: row;
-  margin-right: 20px;
+
+.card_button_container {
+  text-align: left;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 1);
 }
-#search_bar_filters > div > p {
+
+#top_rated_list {
+  height: 100%;
+}
+
+#top_rated_list > div {
+  padding: 30px 20px;
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 96%;
+  overflow-y: scroll;
+}
+
+#top_rated_container {
+  width: 450px;
+  background-color: var(--gray2);
+  min-height: 800px;
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+#top_rated_header {
+  font-size: 40px;
   color: white;
-  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
 }
 
-#search_bar_filters > div > div {
-  background-color: white;
-  height: fit-content;
-  width: 130px;
-  margin-left: 5px;
+#top_rated_container > div {
+  height: 800px;
 }
 
-.search_bar_select > div {
-  padding: 4px 6px;
-  line-height: 1.2;
-  align-content: center;
+#top_rated_list .game_card_box {
+  height: 210px;
+  width: 160px;
+}
+#top_rated_list .game_card_box p {
+  font-size: 13px;
 }
 
-@media (max-width: 1100px) {
-  #search_bar_filters {
-    margin-left: 0px;
+#top_rated_list .game_card_info {
+  max-height: 210px;
+  margin-top: 2px;
+}
+
+#top_rated_not_found {
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-grow: 1;
+  margin: auto;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.game_card {
+  width: 100%;
+}
+
+@media (max-width: 1400px) {
+  #games_container {
+    margin: 30px 0;
   }
-  #search_bar_filters > div {
-    margin-right: 10px;
+  #games_container > div {
+    flex-wrap: wrap-reverse;
+  }
+  #top_rated_list > div {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    justify-content: flex-start;
+    width: 96%;
+    height: fit-content;
+  }
+
+  #top_rated_container {
+    align-items: left;
+    min-height: 260px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 50px;
+  }
+  #top_rated_container > div {
+    height: 270px;
   }
 }
-@media (max-width: 1000px) {
-  #search_bar_filters {
-    display: none;
+@media (max-width: 800px) {
+  .game_card_info {
+    max-height: 200px;
   }
-  #search_bar_input_box {
-    margin-left: 0px;
-    margin-right: 0px;
-    width: 95%;
+  #games_page_header {
+    width: 100%;
+    font-size: clamp(35px, 7vw, 70px);
+    text-align: center;
+    margin: 0px 15px;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+  #top_rated_container {
+    min-width: 0;
+  }
+  .game_card_box {
+    height: 230px;
+    width: 170px;
+  }
+
+  .game_card_box p {
+    font-size: 13px;
+  }
+  #game_list_content > div:nth-child(1) {
+    gap: 15px;
+    row-gap: 15px;
+  }
+  #game_list {
+    padding: 0px 10px;
+  }
+  .card_button_container {
+    text-align: left;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1) !important;
+  }
+}
+
+@media (max-width: 400px) {
+  #no_games_found {
+    font-size: 30px;
+  }
+  #game_list {
+    padding: 0px 2px;
+  }
+  #game_list_content > div:nth-child(1) {
+    gap: 2px;
+    row-gap: 10px;
+    justify-content: space-around;
+  }
+  .game_card_info {
+    margin-top: 2px;
   }
 }

@@ -10,7 +10,7 @@ const ToggleSideBarBtn = dynamic(() => import("./ToggleSideBarBtn"), {
   ssr: !!false,
 });
 
-export default function NavBar() {
+const NavBar = () => {
   const atHome = true;
   return (
     <>
@@ -18,6 +18,7 @@ export default function NavBar() {
         <Link
           href="/"
           className="main_nav_logo_container main_nav_logo_container2"
+          passHref
         >
           <SportsEsportsRoundedIcon />
           <Typography component={"p"}>Game Hub</Typography>
@@ -27,28 +28,28 @@ export default function NavBar() {
           <ToggleSideBarBtn />
         </Grid>
 
-        <Link href="/" className="main_nav_logo_container">
+        <Link href="/" className="main_nav_logo_container" passHref>
           <SportsEsportsRoundedIcon />
           <Typography component={"p"}>Game Hub</Typography>
         </Link>
 
         <Grid container id="nav_link_container">
           <Grid component="div">
-            <Link href="/">
+            <Link href="/" passHref>
               <Grid component="div">
                 <Typography component="p">Home</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="/games">
+            <Link href="/games" passHref>
               <Grid component="div">
                 <Typography component="p">Games</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="#">
+            <Link href="#" passHref>
               <Grid component="div">
                 <Typography component="p">Forum</Typography>
               </Grid>
@@ -68,4 +69,6 @@ export default function NavBar() {
       </Grid>
     </>
   );
-}
+};
+
+export default NavBar;

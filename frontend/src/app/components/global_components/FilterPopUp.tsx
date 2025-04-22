@@ -22,7 +22,7 @@ type Props = {
   updateGenre: (newGenre: string) => void;
 };
 
-export default function FilterPopUp({
+const FilterPopUp = ({
   sortOptions,
   genres,
   toggleFilterPopup,
@@ -31,7 +31,7 @@ export default function FilterPopUp({
   search,
   updateSort,
   updateGenre,
-}: Props) {
+}: Props) => {
   const [openSection, setOpenSection] = useState<null | string>("sort");
 
   const toggleSection = (section: string) => {
@@ -104,14 +104,14 @@ export default function FilterPopUp({
           </AccordionDetails>
         </Accordion>
         <Grid id="filter_popup_btns">
-          <Button
+          {/* <Button
             onClick={() => {
               search();
               toggleFilterPopup();
             }}
           >
             Filter
-          </Button>
+          </Button> */}
           <Button
             onClick={() => {
               toggleFilterPopup(false);
@@ -123,4 +123,6 @@ export default function FilterPopUp({
       </Grid>
     </Grid>
   );
-}
+};
+
+export default FilterPopUp;

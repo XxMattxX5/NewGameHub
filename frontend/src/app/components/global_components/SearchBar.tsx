@@ -14,13 +14,13 @@ import FilterPopUp from "./FilterPopUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useRouter } from "next/navigation";
 
-export default function SearchBar() {
+const SearchBar = () => {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.get("q");
   const sort = searchParams.get("s");
   const genre = searchParams.get("g");
+  const page = searchParams.get("page");
   const sortOptions = [
     { value: "name", label: "Name" },
     { value: "release(asc)", label: "Release(Asc)" },
@@ -46,10 +46,13 @@ export default function SearchBar() {
   const [currentSortOption, setCurrentSortOption] = useState<string | null>(
     isValidSort ? sort! : "release(desc)"
   );
+  const [newSort, setNewSort] = useState(currentSortOption);
 
   const [currentGenre, setCurrentGenre] = useState(
     isValidGenre ? genre : "all"
   );
+
+  const [newGenre, setNewGenre] = useState(currentGenre);
 
   const [showFilterPopup, setShowFilterPopup] = useState(false);
 
@@ -57,7 +60,15 @@ export default function SearchBar() {
     setCurrentSearch(search ? search.replace(/\-/g, " ") : "");
     setCurrentSortOption(isValidSort ? sort : "release(desc)");
     setCurrentGenre(isValidGenre ? genre : "all");
+    setNewSort(isValidSort ? sort : "release(desc)");
+    setNewGenre(isValidGenre ? genre : "all");
   }, [search, genre, sort]);
+
+  useEffect(() => {
+    if (newSort !== currentSortOption || newGenre !== currentGenre) {
+      updateSearchParams();
+    }
+  }, [newGenre, newSort]);
 
   const toggleFilterPopup = (opt?: boolean) => {
     if (opt !== undefined) {
@@ -67,20 +78,22 @@ export default function SearchBar() {
     }
   };
 
-  const newSearch = () => {
-    let new_url = pathname + "?";
+  const updateSearchParams = () => {
+    const params = new URLSearchParams(searchParams.toString());
 
     if (currentSearch) {
-      new_url += `q=${encodeURIComponent(
-        currentSearch.trim().replace(/\s+/g, "-")
-      )}`;
+      params.set("q", currentSearch.trim().replace(/\s+/g, "-"));
     }
 
-    new_url += `${currentSearch ? "&" : ""}s=${currentSortOption}`;
+    if (newSort && newSort !== currentSortOption) {
+      params.set("s", newSort);
+    }
 
-    new_url += `&g=${currentGenre}`;
+    if (newGenre && newGenre !== currentGenre) {
+      params.set("g", newGenre);
+    }
 
-    router.push(new_url);
+    router.push(`?${params.toString()}`);
   };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,19 +101,19 @@ export default function SearchBar() {
   };
 
   const handleSortChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentSortOption(e.target.value);
+    setNewSort(e.target.value);
   };
 
   const handleGenreChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurrentGenre(e.target.value);
+    setNewGenre(e.target.value);
   };
 
   const updateSort = (newSort: string) => {
-    setCurrentSortOption(newSort);
+    setNewSort(newSort);
   };
 
   const updateGenre = (newGenre: string) => {
-    setCurrentGenre(newGenre);
+    setNewGenre(newGenre);
   };
 
   return (
@@ -123,7 +136,7 @@ export default function SearchBar() {
         <Grid id={"search_bar_search_btn"}>
           <IconButton
             onClick={() => {
-              newSearch();
+              updateSearchParams();
             }}
           >
             <SearchIcon />
@@ -192,11 +205,13 @@ export default function SearchBar() {
           toggleFilterPopup={toggleFilterPopup}
           currentSort={currentSortOption}
           currentGenre={currentGenre}
-          search={newSearch}
+          search={updateSearchParams}
           updateSort={updateSort}
           updateGenre={updateGenre}
         />
       ) : null}
     </Grid>
   );
-}
+};
+
+export default SearchBar;

@@ -3,11 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Grid } from "@mui/material";
 
-export default function Background({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const Background = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
@@ -23,4 +19,6 @@ export default function Background({
       {children}
     </Grid>
   );
-}
+};
+
+export default Background;
