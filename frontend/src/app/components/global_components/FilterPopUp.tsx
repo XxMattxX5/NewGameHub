@@ -13,11 +13,10 @@ import {
 
 type Props = {
   sortOptions: Array<{ value: string; label: string }>;
-  genres: Array<{ value: string; label: string }>;
+  genres: Array<{ name: string }>;
   toggleFilterPopup: (opt?: boolean) => void;
   currentSort: string | null;
   currentGenre: string | null;
-  search: () => void;
   updateSort: (newSort: string) => void;
   updateGenre: (newGenre: string) => void;
 };
@@ -28,7 +27,6 @@ const FilterPopUp = ({
   toggleFilterPopup,
   currentSort,
   currentGenre,
-  search,
   updateSort,
   updateGenre,
 }: Props) => {
@@ -89,29 +87,21 @@ const FilterPopUp = ({
           <AccordionDetails>
             {genres.map((option) => (
               <FormControlLabel
-                key={option.value}
+                key={option.name}
                 control={
                   <Checkbox
-                    checked={option.value === currentGenre}
+                    checked={option.name === currentGenre}
                     onChange={() => {
-                      updateGenre(option.value);
+                      updateGenre(option.name);
                     }}
                   />
                 }
-                label={option.label}
+                label={option.name}
               />
             ))}
           </AccordionDetails>
         </Accordion>
         <Grid id="filter_popup_btns">
-          {/* <Button
-            onClick={() => {
-              search();
-              toggleFilterPopup();
-            }}
-          >
-            Filter
-          </Button> */}
           <Button
             onClick={() => {
               toggleFilterPopup(false);

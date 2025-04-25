@@ -70,14 +70,21 @@
   color: white;
   background-color: var(--gray2);
   z-index: 2;
+  display: flex;
+  align-items: center;
 }
+.game_card_release > svg {
+  color: #ffd700;
+  margin-right: 3px;
+}
+
 .game_card_box > img {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: var(--lightGray);
 }
 .game_card_info {
@@ -114,6 +121,7 @@
 .card_button_container {
   text-align: left;
   box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+  height: fit-content;
 }
 
 #top_rated_list {
@@ -156,6 +164,7 @@
 #top_rated_list .game_card_box {
   height: 210px;
   width: 160px;
+  /* width: auto; */
 }
 #top_rated_list .game_card_box p {
   font-size: 13px;
@@ -224,6 +233,7 @@
   .game_card_box {
     height: 230px;
     width: 170px;
+    /* width: auto; */
   }
 
   .game_card_box p {
@@ -232,9 +242,15 @@
   #game_list_content > div:nth-child(1) {
     gap: 15px;
     row-gap: 15px;
+    min-height: 400;
+    align-items: flex-start;
   }
   #game_list {
     padding: 0px 10px;
+  }
+  #top_rated_list .card_button_container {
+    text-align: left;
+    box-shadow: none !important;
   }
   .card_button_container {
     text-align: left;

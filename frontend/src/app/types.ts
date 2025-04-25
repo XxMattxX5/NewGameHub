@@ -1,4 +1,5 @@
 export type Game = {
+  game_id: string;
   cover_image: string;
   title: string;
   rating: string;
@@ -15,7 +16,7 @@ export type GameDetail = {
   game_id: string;
   cover_image: string;
   title: string;
-  rating: string;
+  rating: number;
   release: string;
   slug: string;
   genres: string[];

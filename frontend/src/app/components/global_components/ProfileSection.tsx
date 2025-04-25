@@ -9,16 +9,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import { usePathname } from "next/navigation";
 
-type Props = {
-  loggedIn: boolean;
-};
-
 type UserInfo = {
   username: string;
   profile_picture: string | null;
 };
 
-const ProfileSection = ({ loggedIn }: Props) => {
+const ProfileSection = () => {
   const path = usePathname();
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -26,7 +22,7 @@ const ProfileSection = ({ loggedIn }: Props) => {
     profile_picture:
       "https://res.cloudinary.com/drk8ctpvl/image/upload/v1744220391/lanixrrigqjuyzbdnxgp.jpg",
   });
-  const [isLogged, setIsLogged] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [profileImageLoading, setProfileImageLoading] = useState(true);
@@ -44,7 +40,7 @@ const ProfileSection = ({ loggedIn }: Props) => {
   }, [path]);
 
   useEffect(() => {
-    if (userInfo.profile_picture) {
+    if (userInfo?.profile_picture) {
       const img = document.createElement("img");
       img.src = userInfo.profile_picture;
       img.onload = () => setProfileImageLoading(false);
@@ -63,7 +59,7 @@ const ProfileSection = ({ loggedIn }: Props) => {
 
   return (
     <Grid container>
-      {loggedIn ? (
+      {isLogged ? (
         <Grid id="nav_profile">
           <Grid
             component={"div"}
@@ -75,7 +71,7 @@ const ProfileSection = ({ loggedIn }: Props) => {
             <Grid id="profile_image_background" component={"div"}>
               {profileImageLoading ? (
                 <Grid id="profile_image_placeholder"></Grid>
-              ) : userInfo.profile_picture ? (
+              ) : userInfo?.profile_picture ? (
                 <img
                   src={userInfo.profile_picture}
                   alt="User's profile picture"
@@ -92,7 +88,7 @@ const ProfileSection = ({ loggedIn }: Props) => {
             <Grid component={"div"} id="nav_profile_dropdown_menu">
               <Grid id="nav_profile_dropdown_box">
                 <Grid id="dropdown_username_container">
-                  <Typography>{userInfo.username}</Typography>
+                  <Typography>{userInfo?.username}</Typography>
                 </Grid>
                 <Grid id="nav_profile_dropdown_content">
                   <Grid component="div">

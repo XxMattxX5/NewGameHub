@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "../../styles/games.module.css";
 import { Grid, Typography } from "@mui/material";
 import { Game } from "@/app/types";
@@ -13,6 +13,8 @@ const TopRatedList = () => {
     {}
   );
 
+  const [loading, setLoading] = useState(true);
+
   const changeVisibleCard = (cardSlug: string) => {
     setExpandedCard(cardSlug);
 
@@ -23,88 +25,48 @@ const TopRatedList = () => {
       }));
     }
   };
-  const gameList: Game[] = [
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Zelda II: Paracosm",
-      rating: "3.5",
-      release: "11/30/2029",
-      slug: "1",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Bad Girl",
-      rating: "2",
-      release: "11/30/2029",
-      slug: "2",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Cats Hidden in England",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "3",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Labyrinth of the Demon King",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "5",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "The Legend of Zelda: Breath of the Wild - Islands Expansion",
-      rating: "4.5",
-      release: "No Release Date",
-      slug: "6",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title:
-        "The Legend of Zelda: Breath of the Wild - Islands Expansion this is a test game to test if the length being too big will break it this is a test for how long it can be before it breaks lets",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "7",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Zelda II: Paracosm",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "8",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Zelda II: Paracosm",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "9",
-    },
-    {
-      cover_image:
-        "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-      title: "Zelda II: Paracosm",
-      rating: "4.5",
-      release: "11/30/2029",
-      slug: "26",
-    },
-  ];
+  const [gameList, setGameList] = useState<Game[]>([]);
+
+  useEffect(() => {
+    const fetchTopRatedGames = async () => {
+      try {
+        const response = await fetch(`/api/games/top_rated_list`, {
+          method: "GET",
+          cache: "no-cache",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (response.ok) {
+          response.json().then((data) => {
+            setGameList(data.data);
+            setLoading(false);
+          });
+        } else if (response.status === 404) {
+          console.log("NOT FOUND");
+          setLoading(false);
+          return;
+        } else {
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setLoading(false);
+        return;
+      }
+    };
+    fetchTopRatedGames();
+  }, []);
 
   return (
     <Grid id={styles.top_rated_list}>
       <Grid>
-        {gameList.length !== 0 ? (
+        {!loading && gameList.length !== 0 ? (
           gameList.map((game) => (
             <GameCardButton
+              cardType="top_rated"
               key={game.slug}
               slug={game.slug}
               visibleCard={expandedCard}
@@ -112,6 +74,7 @@ const TopRatedList = () => {
             >
               <GameCard
                 game={game}
+                cardType="top_rated"
                 titleRef={(el) => (titleRefs.current[game.slug] = el)}
                 cardInfoHeight={
                   game.slug === expandedCard

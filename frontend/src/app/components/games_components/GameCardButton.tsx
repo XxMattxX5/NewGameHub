@@ -10,6 +10,7 @@ type Props = {
   slug: string;
   visibleCard: string | null;
   changeVisibleCard: (cardSlug: string) => void;
+  cardType: "top_rated" | "default";
 };
 
 const GameCardButton = ({
@@ -17,16 +18,20 @@ const GameCardButton = ({
   slug,
   visibleCard,
   changeVisibleCard,
+  cardType,
 }: Props) => {
   return (
     <>
-      {visibleCard === slug ? (
+      {cardType === "top_rated" || visibleCard === slug ? (
         <Link
           href={`/games/${slug}`}
           passHref
           className={
             styles.card_button_container + " " + styles.card_button_active
           }
+          style={{
+            boxShadow: cardType === "top_rated" ? "none" : undefined,
+          }}
         >
           <Grid className={styles.game_card}>{children}</Grid>
         </Link>

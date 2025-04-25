@@ -64,7 +64,7 @@ const NavBar = () => {
           </Grid>
         </Grid>
         <Grid id="nav_profile_section">
-          <ProfileSection loggedIn={true} />
+          <ProfileSection />
         </Grid>
       </Grid>
     </>

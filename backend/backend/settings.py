@@ -12,6 +12,30 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import requests
+
+
+
+ALLOWED_HOSTS=os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+
+EC2_PRIVATE_IP = None
+METADATA_URI = os.environ.get('ECS_CONTAINER_METADATA_URI', 'http://169.254.170.2/v2/metadata')
+
+try:
+    resp = requests.get(METADATA_URI)
+    data = resp.json()
+    # print(data)
+
+    container_meta = data['Containers'][0]
+    EC2_PRIVATE_IP = container_meta['Networks'][0]['IPv4Addresses'][0]
+except:
+    # silently fail as we may not be in an ECS environment
+    pass
+
+if EC2_PRIVATE_IP:
+    # Be sure your ALLOWED_HOSTS is a list NOT a tuple
+    # or .append() will fail
+    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +50,19 @@ SECRET_KEY = 'django-insecure-ueefkcuhpa3kzy4e5f8xuu-24@u&u=##fjo3&uv@ux9(n)it)=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 FORCE_SCRIPT_NAME = '/api'
+
+def show_toolbar(request):                                     
+    return True 
+
+if DEBUG:
+    DEBUG_TOOLBAR_CONFIG = {                                       
+        "SHOW_TOOLBAR_CALLBACK" : show_toolbar,                    
+}    
+    
+INTERNAL_IPS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+
 
 # Application definition
 
@@ -40,10 +74,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "GameHub.apps.GamehubConfig",
+    "rest_framework",
+    "django.contrib.postgres",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,13 +114,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -113,6 +144,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f"redis://{os.getenv('REDIS_HOST', 'redis')}:{os.getenv('REDIS_PORT', '6379')}/1",
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

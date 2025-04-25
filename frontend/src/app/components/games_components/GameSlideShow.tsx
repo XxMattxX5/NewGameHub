@@ -25,7 +25,7 @@ const GameSlideShow = ({ videos, screenshots }: Props) => {
   const [screenSize, setScreenSize] = useState("normal");
 
   const mediaWidth =
-    screenSize === "small" ? 330 : screenSize === "tiny" ? 280 : 550;
+    screenSize === "small" ? 330 : screenSize === "tiny" ? 280 : 700;
   const mediaHeight =
     screenSize === "small" ? 220 : screenSize === "tiny" ? 170 : 380;
 
@@ -112,7 +112,7 @@ const GameSlideShow = ({ videos, screenshots }: Props) => {
           {screenshots.map((screenshot) => (
             <Image
               key={screenshot.id}
-              src={screenshot.src}
+              src={"https://" + screenshot.src.replace("t_thumb", "t_original")}
               alt="Screenshot"
               height={mediaHeight}
               width={mediaWidth}

@@ -16,47 +16,56 @@ const GameSlideShow = dynamic(
   }
 );
 
-const GameDetails = () => {
-  const game_details: GameDetail = {
-    game_id: "33454",
-    // cover_image:
-    //   "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-    // title:
-    //   "The Legend of Zelda: Breath of the Wild - Islands Expansion this is a test game to test if the length being too big will break it this is a test for how long it can be before it breaks lets see how far i can go without breaking it completely messing it up",
-    // rating: "4.5",
-    // release: "11/30/2029",
-    // slug: "7",
+const getGame = async (slug: string) => {
+  try {
+    const backendUrl = process.env.BACKEND_URL || "http://localhost";
+    const response = await fetch(`${backendUrl}/api/games/${slug}`, {
+      method: "GET",
+      cache: "no-cache",
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-    cover_image:
-      "http://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.jpg",
-    title: "Zelda II: Paracosm",
-    rating: "4.5",
-    release: "11/30/2029",
-    slug: "8",
-    genres: ["Adventure", "Shooter", "Puzzle"],
-    summary: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
-numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
-optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis
-obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam
-nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit,
-tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit,
-quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos 
-sapiente officiis modi at sunt excepturi expedita sint?`,
-    videos: [
-      { id: "1", src: "https://www.youtube.com/embed/anyE3Mhwh0s" },
-      { id: "2", src: "https://www.youtube.com/embed/anyE3Mhwh0s" },
-    ],
-    screenshots: [
-      {
-        id: "1",
-        src: "http://images.igdb.com/igdb/image/upload/t_original/sc7t6q.jpg",
-      },
-      {
-        id: "2",
-        src: "http://images.igdb.com/igdb/image/upload/t_original/sc7t6r.jpg",
-      },
-    ],
+    if (response.ok) {
+      return response.json();
+    } else if (response.status === 404) {
+      console.log("NOT FOUND");
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return null;
+  }
+};
+
+const GameDetails = async ({
+  params,
+}: {
+  params: Promise<{ game_slug: string }>;
+}) => {
+  const { game_slug } = await params;
+  const data = await getGame(game_slug);
+
+  if (!data) {
+    notFound();
+  }
+  const game_details: GameDetail = {
+    game_id: data.data.game_id,
+    cover_image: data.data.cover_image,
+    title: data.data.title,
+    rating: data.data.rating ?? 0,
+    release: data.data.release ?? "No Release Date",
+    slug: data.data.slug,
+    genres: data.data.genres.map((genre: { name: string }) => genre.name),
+    summary: data.data.storyline
+      ? data.data.storyline
+      : data.data.summary
+      ? data.data.summary
+      : "No Summary",
+    videos: data.videos,
+    screenshots: data.screenshots,
   };
 
   const getGameVideo = () => {
@@ -71,7 +80,11 @@ sapiente officiis modi at sunt excepturi expedita sint?`,
       <Grid id={styles.game_details_title_date}>
         <Grid>
           <Typography component={"h1"}>{game_details.title}</Typography>
-          <Typography component={"p"}>{game_details.release}</Typography>
+          <Typography component={"p"}>
+            {game_details.release
+              ? new Date(game_details.release).toLocaleDateString()
+              : "No Release Date"}
+          </Typography>
         </Grid>
       </Grid>
       <Grid id={styles.game_details_intro_container}>
@@ -81,7 +94,7 @@ sapiente officiis modi at sunt excepturi expedita sint?`,
               id={styles.game_details_cover_image}
               src={
                 game_details.cover_image
-                  ? game_details.cover_image
+                  ? "https://" + game_details.cover_image
                   : "/images/no_image_found.webp"
               }
               height={400}
@@ -120,7 +133,9 @@ sapiente officiis modi at sunt excepturi expedita sint?`,
                 <Typography component={"h3"}>Rating</Typography>
                 <Grid>
                   <StarIcon />
-                  <Typography component={"p"}>{game_details.rating}</Typography>
+                  <Typography component={"p"}>
+                    {game_details.rating === 0 ? "N/A" : game_details.rating}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>

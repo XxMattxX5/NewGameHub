@@ -36,6 +36,10 @@
   margin-bottom: 40px;
 }
 
+#game_details_cover_image {
+  border: 2px solid black;
+}
+
 #game_details_detail_container {
   width: 100%;
 }
@@ -79,6 +83,7 @@
   column-gap: 10px;
   row-gap: 20px;
   width: 100%;
+  flex-wrap: wrap;
 }
 #game_details_rating > div {
   max-width: 400px;
@@ -93,6 +98,10 @@
 #game_details_rating > div > div > svg {
   color: #ffd700;
   margin-right: 5px;
+}
+
+#game_details_summary h3 {
+  text-align: center;
 }
 
 #game_details_video_screenshots {
@@ -128,6 +137,9 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* #slide_show_box > img {
+  min-width: 700px;
+} */
 .slide_show_box::-webkit-scrollbar {
   display: none;
 }

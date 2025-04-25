@@ -31,6 +31,7 @@ const PageButtons = ({ page_amount }: Props) => {
       return;
     }
     const params = new URLSearchParams(searchParams.toString());
+
     params.set("page", newPage.toString());
     router.push(`?${params.toString()}`);
   };
