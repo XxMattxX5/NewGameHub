@@ -1,15 +1,17 @@
 "use client";
-import React from "react";
+import React, { use } from "react";
 import { Grid, TextField, Button, MenuItem, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { useTheme } from "./ThemeProvider";
 
 type Props = {
   page_amount: number;
 };
 
 const PageButtons = ({ page_amount }: Props) => {
+  const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -45,6 +47,25 @@ const PageButtons = ({ page_amount }: Props) => {
           onChange={(e) => handlePageChange(Number(e.target.value))}
           size="small"
           fullWidth
+          sx={{
+            "& .MuiInputBase-input": {
+              color: theme === "dark" ? "white" : "black",
+            },
+            "& .MuiInputLabel-root": {
+              color: theme === "dark" ? "white" : "black",
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: theme === "dark" ? "white" : "black",
+              },
+              "&:hover fieldset": {
+                borderColor: theme === "dark" ? "lightgray" : "gray",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: theme === "dark" ? "lightblue" : "blue",
+              },
+            },
+          }}
         >
           {page_numbers.map((page_info) => (
             <MenuItem key={page_info.value} value={page_info.value}>

@@ -1,0 +1,200 @@
+#login_container {
+  width: 100%;
+  min-height: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#login_box {
+  width: 1000px;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  border-radius: 10px;
+}
+.login_sections {
+  width: 50%;
+  padding: 15px;
+}
+
+#login_input_container {
+  display: flex;
+  flex-direction: column;
+}
+
+#login_input_container h2 {
+  font-size: 45px;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.login_input_box {
+  margin-bottom: 20px;
+}
+.login_input_box > div {
+  position: relative;
+}
+#login_password_container input {
+  padding-right: 45px;
+}
+#login_password_container button svg {
+  font-size: 28px;
+  color: var(--purple);
+}
+
+.login_input_box p {
+  font-size: 23px;
+  color: white;
+}
+
+.login_input_box input {
+  font-size: 21px;
+}
+
+#login_btn_container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+}
+
+#login_page_register_btn {
+  border-radius: 4px;
+  font-size: 21px;
+  padding: 5px;
+  width: 150px;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  align-content: center;
+}
+
+#login_page_register_btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #494c52;
+  z-index: 0;
+  transition: left 0.3s ease;
+}
+
+#login_page_register_btn p,
+#login_page_signin_btn p {
+  font-size: 21px;
+}
+#login_page_register_btn p {
+  position: relative;
+  z-index: 2;
+  display: block;
+  font-size: 21px;
+  text-align: center;
+}
+
+#login_page_register_btn:hover::before {
+  left: 0;
+}
+#login_page_register_btn:hover {
+  color: white !important;
+  border: none;
+}
+
+#login_page_signin_btn {
+  background-color: var(--purple);
+  color: white;
+  border-radius: 4px;
+  font-size: 21px;
+  padding: 5px;
+  width: 150px;
+  justify-content: center;
+}
+#login_page_signin_btn:hover {
+  background-color: #7b10c7;
+}
+
+#login_forgot_password {
+  width: 100%;
+  margin-top: auto;
+  color: white;
+}
+#login_forgot_password:visited {
+  color: #800080;
+}
+#login_image_section {
+  background: url("/images/controller_image.jpg");
+  background-size: cover;
+  border-radius: 25px;
+}
+#login_image_section > p {
+  color: white;
+  font-size: 30px;
+  display: block;
+  text-align: center;
+  margin-top: 60px;
+}
+
+#signup_features_list {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: fit-content;
+}
+#signup_features_list li {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: white;
+}
+#signup_features_list li::marker {
+  color: var(--purple);
+  font-size: 21px;
+}
+
+#signup_features_list p:nth-child(2) {
+  background-color: var(--purple);
+}
+
+@media (max-width: 1000px) {
+  #login_box {
+    width: 500px;
+  }
+  #login_image_section {
+    display: none;
+  }
+  .login_sections {
+    width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  #login_container {
+    min-height: 600px;
+  }
+  #login_box {
+    width: 95%;
+    padding: 10px;
+    min-height: 450px;
+  }
+  #login_input_container h2 {
+    font-size: 40px;
+  }
+  .login_input_box p {
+    font-size: 21px;
+  }
+  .login_input_box input {
+    font-size: 19px;
+  }
+
+  #login_page_register_btn p,
+  #login_page_signin_btn p {
+    font-size: 19px;
+  }
+}

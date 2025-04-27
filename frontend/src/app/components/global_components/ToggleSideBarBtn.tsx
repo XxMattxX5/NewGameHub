@@ -20,6 +20,41 @@ const ToggleSideBarBtn = () => {
   }, []);
 
   useEffect(() => {
+    const disablePullToRefresh = (e: TouchEvent) => {
+      // Prevent default action if the touch move is vertical
+      if (e.touches.length > 1 || e.touches[0].clientY > 0) {
+        e.preventDefault();
+      }
+    };
+
+    let timeoutId: NodeJS.Timeout;
+
+    const enablePullToRefreshTemporarily = () => {
+      if (showSideBar) {
+        // Add event listener to disable pull-to-refresh
+        document.addEventListener("touchmove", disablePullToRefresh, {
+          passive: false,
+        });
+
+        // Set timeout to enable pull-to-refresh again after 3 seconds (3000 ms)
+        timeoutId = setTimeout(() => {
+          // Remove the event listener to re-enable pull-to-refresh
+          document.removeEventListener("touchmove", disablePullToRefresh);
+        }, 3000); // 3000 ms = 3 seconds
+      }
+    };
+
+    // Call the function to disable pull-to-refresh when sidebar is shown
+    enablePullToRefreshTemporarily();
+
+    // Clean up the event listener and timeout when the component unmounts or the sidebar state changes
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener("touchmove", disablePullToRefresh);
+    };
+  }, [showSideBar]);
+
+  useEffect(() => {
     toggleSideBar(false);
   }, [path]);
 

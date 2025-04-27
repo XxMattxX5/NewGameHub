@@ -49,14 +49,14 @@ const NavBar = () => {
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="#" passHref>
+            <Link href="/forum" passHref>
               <Grid component="div">
                 <Typography component="p">Forum</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="#">
+            <Link href="#" passHref>
               <Grid component="div">
                 <Typography component="p">Contact Us</Typography>
               </Grid>

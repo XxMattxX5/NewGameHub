@@ -24,3 +24,9 @@ export type GameDetail = {
   videos: VideoScreenshot[];
   screenshots: VideoScreenshot[];
 };
+
+export type UserInfo = {
+  id: number;
+  username: string;
+  profile_picture: string;
+};

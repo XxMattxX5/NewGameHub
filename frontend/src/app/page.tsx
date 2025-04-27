@@ -9,13 +9,11 @@ export const metadata: Metadata = {
 
 const Home = () => {
   return (
-    <>
-      <Grid container>
-        <Grid className={styles.home_landing_container} container>
-          <Grid component={"div"} className={styles.home_landing_box}></Grid>
-        </Grid>
+    <Grid container>
+      <Grid className={styles.home_landing_container} container>
+        <Grid component={"div"} className={styles.home_landing_box}></Grid>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

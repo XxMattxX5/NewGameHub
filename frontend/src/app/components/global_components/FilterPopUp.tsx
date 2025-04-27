@@ -75,6 +75,7 @@ const FilterPopUp = ({
       <Grid id="filter_popup_genre_container">
         <Accordion
           square
+          sx={{ maxHeight: "300px", overflowY: "scroll" }}
           expanded={openSection === "genre"}
           onChange={() => toggleSection("genre")}
         >

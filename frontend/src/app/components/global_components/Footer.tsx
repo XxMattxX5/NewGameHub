@@ -10,6 +10,9 @@ import dynamic from "next/dynamic";
 const BackToTopWrapper = dynamic(() => import("./BackToTopWrapper"), {
   ssr: !!false,
 });
+const ChangeTheme = dynamic(() => import("./ChangeTheme"), {
+  ssr: !!false,
+});
 
 const Footer = () => {
   return (
@@ -69,6 +72,9 @@ const Footer = () => {
             <Typography component={"p"}>770-777-7777</Typography>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid id="footer_theme_button_container">
+        <ChangeTheme />
       </Grid>
     </Grid>
   );

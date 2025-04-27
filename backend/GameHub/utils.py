@@ -11,7 +11,7 @@ from django.db.models import F
 from django.core.paginator import Paginator
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
-from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.cache import cache
 from .serializer import GetGamesSerializer
 import requests
@@ -101,6 +101,8 @@ def loadGames():
 
         bulk_create_in_batches(Game, game_objects)
 
+        Game.objects.update(search_vector=SearchVector('title'))
+
         for game in game_objects:
             game.genres.add(*[genre for genre in game._genres])
 
@@ -115,7 +117,7 @@ def loadGames():
     total_games_loaded = 0
     retries, attempt = 3, 1
 
-    while params["offset"] < 200000:
+    while params["offset"] < 10000:
         try:
             response = post("https://api.igdb.com/v4/games", params=params, headers=headers)
         except requests.exceptions.RequestException as e:
@@ -243,7 +245,8 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
         return cached_results["games_page"], cached_results["pages"]
         
 
-    
+    if not search_word and sort_option == "relevance":
+        sort_option = "release(desc)"
 
     if search_word:
         search_query = SearchQuery(search_word)
@@ -325,8 +328,8 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
         'pages': pages
     }
 
-    # Cache the result for future queries if results contain at least 5 games
-    if (game_count >= 5):
+    # Cache the result for future queries if results contain at least 20 games
+    if (game_count >= 20):
         cache.set(cache_key, result, timeout=CACHE_TIMEOUT)
 
     return result['games_page'], result['pages']

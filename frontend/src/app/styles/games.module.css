@@ -123,6 +123,9 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 1);
   height: fit-content;
 }
+.card_button_active .game_card_title_container > p {
+  text-decoration: underline;
+}
 
 #top_rated_list {
   height: 100%;

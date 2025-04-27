@@ -7,6 +7,10 @@ from .serializer import GetGameSerializer, VideoSerializer, ScreenshotSerializer
 from .utils import getGameList, getSuggestionList
 from django.core.cache import cache
 import re
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 def home(request):
@@ -73,7 +77,6 @@ class GetGameSuggestions(APIView):
     
 
         search_word = re.sub(r'-', ' ', search_word)
-        # data, pages = get_game_list(search_word,perPage, page_num, sort_option,genre_option)
         data = getSuggestionList(search_word)
         data = GetGameSerializer(data, many=True).data
 
@@ -83,3 +86,39 @@ class GetGameSuggestions(APIView):
             return Response({"error": "No Games Found"}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({"data":data,}, status=status.HTTP_200_OK)
+    
+
+
+class SessionLoginView(APIView):
+    authentication_classes = []
+    permission_classes = []    
+
+    def post(self, request):
+        username = request.data.get("username", "").strip().lower()
+        password = request.data.get("password", "")
+
+        if not username or not password:
+            return Response({"message": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response({"message": "Login successful"})
+        else:
+            return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class SessionLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+
+class UserInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        return Response({"id":user.id, "username": user.username, "profile_picture": "/api" + user.profile.profile_picture.url})
