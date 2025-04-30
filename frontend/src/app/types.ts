@@ -30,3 +30,10 @@ export type UserInfo = {
   username: string;
   profile_picture: string;
 };
+
+export type RegistrationError = {
+  username?: string;
+  email?: string;
+  password?: string;
+  password_confirm?: string;
+};

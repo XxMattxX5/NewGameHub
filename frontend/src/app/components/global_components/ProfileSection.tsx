@@ -10,6 +10,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useTheme } from "./ThemeProvider";
+import Image from "next/image";
 
 type UserInfo = {
   username: string;
@@ -60,9 +61,12 @@ const ProfileSection = () => {
               {profileImageLoading ? (
                 <Grid id="profile_image_placeholder"></Grid>
               ) : userInfo?.profile_picture ? (
-                <img
+                <Image
                   src={userInfo.profile_picture}
                   alt="User's profile picture"
+                  width={50}
+                  height={50}
+                  unoptimized
                 />
               ) : null}
             </Grid>
@@ -91,7 +95,7 @@ const ProfileSection = () => {
                 </Grid>
                 <Grid id="nav_profile_dropdown_content">
                   <Grid component="div">
-                    <Link href="">
+                    <Link href={`/profile`}>
                       <PersonIcon />
                       <Typography
                         component="p"
@@ -104,7 +108,7 @@ const ProfileSection = () => {
                     </Link>
                   </Grid>
                   <Grid component="div">
-                    <Link href="">
+                    <Link href={`/profile/${userInfo.id}?menu=settings`}>
                       <SettingsIcon />
                       <Typography
                         component="p"
@@ -154,7 +158,7 @@ const ProfileSection = () => {
             </Link>
           </Grid>
           <Grid id="nav_register_btn">
-            <Link href="/register">
+            <Link href="/login?register=true">
               <Typography component="p">Sign Up</Typography>
             </Link>
           </Grid>

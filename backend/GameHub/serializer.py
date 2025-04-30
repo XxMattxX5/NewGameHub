@@ -1,5 +1,16 @@
 from rest_framework import serializers
-from .models import Game, Video, Screenshot, Genre
+from .models import Game, Video, Screenshot, Genre, Profile
+from .validators import validate_exact_dimensions, validate_image_size
+
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ["profile_picture"]
+
+    def validate_profile_image(self, image):
+        validate_exact_dimensions(image)
+        validate_image_size(image)
+        return image
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:

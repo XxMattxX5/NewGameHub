@@ -21,7 +21,7 @@ const getGame = async (slug: string) => {
     const backendUrl = process.env.BACKEND_URL || "http://localhost";
     const response = await fetch(`${backendUrl}/api/games/${slug}`, {
       method: "GET",
-      cache: "no-cache",
+      next: { revalidate: 0 },
       headers: {
         Accept: "application/json",
       },
@@ -39,6 +39,33 @@ const getGame = async (slug: string) => {
     return null;
   }
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ game_slug: string }>;
+}) {
+  const { game_slug } = await params;
+  const data = await getGame(game_slug);
+
+  if (!data) {
+    return {
+      title: "Game Hub - Game Not Found",
+    };
+  }
+
+  const fullDescription = data.data.summary ?? "Game detail page";
+
+  const truncate = (str: string, maxLength: number) => {
+    if (str.length <= maxLength) return str;
+    return str.slice(0, maxLength).trimEnd() + "...";
+  };
+
+  return {
+    title: `Game Hub - ${data.data.title}`,
+    description: truncate(fullDescription, 160),
+  };
+}
 
 const GameDetails = async ({
   params,

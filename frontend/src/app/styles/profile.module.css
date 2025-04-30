@@ -1,0 +1,183 @@
+#profile_main_container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-height: 800px;
+  margin: 30px 20px;
+  column-gap: 30px;
+}
+#profile_image_nav_container {
+  min-width: 300px;
+  padding: 20px;
+}
+#profile_main_content {
+  background-color: var(--gray2);
+  flex-grow: 1;
+  padding: 20px;
+}
+
+/* ProfileImage Component */
+#profile_main_image_container {
+  margin-bottom: 50px;
+}
+
+#profile_image_box {
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+#profile_image_box img {
+  border-radius: 50%;
+  margin: 0 auto;
+}
+#profile_image_box button {
+  text-transform: none;
+  background-color: var(--purple);
+  color: white;
+  margin-top: 20px;
+  font-size: 19px;
+}
+#profile_image_box button:hover {
+  background-color: #7b10c7;
+}
+
+/* ProfileNav Component */
+#profile_nav_box {
+  background-color: var(--gray2);
+}
+
+.profile_nav_link_box {
+  display: flex;
+  flex-direction: row;
+  text-transform: none;
+  padding: 10px 20px !important;
+  text-decoration: none;
+
+  justify-content: left !important;
+  align-items: center;
+}
+.profile_nav_link_box p {
+  color: white;
+  margin-left: 10px;
+  font-size: 23px;
+}
+.profile_nav_link_box svg {
+  color: var(--purple);
+  font-size: 30px;
+}
+.profile_nav_link_box:hover {
+  background-color: var(--purple) !important;
+}
+.profile_nav_link_box:hover svg {
+  color: white;
+}
+
+/* ImageCropper Component */
+#image_cropper_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  z-index: 6;
+  overflow-y: scroll;
+}
+#image_cropper_box {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 800px;
+  min-height: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+#image_cropper_box h2 {
+  font-size: clamp(30px, 4vw, 40px);
+  margin: 0 40px;
+  display: block;
+}
+
+#close_image_cropper {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+#cropped_image {
+  border-radius: 50%;
+}
+#image_cropping_box {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+#image_to_be_cropped {
+  width: 200px;
+  height: 200px;
+}
+
+#cropped_image_box,
+#image_to_be_cropped_box {
+  width: 50%;
+  min-width: 200px;
+  gap: 20px;
+}
+
+#cropped_image_box h3,
+#image_to_be_cropped_box h3 {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+#cropped_image {
+  margin-top: 50px;
+}
+
+#crop_image_buttons {
+  margin-top: auto;
+  width: 100%;
+}
+#crop_image_upload {
+  background-color: var(--purple);
+  text-transform: none;
+  color: white;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 19px;
+}
+#crop_image_upload:hover {
+  background-color: #7b10c7;
+}
+
+@media (max-width: 800px) {
+  #image_cropper_box {
+    width: 100%;
+    min-height: 400px;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 600px) {
+  #profile_main_container {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 500px) {
+  #image_cropping_box {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #cropped_image {
+    margin-top: 0px;
+  }
+  #cropped_image {
+    margin-top: 50px;
+  }
+}

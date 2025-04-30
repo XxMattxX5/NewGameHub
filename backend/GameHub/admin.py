@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Token, Game, Genre, Video, Screenshot, Profile
+from .models import Token, Game, Genre, Video, Screenshot, Profile, PasswordRecoveryToken
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -33,3 +33,4 @@ admin.site.register(Game, GameAdmin)
 admin.site.register(Genre)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(Screenshot, ScreenshotAdmin)
+admin.site.register(PasswordRecoveryToken)

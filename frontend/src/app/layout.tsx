@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import NavBar from "./components/global_components/NavBar";
 import "./globals.css";
-import { headers } from "next/headers";
 import dynamic from "next/dynamic";
 import Footer from "./components/global_components/Footer";
 import { StyledEngineProvider } from "@mui/material/styles";

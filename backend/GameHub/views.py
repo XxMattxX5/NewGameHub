@@ -2,15 +2,19 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from .models import Game, Video, Screenshot, Genre
-from .serializer import GetGameSerializer, VideoSerializer, ScreenshotSerializer, GenreSerializer
+from .models import Game, Video, Screenshot, Genre, PasswordRecoveryToken
+from .serializer import GetGameSerializer, VideoSerializer, ScreenshotSerializer, GenreSerializer, ProfilePictureSerializer
 from .utils import getGameList, getSuggestionList
 from django.core.cache import cache
 import re
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from .forms import UserRegistrationForm
+from django.contrib.auth.models import User
+import json
+from django.core.mail import send_mail
+import os
+from django.conf import settings
 
 # Create your views here.
 def home(request):
@@ -87,7 +91,11 @@ class GetGameSuggestions(APIView):
 
         return Response({"data":data,}, status=status.HTTP_200_OK)
     
+class IsLogged(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)
 
 class SessionLoginView(APIView):
     authentication_classes = []
@@ -103,9 +111,30 @@ class SessionLoginView(APIView):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return Response({"message": "Login successful"})
+            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RegisterUser(APIView):
+
+    def post(self, request):
+        data = json.loads(request.body)
+        form = UserRegistrationForm(data)
+
+        if form.is_valid():
+            # Create user
+            username = form.cleaned_data['username'].lower()
+            email = form.cleaned_data['email'].lower()
+            password = form.cleaned_data['password']
+            User.objects.create_user(username=username, email=email, password=password)
+            
+            return Response(status=status.HTTP_201_CREATED)
+
+           
+
+        # Return error response with form errors
+        return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SessionLogoutView(APIView):
@@ -122,3 +151,135 @@ class UserInfo(APIView):
         user = request.user
 
         return Response({"id":user.id, "username": user.username, "profile_picture": "/api" + user.profile.profile_picture.url})
+
+
+class ForgotPassword(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return Response({"message": "Already authenticated"}, status=status.HTTP_403_FORBIDDEN)
+        
+        email = request.data.get("email", "")
+        
+        try:
+            user = User.objects.get(email=email)
+            recovery_token = PasswordRecoveryToken.objects.filter(user=user)
+            if (recovery_token.exists()):
+                recovery_token.delete()
+
+            token = PasswordRecoveryToken.objects.create(user=user)
+            host = request.get_host()
+           
+            send_mail(
+                subject='Password Reset',
+                message=f'Click the link to reset your password. http://{host}/login/reset-password/{token.code}',
+                from_email='matthewhicks8070@gmail.com',
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
+            return Response(status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            # If the email doesn't match any user
+            return Response(status=status.HTTP_200_OK)
+
+        except Exception as e:
+            # Log the unexpected error (optional)
+            print(f"Unexpected error: {e}")
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ResetPassword(APIView):
+
+    def get(self, request, code):
+        if request.user.is_authenticated:
+            return Response({"message": "Already authenticated"}, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            recovery_token = PasswordRecoveryToken.objects.get(code=code)
+
+            if (recovery_token.is_expired()):
+                return Response({"message": "Code Expired"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            return Response({"message": "Code Valid"}, status=status.HTTP_200_OK)
+        except:
+             return Response({"message": "Code Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    def post(self, request, code):
+        if request.user.is_authenticated:
+            return Response({"message": "Already authenticated"}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            recovery_token = PasswordRecoveryToken.objects.get(code=code)
+            if (recovery_token.is_expired()):
+                return Response({"message": "Code Invalid"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            password = request.data.get("password")
+            passwordConfirm = request.data.get("password_confirm")
+
+            pattern = r'^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})'
+
+            if not re.match(pattern, password):
+                return Response({"message": "Password Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+            elif passwordConfirm != password:
+                return Response({"message": "Passwords must match"}, status=status.HTTP_400_BAD_REQUEST)
+
+            recovery_token.user.set_password(password)
+            recovery_token.user.save()
+
+            recovery_token.delete()
+            return Response(status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return Response({"message": "Code Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UploadImageView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self, request):
+        profile = request.user.profile 
+        uploaded_image = request.FILES.get("profile_picture") # get the profile of the authenticated user
+        serializer = ProfilePictureSerializer(profile, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response({"error": "Image not valid"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if (not self.is_valid_image(uploaded_image)):
+            return Response({"error": "Image be an allowed type: jpeg, png, or webp"}, status=status.HTTP_400_BAD_REQUEST)
+
+        old_image = profile.profile_picture
+
+        serializer.save()
+        self.delete_old_image(old_image)
+
+        return Response({"message": "Image uploaded successfully"}, status=status.HTTP_200_OK)
+        
+
+    
+    def is_valid_image(self, image):
+      
+        allowed_types = ['image/jpeg', 'image/png', 'image/webp']
+        if image.content_type not in allowed_types:
+            return False
+
+        return True
+
+    def delete_old_image(self, old_image):
+        try:
+            if not old_image:
+                return  # No image to delete
+
+            image_name = str(old_image)
+
+            # Skip deletion if it's the default profile picture
+            if image_name.endswith("blank-profile-picture.png"):
+                return
+
+            old_image_path = os.path.join(settings.MEDIA_ROOT, image_name)
+
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+        except Exception as e:
+            print(f"Error deleting old image: {e}")
+        

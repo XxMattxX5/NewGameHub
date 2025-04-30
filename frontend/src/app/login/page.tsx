@@ -3,22 +3,22 @@ import dynamic from "next/dynamic";
 import { Metadata } from "next";
 import styles from "../styles/login.module.css";
 
-const LoginForm = dynamic(
-  () => import("../components/global_components/LoginForm"),
+const LoginRegisterBlock = dynamic(
+  () => import("../components/login_components/LoginRegisterBlock"),
   {
     ssr: !!false,
   }
 );
 
 export const metadata: Metadata = {
-  title: "GameHub - Login",
+  title: "Game Hub - Login",
   description: "Log in to unlock all features of GameHub",
 };
 
 const Login = () => {
   return (
     <div id={styles.login_container}>
-      <LoginForm />
+      <LoginRegisterBlock />
     </div>
   );
 };

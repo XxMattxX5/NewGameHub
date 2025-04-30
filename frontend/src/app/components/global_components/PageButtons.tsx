@@ -48,23 +48,7 @@ const PageButtons = ({ page_amount }: Props) => {
           size="small"
           fullWidth
           sx={{
-            "& .MuiInputBase-input": {
-              color: theme === "dark" ? "white" : "black",
-            },
-            "& .MuiInputLabel-root": {
-              color: theme === "dark" ? "white" : "black",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: theme === "dark" ? "white" : "black",
-              },
-              "&:hover fieldset": {
-                borderColor: theme === "dark" ? "lightgray" : "gray",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: theme === "dark" ? "lightblue" : "blue",
-              },
-            },
+            backgroundColor: "white",
           }}
         >
           {page_numbers.map((page_info) => (

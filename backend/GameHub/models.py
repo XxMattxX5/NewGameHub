@@ -4,10 +4,13 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.search import SearchVector
 from django.contrib.auth.models import User
+import secrets
+from django.utils import timezone
+from datetime import timedelta
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/blank-profile-picture.png", null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/blank-profile-picture.png")
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -86,3 +89,31 @@ class Screenshot(models.Model):
 
     def __str__(self):
         return f"{self.game.title}-{self.id}"
+
+
+def generate_unique_code(length=50):
+    while True:
+        code = secrets.token_urlsafe(length)[:length]
+        if not PasswordRecoveryToken.objects.filter(code=code).exists():
+            return code
+
+def expiration_time():
+    return timezone.now() + timedelta(minutes=20)
+
+class PasswordRecoveryToken(models.Model):
+    code = models.CharField(max_length=250,unique=True, default=generate_unique_code)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='password_recovery_tokens'
+    )
+
+    expiration_date = models.DateTimeField(default=expiration_time)
+
+   
+
+    def __str__(self):
+        return f"{self.user.username}"
+
+    def is_expired(self):
+        return timezone.now() > self.expiration_date 

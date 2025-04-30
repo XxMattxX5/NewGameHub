@@ -185,6 +185,15 @@
   right: 0;
 }
 
+@media (pointer: coarse) {
+  #slide_show_left_arrow {
+    display: none;
+  }
+  #slide_show_right_arrow {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   #game_details_title_date > div {
     width: 90%;
