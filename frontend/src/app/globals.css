@@ -11,10 +11,10 @@
 }
 
 #main {
-  min-height: 800px;
+  min-height: 700px;
 }
 html {
-  background-color: white;
+  background-color: #fcfcfc;
   color: black;
 }
 html.dark {

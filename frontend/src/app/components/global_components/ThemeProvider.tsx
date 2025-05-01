@@ -1,11 +1,10 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "light" | "dark";
+import { Theme } from "@/app/types";
 
 interface ThemeContextType {
   theme: Theme | null;
-  toggleTheme: () => void;
+  toggleTheme: (selectedTheme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -35,7 +34,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (selectedTheme?: Theme) => {
+    if (selectedTheme) {
+      const selectedTheme = theme === "dark" ? "light" : "dark";
+      setTheme(selectedTheme);
+      localStorage.setItem("theme", selectedTheme);
+      document.documentElement.classList.toggle(
+        "dark",
+        selectedTheme === "dark"
+      );
+      return;
+    }
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);

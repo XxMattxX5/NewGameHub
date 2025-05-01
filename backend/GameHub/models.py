@@ -7,10 +7,32 @@ from django.contrib.auth.models import User
 import secrets
 from django.utils import timezone
 from datetime import timedelta
+import datetime
+
+
+LAST_SEEN_OPTIONS = [
+    ('visible', 'Visible'),
+    ('hidden', 'Hidden'),
+]
+PROFILE_VISIBILITY_OPTIONS = [
+    ('allow', 'Allow'),
+    ('hide', 'Hide')
+]
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/blank-profile-picture.png")
+    last_seen = models.DateField(default=datetime.date.today)
+    show_last_seen = models.CharField(
+        max_length=20,
+        choices=LAST_SEEN_OPTIONS,
+        default='visible'
+    )
+    profile_visibility = models.CharField(
+        max_length=20,
+        choices=PROFILE_VISIBILITY_OPTIONS,
+        default='allow'
+    )
 
     def __str__(self):
         return f'{self.user.username} Profile'

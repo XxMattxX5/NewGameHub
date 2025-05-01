@@ -3,17 +3,22 @@ import dynamic from "next/dynamic";
 import { Grid, Button, Typography } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
 
-const ProfileNav = dynamic(
-  () => import("@/app/components/profile_components/ProfileNav"),
-  {
-    ssr: !!false,
-  }
-);
-const ProfileImage = dynamic(
-  () => import("@/app/components/profile_components/ProfileImage"),
-  {
-    ssr: !!false,
-  }
+// const ProfileNav = dynamic(
+//   () => import("@/app/components/profile_components/ProfileNav"),
+//   {
+//     ssr: !!false,
+//   }
+// );
+// const ProfileImage = dynamic(
+//   () => import("@/app/components/profile_components/ProfileImage"),
+//   {
+//     ssr: !!false,
+//   }
+// );
+
+const ProfileSideBar = dynamic(
+  () => import("@/app/components/profile_components/ProfileSideBar"),
+  { ssr: !!false }
 );
 
 const Dashboard = dynamic(
@@ -40,12 +45,7 @@ const page = async ({
   return (
     <Grid id={styles.profile_main_container}>
       <Grid id={styles.profile_image_nav_container}>
-        <Grid id={styles.profile_main_image_container}>
-          <ProfileImage />
-        </Grid>
-        <Grid id={styles.profile_main_nav_container}>
-          <ProfileNav />
-        </Grid>
+        <ProfileSideBar />
       </Grid>
       <Grid id={styles.profile_main_content}>
         {menu === "settings" ? <Settings /> : <Dashboard />}

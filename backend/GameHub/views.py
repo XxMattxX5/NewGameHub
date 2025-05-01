@@ -15,6 +15,7 @@ import json
 from django.core.mail import send_mail
 import os
 from django.conf import settings
+import datetime
 
 # Create your views here.
 def home(request):
@@ -95,6 +96,9 @@ class IsLogged(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        profile = request.user.profile
+        profile.last_seen = datetime.date.today()
+        profile.save(update_fields=["last_seen"])
         return Response(status=status.HTTP_200_OK)
 
 class SessionLoginView(APIView):
@@ -282,4 +286,38 @@ class UploadImageView(APIView):
                 os.remove(old_image_path)
         except Exception as e:
             print(f"Error deleting old image: {e}")
+
+class UserSettings(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request):
+        profile = request.user.profile
+
+        return Response({"settings": {"show_last_seen": profile.show_last_seen, "profile_visibility": profile.profile_visibility}}, status=status.HTTP_200_OK)
+        
+    def patch(self, request):
+        profile = request.user.profile
+        visibility_options = ["allow", "hide"]
+        seen_options = ["visible", "hidden"]
+        show_last_seen = request.data.get("show_last_seen")
+        profile_visibility = request.data.get("profile_visibility")
+
+        last_seen_error=""
+        profile_visibility_error=""
+
+        if (show_last_seen not in seen_options):
+            last_seen_error = "Invalid Option"
+        
+        if (profile_visibility not in visibility_options):
+            profile_visibility_error = "Invalid Option"
+
+        if (last_seen_error or profile_visibility_error):
+            return Response({"last_seen_error": last_seen_error, "profile_visibility_error": profile_visibility_error}, status=status.HTTP_400_BAD_REQUEST)
+
+        profile.show_last_seen = show_last_seen
+        profile.profile_visibility = profile_visibility
+        profile.save(update_fields=["show_last_seen", "profile_visibility"])
+
+        return Response(status=status.HTTP_200_OK)
+
         

@@ -108,7 +108,7 @@ const ProfileSection = () => {
                     </Link>
                   </Grid>
                   <Grid component="div">
-                    <Link href={`/profile/${userInfo.id}?menu=settings`}>
+                    <Link href={`/profile?menu=settings`}>
                       <SettingsIcon />
                       <Typography
                         component="p"

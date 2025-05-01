@@ -12,9 +12,11 @@ urlpatterns = [
     path("auth/is-logged/", views.IsLogged.as_view(), name="Is-Logged"),
     path("auth/register/", views.RegisterUser.as_view(), name="Register"),
     path("auth/logout/", views.SessionLogoutView.as_view(), name="Logout"),
+    path('auth/login/forgot-password/', views.ForgotPassword.as_view(), name="Forgot_Password"),
+    path("auth/login/reset-password/<str:code>/", views.ResetPassword.as_view(), name="Reset_Password"),
     path("user/info/", views.UserInfo.as_view(), name="User_Info"),
     path("user/profile/image/",views.UploadImageView.as_view(), name="Upload_Profile_Picture"),
-    path('auth/login/forgot-password/', views.ForgotPassword.as_view(), name="Forgot_Password"),
-    path("auth/login/reset-password/<str:code>/", views.ResetPassword.as_view(), name="Reset_Password")
+    path("user/settings/",views.UserSettings.as_view(), name="User_Settings"),
+
 
 ]

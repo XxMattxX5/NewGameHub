@@ -20,7 +20,6 @@ type AuthContextType = {
   logout: () => void;
   userInfo: UserInfo | null;
   csrfToken: string;
-  // forgotPassword: (email: string) => void;
 };
 
 type Props = { children: React.ReactNode };

@@ -37,3 +37,4 @@ export type RegistrationError = {
   password?: string;
   password_confirm?: string;
 };
+export type Theme = "light" | "dark";

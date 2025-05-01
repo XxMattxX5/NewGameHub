@@ -7,19 +7,41 @@ import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useSearchParams } from "next/navigation";
 
-const ProfileNav = () => {
+type Props = {
+  toggleSideNav: () => void;
+};
+
+const ProfileNav = ({ toggleSideNav }: Props) => {
+  const params = useSearchParams();
+  const menu = params.get("menu");
   const { logout } = useAuth();
   return (
     <Grid id={styles.profile_nav_box}>
-      <Link className={styles.profile_nav_link_box} href={`/profile`}>
-        <HomeIcon /> <Typography component={"p"}>Dashboard</Typography>
+      <Link
+        onClick={toggleSideNav}
+        className={styles.profile_nav_link_box}
+        href={`/profile`}
+        style={{
+          backgroundColor: !menu ? "var(--purple)" : "unset",
+        }}
+      >
+        <HomeIcon sx={{ color: !menu ? "white" : "var(--purple)" }} />{" "}
+        <Typography component={"p"}>Dashboard</Typography>
       </Link>
       <Link
+        onClick={toggleSideNav}
         className={styles.profile_nav_link_box}
         href={`/profile?menu=settings`}
+        style={{
+          backgroundColor: menu === "settings" ? "var(--purple)" : "unset",
+        }}
       >
-        <SettingsIcon /> <Typography component={"p"}>Settings</Typography>{" "}
+        <SettingsIcon
+          sx={{ color: menu === "settings" ? "white" : "var(--purple)" }}
+        />
+        <Typography component={"p"}>Settings</Typography>{" "}
       </Link>
       <Button
         onClick={logout}
@@ -34,7 +56,7 @@ const ProfileNav = () => {
           },
         }}
       >
-        <LogoutIcon sx={{ marginLeft: "3px" }} />{" "}
+        <LogoutIcon sx={{ marginLeft: "3px", color: "var(--purple)" }} />
         <Typography component={"p"}>Logout</Typography>
       </Button>
     </Grid>
