@@ -12,18 +12,19 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { useTheme } from "./ThemeProvider";
 import Image from "next/image";
 
-type UserInfo = {
-  username: string;
-  profile_picture: string | null;
-};
-
+/**
+ * ProfileSection component displays the user's profile picture and a dropdown menu.
+ *
+ * The dropdown includes the username, links to the user's profile and settings pages,
+ * and an option to log out. Typically used in the top navigation bar.
+ *
+ */
 const ProfileSection = () => {
   const { theme } = useTheme();
   const { userInfo, logout } = useAuth();
   const path = usePathname();
 
   const [showDropdown, setShowDropdown] = useState(false);
-
   const [profileImageLoading, setProfileImageLoading] = useState(true);
 
   const toggleDropDown = useCallback(async (opt?: boolean) => {
@@ -34,6 +35,7 @@ const ProfileSection = () => {
     }
   }, []);
 
+  // Closes dropdown menu when url pathname changes
   useEffect(() => {
     toggleDropDown(false);
   }, [path]);

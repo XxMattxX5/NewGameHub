@@ -6,20 +6,36 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { useSearchParams } from "next/navigation";
 
+/**
+ * LoginRegisterBlock component serves as the parent container for authentication forms.
+ *
+ * This component manages the toggle logic between the Login and Register forms.
+ * It encapsulates the shared layout or styling and handles which form is currently visible.
+ *
+ * Responsibilities:
+ * - Tracks which form (login or register) is currently active.
+ * - Renders either the `LoginForm` or `RegisterForm` based on internal state.
+ * - Passes down the `switchForms` function to child components to allow toggling.
+ *
+ * Usage:
+ * Typically used on an authentication page to allow users to switch between creating a new account
+ * and logging in to an existing one, without navigating away or changing routes.
+ *
+ */
 const LoginRegisterBlock = () => {
   const params = useSearchParams();
   const registering = params.get("register");
-  const [width, setWidth] = useState(2000);
 
+  const [width, setWidth] = useState(2000);
   const [visibleForm, setVisibleForm] = useState<"login" | "register">(
     registering ? "register" : "login"
   );
   const [formChange, setFormChange] = useState<"login" | "register">(
     visibleForm
   );
-
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
+  // Switches between making the login or the register form visible
   const switchForms = (form: string) => {
     if (form === "register") {
       setFormChange("register");
@@ -49,6 +65,7 @@ const LoginRegisterBlock = () => {
     };
   }, []);
 
+  // Checks and animates to appropriate form when search param registering changes
   useEffect(() => {
     if (!registering && formChange !== "login") {
       setFormChange("login");
@@ -64,14 +81,18 @@ const LoginRegisterBlock = () => {
       return;
     }
 
+    // Disables animations when screen width is below 1000px
     if (width <= 1000) {
       setVisibleForm(formChange);
       return;
     }
 
+    // Sets a timer to change form so it changes while behind the image
     const timer = setTimeout(() => {
       setVisibleForm(formChange);
     }, 250);
+
+    // Sets a timer to send animation as soon as it finishs
     const timer2 = setTimeout(() => {
       setShouldAnimate(false);
     }, 500);

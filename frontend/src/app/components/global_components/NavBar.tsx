@@ -2,16 +2,10 @@ import { Grid, Typography } from "@mui/material";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const ProfileSection = dynamic(() => import("./ProfileSection"), {
-  ssr: !!false,
-});
-const ToggleSideBarBtn = dynamic(() => import("./ToggleSideBarBtn"), {
-  ssr: !!false,
-});
+import ProfileSection from "./ProfileSection";
+import ToggleSideBarBtn from "./ToggleSideBarBtn";
 
 const NavBar = () => {
-  const atHome = true;
   return (
     <>
       <Grid container id="nav">
@@ -49,7 +43,7 @@ const NavBar = () => {
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="/forum" passHref>
+            <Link href="/forum?posts=home" passHref>
               <Grid component="div">
                 <Typography component="p">Forum</Typography>
               </Grid>

@@ -17,6 +17,15 @@ type Props = {
   screenshots: VideoScreenshot[];
 };
 
+/**
+ * GameSlideShow component that displays a carousel of game media.
+ *
+ * This component accepts an array of videos and screenshots and combines them
+ * to render a carousel view. The carousel allows users to browse through
+ * both types of media in a unified display.
+ *
+ *
+ */
 const GameSlideShow = ({ videos, screenshots }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -31,6 +40,8 @@ const GameSlideShow = ({ videos, screenshots }: Props) => {
 
   const scrollAmount = mediaWidth + 20;
 
+  // Checks if the container with the vidoes and screenshots are overflowing
+  // Sets screenSize useState based on the width of the screen
   useEffect(() => {
     const checkOverflow = () => {
       if (contentRef.current && containerRef.current) {
@@ -61,12 +72,14 @@ const GameSlideShow = ({ videos, screenshots }: Props) => {
     };
   }, [screenSize]);
 
+  // Scrolls left based on the set width of the videos and screenshots
   const scrollLeft = () => {
     if (contentRef.current) {
       contentRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
   };
 
+  // Scrolls right based on the set width of the videos and screenshots
   const scrollRight = () => {
     if (contentRef.current) {
       contentRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
@@ -120,6 +133,9 @@ const GameSlideShow = ({ videos, screenshots }: Props) => {
           ))}
         </Grid>
       </Grid>
+
+      {/* Displays arrows for scrolling if the media is overflowing its container */}
+
       {isOverflowing && (
         <Button
           onClick={scrollRight}

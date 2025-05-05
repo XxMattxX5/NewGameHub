@@ -2,21 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "./components/global_components/NavBar";
 import "./globals.css";
-import dynamic from "next/dynamic";
 import Footer from "./components/global_components/Footer";
-import { StyledEngineProvider } from "@mui/material/styles";
 import { AuthProvider } from "./hooks/useAuth";
 import { CookiesProvider } from "next-client-cookies/server";
-
-const ThemeProvider = dynamic(
-  () => import("./components/global_components/ThemeProvider"),
-  { ssr: !!false }
-);
-
-const NavBarBackground = dynamic(
-  () => import("./components/global_components/NavBarBackground"),
-  { ssr: !!false }
-);
+import ThemeProvider from "./components/global_components/ThemeProvider";
+import NavBarBackground from "./components/global_components/NavBarBackground";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,7 +48,7 @@ const RootLayout = ({
 }>) => {
   return (
     <CookiesProvider>
-      <StyledEngineProvider>
+      <AppRouterCacheProvider>
         <AuthProvider>
           <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
@@ -71,7 +62,7 @@ const RootLayout = ({
             </body>
           </html>
         </AuthProvider>
-      </StyledEngineProvider>
+      </AppRouterCacheProvider>
     </CookiesProvider>
   );
 };

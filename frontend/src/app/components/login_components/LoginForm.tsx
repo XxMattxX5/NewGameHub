@@ -21,6 +21,16 @@ type Props = {
   switchForms: (form: string) => void;
 };
 
+/**
+ * LoginForm component renders a login interface for users to authenticate.
+ *
+ * It allows users to enter their username and password to sign in.
+ * - Displays a success message if redirected from account creation.
+ * - Handles login via the `useAuth` hook and shows relevant error messages.
+ * - Provides a toggle for showing/hiding the password input.
+ * - Manages a redirect path if provided via URL query parameters.
+ *
+ */
 const LoginForm = ({ switchForms }: Props) => {
   const { login } = useAuth();
   const params = useSearchParams();
@@ -29,17 +39,18 @@ const LoginForm = ({ switchForms }: Props) => {
   const created = params.get("created");
 
   const [loggingIn, setLoggingIn] = useState(false);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
-
   const [showCreated, setShowCreated] = useState(created ? true : false);
 
+  // Displays an account created succesfully message if user just come from registering an account
   useEffect(() => {
     if (!showCreated) {
     }
+
+    // Sets a timer to remove clear account created message after 3s
     const timer = setTimeout(() => {
       setShowCreated(false);
     }, 3000);
@@ -65,10 +76,7 @@ const LoginForm = ({ switchForms }: Props) => {
     });
   };
 
-  const handleClose = () => {
-    setLoginError("");
-  };
-
+  // Toggles whether the password is hidden or in plain text
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
@@ -158,7 +166,7 @@ const LoginForm = ({ switchForms }: Props) => {
       <Collapse in={loginError ? true : false}>
         <Alert
           severity="error"
-          onClose={handleClose}
+          onClose={() => setLoginError("")}
           sx={{ marginBottom: "15px", padding: "2px 16px" }}
         >
           {loginError}
@@ -166,6 +174,7 @@ const LoginForm = ({ switchForms }: Props) => {
       </Collapse>
       <Grid id={styles.login_btn_container}>
         <Button
+          disabled={loggingIn ? true : false}
           id={styles.login_page_signin_btn}
           onClick={handleLoginSubmit}
           sx={{

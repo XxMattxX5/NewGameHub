@@ -17,6 +17,7 @@ import requests
 LOGIN_URL = '/login/'
 
 ALLOWED_HOSTS=os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+USE_X_FORWARDED_HOST = True
 
 EC2_PRIVATE_IP = None
 METADATA_URI = os.environ.get('ECS_CONTAINER_METADATA_URI', 'http://169.254.170.2/v2/metadata')
@@ -24,7 +25,6 @@ METADATA_URI = os.environ.get('ECS_CONTAINER_METADATA_URI', 'http://169.254.170.
 try:
     resp = requests.get(METADATA_URI)
     data = resp.json()
-    # print(data)
 
     container_meta = data['Containers'][0]
     EC2_PRIVATE_IP = container_meta['Networks'][0]['IPv4Addresses'][0]
@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "GameHub.apps.GamehubConfig",
+    "Forum.apps.ForumConfig",
     "rest_framework",
     "django.contrib.postgres",
     "debug_toolbar",

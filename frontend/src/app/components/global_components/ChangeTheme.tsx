@@ -19,7 +19,7 @@ const ChangeTheme = () => {
       </Typography>
       <Switch
         checked={theme === "dark" ? true : false}
-        onChange={toggleTheme}
+        onChange={() => toggleTheme()}
       />
     </Grid>
   );

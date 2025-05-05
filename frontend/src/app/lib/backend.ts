@@ -1,4 +1,6 @@
 "use server";
+
+// Checks with the backend if recovery code is valid
 export const checkRecoveryCode = async (code: string) => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost";
   return await fetch(`${backendUrl}/api/auth/login/reset-password/${code}`, {

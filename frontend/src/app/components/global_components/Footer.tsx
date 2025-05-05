@@ -6,13 +6,15 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import BackToTopWrapper from "./BackToTopWrapper";
+import ChangeTheme from "./ChangeTheme";
 
-const BackToTopWrapper = dynamic(() => import("./BackToTopWrapper"), {
-  ssr: !!false,
-});
-const ChangeTheme = dynamic(() => import("./ChangeTheme"), {
-  ssr: !!false,
-});
+// const BackToTopWrapper = dynamic(() => import("./BackToTopWrapper"), {
+//   ssr: !!false,
+// });
+// const ChangeTheme = dynamic(() => import("./ChangeTheme"), {
+//   ssr: !!false,
+// });
 
 const Footer = () => {
   return (

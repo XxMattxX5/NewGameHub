@@ -1,40 +1,40 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import { Grid, Button, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
+import ProfileSideBar from "@/app/components/profile_components/ProfileSideBar";
+import Dashboard from "@/app/components/profile_components/Dashboard";
+import Settings from "@/app/components/profile_components/Settings";
 
-// const ProfileNav = dynamic(
-//   () => import("@/app/components/profile_components/ProfileNav"),
+// const ProfileSideBar = dynamic(
+//   () => import("@/app/components/profile_components/ProfileSideBar"),
+//   { ssr: !!false }
+// );
+
+// const Dashboard = dynamic(
+//   () => import("@/app/components/profile_components/Dashboard"),
 //   {
 //     ssr: !!false,
 //   }
 // );
-// const ProfileImage = dynamic(
-//   () => import("@/app/components/profile_components/ProfileImage"),
+
+// const Settings = dynamic(
+//   () => import("@/app/components/profile_components/Settings"),
 //   {
 //     ssr: !!false,
 //   }
 // );
 
-const ProfileSideBar = dynamic(
-  () => import("@/app/components/profile_components/ProfileSideBar"),
-  { ssr: !!false }
-);
-
-const Dashboard = dynamic(
-  () => import("@/app/components/profile_components/Dashboard"),
-  {
-    ssr: !!false,
-  }
-);
-
-const Settings = dynamic(
-  () => import("@/app/components/profile_components/Settings"),
-  {
-    ssr: !!false,
-  }
-);
-
+/**
+ * Profile page component that renders the user dashboard or settings based on URL query parameters.
+ *
+ * This page extracts the `menu` search parameter to determine which section to display.
+ * - If `menu` is `"settings"`, it renders the `Settings` component.
+ * - Otherwise, it renders the `Dashboard` component.
+ *
+ * It also displays the user's profile navigation and image section via `ProfileSideBar`.
+ *
+ */
 const page = async ({
   searchParams,
 }: {

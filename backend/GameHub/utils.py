@@ -22,8 +22,14 @@ download_batch_size = 500
 CACHE_TIMEOUT = 3600
 BATCH_SIZE = 10000
 
-# Adds new or refreshed token to database
+
 def add_or_refresh_token(data):
+    """
+    Adds new or refreshed token to the database
+
+    Parameters:
+        data: the data returned from a request to twitch igdb
+    """
     access_token = data.get("access_token")
     expires_in = data.get("expires_in")
     token_type = data.get("token_type")
@@ -35,8 +41,10 @@ def add_or_refresh_token(data):
 
     
 
-# Gets a token from twitch for the igdb or refreshes the current token.
 def authenticate():
+    """
+    Gets a token from twitch for the igdb or refreshes the current token
+    """
     token = Token.objects.all()
     # Checks if there is already a token
     if len(token) > 0:
@@ -66,14 +74,35 @@ def authenticate():
 
 
 def bulk_create_in_batches(model_class, objects, batch_size=download_batch_size):
-    """Helper function to bulk create objects in batches."""
-    
+    """
+    Efficiently bulk-create objects in smaller batches to avoid memory overload.
+
+    Parameters:
+        model_class (models.Model): The Django model class (e.g., Game, Genre) whose instances are being created.
+        objects (list): A list of unsaved model instances (objects of model_class) to be inserted into the database.
+        batch_size (int): The number of objects to create in each batch. Defaults to 'download_batch_size'.
+
+    Example:
+        Example:
+        games = [Game(title="Game 1", ...), Game(title="Game 2", ...)]
+        bulk_create_in_batches(Game, games)
+    """
     for i in range(0, len(objects), batch_size):
         model_class.objects.bulk_create(objects[i:i + batch_size])
 
 
 def loadGames():
+    """
+    Fetches games from IGDB in batches of 500 and stores them temporarily in memory.
+
+    Once 10,000 games have been collected, they are bulk created in the database
+    using the `bulk_create_in_batches` function to minimize database hits and improve performance.
+
+    After each bulk insert, the in-memory list is cleared to avoid RAM overuse.
+    """
     token = Token.objects.all()
+
+    # Checks to see if there is a valid token else it gets a new one
     if len(token) > 0 and token[0].expires_in > timezone.now():
         token = token[0]
     else:
@@ -95,12 +124,14 @@ def loadGames():
     game_objects, video_objects, screenshot_objects = [], [], []
     seen_game_ids = set(Game.objects.values_list('game_id', flat=True))
 
+    # Inserts stored instance models into the database then clears them from the memory
     def insert_batch():
         if not game_objects:
             return
 
         bulk_create_in_batches(Game, game_objects)
 
+        # Updates the search_vector field after Game objects have been created
         Game.objects.update(search_vector=SearchVector('title'))
 
         for game in game_objects:
@@ -117,7 +148,7 @@ def loadGames():
     total_games_loaded = 0
     retries, attempt = 3, 1
 
-    while params["offset"] < 10000:
+    while params["offset"] < 200000:
         try:
             response = post("https://api.igdb.com/v4/games", params=params, headers=headers)
         except requests.exceptions.RequestException as e:
@@ -214,21 +245,25 @@ def loadGames():
 
     return f"{total_games_loaded} Games Loaded Successfully!"
 
-# Returns a list of games to be displayed
-def getGameList(search_word ,perPage, page, sort_option, genre):
-    sort_options = ["relevance","name", "release(asc)","release(desc)", "rating"]
-    search_word_length = len(search_word)
-   
-    if search_word_length >= 10:
-        search_threshold = 0.5
-    elif search_word_length >= 7:
-        search_threshold = 0.4
-    elif search_word_length >= 5:
-        search_threshold = 0.2
-    else:
-        search_threshold = 0.15
-    
 
+def getGameList(search_word ,perPage, page, sort_option, genre):
+    """
+    Retrieves a paginated and optionally filtered list of games based on search criteria.
+
+    Parameters:
+        search_word (str): The keyword to search games by title.
+        perPage (int): Number of games to return per page.
+        page (int): The current page number.
+        sort_option (str): The field to sort results by (e.g., rating, release date).
+        genre (str): Optional genre to filter games by.
+
+    Returns:
+        QuerySet: A list of games matching the criteria.
+    """
+    sort_options = ["relevance","name", "release(asc)","release(desc)", "rating"]
+    search_threshold = 0.2
+    
+    # Ensures page number is valid
     try:
         page = int(page)
         if page < 1:
@@ -241,16 +276,22 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
 
     
     cached_results = cache.get(cache_key)
+
+    # Returns cached results if they exist
     if cached_results:
         return cached_results["games_page"], cached_results["pages"]
         
-
+    # Sets sort option to release(desc) if the current option is relevance
+    # and there is no search_word
     if not search_word and sort_option == "relevance":
         sort_option = "release(desc)"
 
+    # Search using postgres full text search if it returns results
+    # else it uses a trigram similiarity search instead
     if search_word:
         search_query = SearchQuery(search_word)
 
+        # Try full-text search first
         fulltext_results = Game.objects.annotate(
             rank=SearchRank('search_vector', search_query)
         ).filter(
@@ -279,6 +320,7 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
 
     games.only("game_id","slug","title", "cover_image", "release","rating")
     
+    # Filters by games that contain the selected genre
     if genre != "All":
         try:
             genre_obj = Genre.objects.get(name=genre)
@@ -305,7 +347,9 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
 
     cache_count_key = f"results_count_{hashlib.md5(f'{search_word}_{genre}'.encode()).hexdigest()}"
     cached_count = cache.get(cache_count_key)
-
+    
+    # If game_count is greater then 100 the game_count gets cached
+    # to speed up search times
     if cached_count is not None:
         game_count = cached_count
     else:
@@ -335,17 +379,22 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
     return result['games_page'], result['pages']
 
 def getSuggestionList(search_word):
-    search_word_length = len(search_word)
+    """
+    Retrieves a list of game suggestions based on a search keyword.
 
-    if search_word_length >= 10:
-        search_threshold = 0.5
-    elif search_word_length >= 7:
-        search_threshold = 0.4
-    elif search_word_length >= 5:
-        search_threshold = 0.2
-    else:
-        search_threshold = 0.15
+    The function uses a predefined threshold to find games that closely match
+    the provided search word.
 
+    Parameters:
+        search_word (str): The keyword used to find similar game titles.
+
+    Returns:
+        QuerySet: A list of max 5 games sorted by there rank or similarity.
+    """
+    search_threshold = 0.2
+
+    # Search using postgres full text search if it returns results
+    # else it uses a trigram similiarity search instead
     if search_word:
         search_query = SearchQuery(search_word)
 

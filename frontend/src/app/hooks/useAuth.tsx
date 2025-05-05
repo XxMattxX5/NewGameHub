@@ -13,6 +13,7 @@ type AuthContextType = {
   ) => Promise<string> | Promise<void>;
   register: (
     username: string,
+    full_name: string,
     email: string,
     password: string,
     password_confirm: string
@@ -20,24 +21,38 @@ type AuthContextType = {
   logout: () => void;
   userInfo: UserInfo | null;
   csrfToken: string;
+  isAuthenticated: boolean;
 };
 
 type Props = { children: React.ReactNode };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
+/**
+ * Custom hook for accessing authentication-related functions and user information.
+ *
+ * This hook provides an interface to manage authentication, including logging in, registering, logging out,
+ * and fetching the current user information. It also exposes a CSRF token for secure operations.
+ * The hook is intended to be used within the `AuthContext` provider to ensure proper access control and state management.
+ *
+ */
 export const AuthProvider = ({ children }: Props) => {
   const router = useRouter();
   const cookies = useCookies();
   const csrfToken = cookies.get("csrftoken") || "";
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // When the user enters the page or refresh auth is check with a request to the backend
+  // and if logged user information is grabbed for either local storage or from backend
   useEffect(() => {
     const storedUserInfo = localStorage.getItem("userInfo");
 
+    // Checks if user is logged in
     const isLogged = async () => {
       if (await checkAuth()) {
+        setIsAuthenticated(true);
         if (storedUserInfo) {
           setUserInfo(JSON.parse(storedUserInfo));
         } else {
@@ -50,6 +65,7 @@ export const AuthProvider = ({ children }: Props) => {
     isLogged();
   }, []);
 
+  // Sends request to backend to get authentication status
   const checkAuth = async () => {
     return fetch("/api/auth/is-logged/", {
       method: "GET",
@@ -100,6 +116,7 @@ export const AuthProvider = ({ children }: Props) => {
       });
   };
 
+  // Attempts to login user and redirects them to given path if redirect is given
   const login = async (
     username: string,
     password: string,
@@ -121,6 +138,7 @@ export const AuthProvider = ({ children }: Props) => {
     })
       .then((res) => {
         if (res.ok) {
+          setIsAuthenticated(true);
           fetchUserInfo();
           if (redirect) {
             router.push(redirect);
@@ -143,6 +161,7 @@ export const AuthProvider = ({ children }: Props) => {
   // Creates a new user if the inputs are valid
   const register = async (
     username: string,
+    full_name: string,
     email: string,
     password: string,
     password_confirm: string
@@ -158,6 +177,7 @@ export const AuthProvider = ({ children }: Props) => {
       credentials: "include",
       body: JSON.stringify({
         username: username,
+        full_name: full_name,
         email: email,
         password: password,
         password_confirm: password_confirm,
@@ -190,6 +210,7 @@ export const AuthProvider = ({ children }: Props) => {
     })
       .then(() => {
         setUserInfo(null);
+        setIsAuthenticated(false);
         localStorage.removeItem("userInfo");
         router.refresh();
       })
@@ -205,6 +226,7 @@ export const AuthProvider = ({ children }: Props) => {
         logout,
         userInfo,
         csrfToken,
+        isAuthenticated,
       }}
     >
       {children}

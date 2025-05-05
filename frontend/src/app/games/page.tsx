@@ -1,38 +1,36 @@
 import { Metadata } from "next";
 import { Grid, Typography } from "@mui/material";
-import dynamic from "next/dynamic";
 import styles from "../styles/games.module.css";
-import LoadingSpinner from "../components/global_components/LoadingSpinner";
+import SearchBar from "../components/global_components/SearchBar";
+import TopRatedList from "../components/games_components/TopRatedList";
+import GameList from "../components/games_components/GameList";
 
-const SearchBar = dynamic(
-  () => import("../components/global_components/SearchBar"),
-  {
-    ssr: !!false,
-  }
-);
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q: string;
+    s: string;
+    g: string;
+    page: string;
+  }>;
+}) {
+  const metadata: Metadata = {
+    title: "Game Hub - Explore Games",
+    description:
+      "Search through our game library to discover new games and learn more about them",
+  };
 
-const TopRatedList = dynamic(
-  () => import("../components/games_components/TopRatedList"),
-  {
-    ssr: !!false,
-    loading: () => <LoadingSpinner spinnerSize={60} />,
-  }
-);
+  return metadata;
+}
 
-const GameList = dynamic(
-  () => import("../components/games_components/GameList"),
-  {
-    ssr: !!false,
-    loading: () => <LoadingSpinner spinnerSize={100} />,
-  }
-);
-
-export const metadata: Metadata = {
-  title: "Game Hub - Explore Games",
-  description:
-    "Search through our game libray to discover new games and learn more about them",
-};
-
+/**
+ * Fetches a list of games from the backend based on optional query parameters.
+ *
+ * This function sends a GET request to the `/api/games` endpoint with optional search,
+ * sorting, genre filtering, and pagination.
+ *
+ */
 const fetchGames = async (
   q?: string,
   s?: string,
@@ -74,6 +72,15 @@ const fetchGames = async (
   }
 };
 
+/**
+ * Games server component that renders a list of games based on search parameters.
+ *
+ * This component is responsible for:
+ * - Awaiting the `searchParams` which includes query parameters for filtering and sorting.
+ * - Fetching the game data from the backend using `fetchGames`.
+ * - Passing the data to the appropriate child components for rendering (not shown in snippet).
+ *
+ */
 const Games = async ({
   searchParams,
 }: {
@@ -89,7 +96,7 @@ const Games = async ({
 
   return (
     <>
-      <SearchBar genreList={data.genres} />
+      <SearchBar searchType="game" genreList={data.genres} />
       <Grid container id={styles.games_container}>
         <Typography variant="h1" id={styles.games_page_header}>
           Explore Our Library of Games

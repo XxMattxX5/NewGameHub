@@ -1,22 +1,26 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import { Grid, TextField, Button, MenuItem, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { useTheme } from "./ThemeProvider";
 
 type Props = {
   page_amount: number;
 };
 
+/**
+ * PageButtons component renders pagination buttons based on the total number of pages.
+ *
+ * Allows users to navigate between different pages of game results.
+ *
+ */
 const PageButtons = ({ page_amount }: Props) => {
-  const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const page = searchParams.get("page") ?? "1";
 
+  // Creates of list of page numbers giving the total amount of pages
   const createPageNumbers = (
     page_amount: number
   ): { label: string; value: number }[] => {
@@ -28,6 +32,7 @@ const PageButtons = ({ page_amount }: Props) => {
 
   const page_numbers = createPageNumbers(page_amount);
 
+  // handles changes to page number and makes sure new page is within the valid range
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > page_amount) {
       return;

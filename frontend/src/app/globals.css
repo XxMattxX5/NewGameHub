@@ -3,6 +3,7 @@
   --gray: #23262b;
   --gray2: #272a30;
   --lightGray: #282c33;
+  --fontBlack: #333333;
 }
 
 * {
@@ -14,11 +15,12 @@
   min-height: 700px;
 }
 html {
-  background-color: #fcfcfc;
-  color: black;
+  background-color: #eeeeee;
+  color: var(--fontBlack);
 }
+
 html.dark {
-  background-color: #1e1e1e;
+  background-color: #202124;
   color: white;
 }
 
@@ -39,6 +41,7 @@ html.dark {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  height: 90px;
 }
 #nav_background {
   width: 100%;
@@ -312,9 +315,9 @@ html.dark {
   position: absolute;
   background-color: var(--gray2);
   max-width: 350px;
-  width: 250px;
   width: 60%;
   top: 0px;
+  min-width: 270px;
   min-height: 900px;
   transition: left 0.3s linear;
   z-index: 5;
@@ -546,8 +549,8 @@ html.dark {
 
 #page_button_container > div {
   margin: 0 auto;
-  width: 95%;
-  max-width: 600px;
+  width: 100%;
+  /* max-width: 600px; */
 }
 
 #page_button_container > div > input {

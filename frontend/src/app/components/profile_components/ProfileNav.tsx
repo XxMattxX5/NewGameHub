@@ -13,10 +13,18 @@ type Props = {
   toggleSideNav: () => void;
 };
 
+/**
+ * ProfileNav component renders a navigation menu with links to the profile sections.
+ *
+ * This component includes a link or button that toggles the side navigation (sidebar) visibility when clicked.
+ * The `toggleSideNav` function is called to either open or close the sidebar, allowing users to navigate through different sections of the profile.
+ *
+ */
 const ProfileNav = ({ toggleSideNav }: Props) => {
   const params = useSearchParams();
   const menu = params.get("menu");
   const { logout } = useAuth();
+
   return (
     <Grid id={styles.profile_nav_box}>
       <Link
@@ -46,7 +54,6 @@ const ProfileNav = ({ toggleSideNav }: Props) => {
       <Button
         onClick={logout}
         className={styles.profile_nav_link_box}
-        fullWidth
         sx={{
           textTransform: "none",
           borderRadius: 0,

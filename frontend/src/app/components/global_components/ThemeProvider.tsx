@@ -1,10 +1,11 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Theme } from "@/app/types";
+import { useCookies } from "next-client-cookies";
 
 interface ThemeContextType {
   theme: Theme | null;
-  toggleTheme: (selectedTheme: Theme) => void;
+  toggleTheme: (selectedTheme?: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -18,13 +19,21 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const cookies = useCookies();
   const [theme, setTheme] = useState<Theme | null>(null);
 
+  const setThemeCookie = (value: Theme) => {
+    cookies.set("theme", value);
+    document.cookie = `theme=${value}; path=/; max-age=31536000`; // 1 year
+  };
+
+  // Checks if theme is stored in local storage else uses the prefer theme on user's computer
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      setThemeCookie(savedTheme);
     } else {
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
@@ -35,20 +44,11 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const toggleTheme = (selectedTheme?: Theme) => {
-    if (selectedTheme) {
-      const selectedTheme = theme === "dark" ? "light" : "dark";
-      setTheme(selectedTheme);
-      localStorage.setItem("theme", selectedTheme);
-      document.documentElement.classList.toggle(
-        "dark",
-        selectedTheme === "dark"
-      );
-      return;
-    }
-    const newTheme = theme === "dark" ? "light" : "dark";
+    const newTheme = selectedTheme || (theme === "dark" ? "light" : "dark");
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+    setThemeCookie(newTheme);
   };
 
   return (

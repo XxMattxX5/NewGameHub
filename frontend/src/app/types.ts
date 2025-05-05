@@ -33,8 +33,34 @@ export type UserInfo = {
 
 export type RegistrationError = {
   username?: string;
+  full_name?: string;
   email?: string;
   password?: string;
   password_confirm?: string;
 };
+
 export type Theme = "light" | "dark";
+
+export type RecentlyViewedPost = {
+  slug: string;
+  user_profile_picture: string;
+  post_title: string;
+};
+
+export type ForumPost = {
+  id: string;
+  title: string;
+  header_image: string;
+  user: { id: string; username: string; profile_picture: string };
+  game: { slug: string; title: string; cover_image: string } | null;
+  post_type: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  slug: string;
+  like_count: number;
+  dislike_count: number;
+  views: number;
+  comment_count: number;
+  user_reaction: string | null;
+};

@@ -12,6 +12,16 @@ import {
 import styles from "@/app/styles/login.module.css";
 import { useAuth } from "@/app/hooks/useAuth";
 
+/**
+ * ForgotPasswordForm component renders a form for users to request a password reset.
+ *
+ * Users enter the email address associated with their account. Upon submission, the component:
+ * - Validates and submits the form using a CSRF token for protection.
+ * - Sends a password reset request to the backend.
+ * - Displays success or error messages based on the response.
+ * - Disables form submission while the request is in progress.
+ *
+ */
 const ForgotPasswordForm = () => {
   const { csrfToken } = useAuth();
   const [emailSent, setEmailSent] = useState(false);
@@ -19,12 +29,16 @@ const ForgotPasswordForm = () => {
   const [error, setError] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // Sends email to backend to start recover password flow if email input is valid
   const sendEmail = async () => {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Ensures email input field isn't blank
     if (!email) {
       return;
     }
 
+    // Ensures email is valid
     if (!regex.test(email)) {
       setError("Email Invalid");
       return;
@@ -105,6 +119,7 @@ const ForgotPasswordForm = () => {
           </Collapse>
         </Grid>
         <Button
+          disabled={sendingEmail ? true : false}
           onClick={sendEmail}
           sx={{
             textTransform: "none",
@@ -116,6 +131,7 @@ const ForgotPasswordForm = () => {
             },
           }}
         >
+          {/* Sets the button to loading state while email is being sent */}
           {sendingEmail ? (
             <CircularProgress size={"20px"} sx={{ marginTop: "5px" }} />
           ) : (

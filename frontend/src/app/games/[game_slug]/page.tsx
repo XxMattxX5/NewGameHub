@@ -2,20 +2,20 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { Grid, Typography } from "@mui/material";
 import styles from "@/app/styles/gamedetail.module.css";
-import { GameDetail, VideoScreenshot } from "@/app/types";
+import { GameDetail } from "@/app/types";
 import Image from "next/image";
 import StarIcon from "@mui/icons-material/Star";
-import dynamic from "next/dynamic";
-import LoadingSpinner from "@/app/components/global_components/LoadingSpinner";
+import GameSlideShow from "@/app/components/games_components/GameSlideShow";
 
-const GameSlideShow = dynamic(
-  () => import("@/app/components/games_components/GameSlideShow"),
-  {
-    ssr: !!false,
-    loading: () => <LoadingSpinner spinnerSize={60} />,
-  }
-);
-
+/**
+ * Fetches detailed information for a specific game by its slug.
+ *
+ * This function sends a GET request to the backend API to retrieve the details of a game,
+ * including its title, description, and other information. If the game is not found, or
+ * if there's an error with the request, it handles these cases accordingly.
+ *
+ * Returns a 404 page if game was not found using the slug identifier.
+ */
 const getGame = async (slug: string) => {
   try {
     const backendUrl = process.env.BACKEND_URL || "http://localhost";
@@ -66,7 +66,13 @@ export async function generateMetadata({
     description: truncate(fullDescription, 160),
   };
 }
-
+/**
+ * Fetches and displays detailed information for a specific game.
+ *
+ * This component retrieves the game details using the `game_slug` from the `params` object.
+ * If the game details cannot be found, it triggers a "not found" response.
+ *
+ */
 const GameDetails = async ({
   params,
 }: {
@@ -83,7 +89,7 @@ const GameDetails = async ({
     cover_image: data.data.cover_image,
     title: data.data.title,
     rating: data.data.rating ?? 0,
-    release: data.data.release ?? "No Release Date",
+    release: data.data.release ?? null,
     slug: data.data.slug,
     genres: data.data.genres.map((genre: { name: string }) => genre.name),
     summary: data.data.storyline
@@ -101,7 +107,7 @@ const GameDetails = async ({
     }
     return "https://www.youtube.com/embed/YZ0Qbemz4lI";
   };
-
+  console.log(game_details.release);
   return (
     <Grid container id={styles.game_details_container}>
       <Grid id={styles.game_details_title_date}>

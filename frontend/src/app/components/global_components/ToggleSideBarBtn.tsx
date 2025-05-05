@@ -3,9 +3,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Grid, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import NavSideBar from "./NavSideBar";
 
+// Button for toggling side bar
 const ToggleSideBarBtn = () => {
   const path = usePathname();
 
@@ -19,6 +19,7 @@ const ToggleSideBarBtn = () => {
     }
   }, []);
 
+  // Disables pull to refresh to avoid accidental refreshes when toggle sidebar
   useEffect(() => {
     const disablePullToRefresh = (e: TouchEvent) => {
       // Prevent default action if the touch move is vertical
@@ -54,6 +55,7 @@ const ToggleSideBarBtn = () => {
     };
   }, [showSideBar]);
 
+  // Closes side bar when path in url changes
   useEffect(() => {
     toggleSideBar(false);
   }, [path]);

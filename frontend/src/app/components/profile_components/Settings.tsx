@@ -3,29 +3,33 @@ import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
-  TextField,
-  Button,
   Tooltip,
   Radio,
   RadioGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
 } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
 import { useTheme } from "../global_components/ThemeProvider";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useAuth } from "@/app/hooks/useAuth";
 
+/**
+ * Settings component renders the user settings page.
+ *
+ * This component allows users to manage their account settings, preferences, and possibly update profile information.
+ * It acts as a container for various settings-related features and components that users can interact with to modify their preferences.
+ *
+ */
 const Settings = () => {
   const { logout, csrfToken } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const profile_visibility_options = ["allow", "hide"];
-  const last_seen_options = ["visible", "hidden"];
+  const profile_visibility_options = ["visible", "hidden"];
+  const name_visibility_options = ["visible", "hidden"];
   const theme_options = ["dark", "light"];
 
-  const [profileVisibility, setProfileVisibility] = useState("allow");
-  const [lastSeen, setLastSeen] = useState("visible");
+  const [profileVisibility, setProfileVisibility] = useState("");
+  const [nameVisibility, setNameVisibility] = useState("");
 
   const handleProfileVisibilityChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -34,8 +38,10 @@ const Settings = () => {
     saveChanges(undefined, e.target.value);
   };
 
-  const handleLastSeenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLastSeen(e.target.value);
+  const handleNameVisibilityChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNameVisibility(e.target.value);
     saveChanges(e.target.value);
   };
 
@@ -51,6 +57,7 @@ const Settings = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  // Fetches the user's stored settings from the backend on first load
   useEffect(() => {
     const getUserSettings = async () => {
       await fetch("/api/user/settings/", {
@@ -68,7 +75,7 @@ const Settings = () => {
         })
         .then((data) => {
           if (data) {
-            setLastSeen(data.settings.show_last_seen);
+            setNameVisibility(data.settings.name_visibility);
             setProfileVisibility(data.settings.profile_visibility);
           }
         })
@@ -80,8 +87,9 @@ const Settings = () => {
     getUserSettings();
   }, []);
 
+  // Sends request to backend to update stored user settings
   const saveChanges = async (
-    last_seen?: string,
+    name_visibility?: string,
     profile_visibility?: string
   ) => {
     const headers = {
@@ -94,7 +102,7 @@ const Settings = () => {
       headers: headers,
       credentials: "include",
       body: JSON.stringify({
-        show_last_seen: last_seen ? last_seen : lastSeen,
+        show_last_seen: name_visibility ? name_visibility : nameVisibility,
         profile_visibility: profile_visibility
           ? profile_visibility
           : profileVisibility,
@@ -166,12 +174,12 @@ const Settings = () => {
           }}
         >
           <Tooltip
-            title="Allow other users to see when you were last on the site"
+            title="Allow other users to see your real name"
             placement="top"
           >
             <HelpOutlineIcon />
           </Tooltip>
-          <Typography component={"p"}>Last Seen</Typography>
+          <Typography component={"p"}>Name Visibility</Typography>
           <FormControl
             component="fieldset"
             className={styles.settings_radio_buttons}
@@ -180,11 +188,11 @@ const Settings = () => {
             }}
           >
             <RadioGroup
-              value={lastSeen}
+              value={nameVisibility}
               sx={{ display: "flex", flexDirection: "row" }}
-              onChange={handleLastSeenChange}
+              onChange={handleNameVisibilityChange}
             >
-              {last_seen_options.map((option) => (
+              {name_visibility_options.map((option) => (
                 <FormControlLabel
                   key={option}
                   value={option}

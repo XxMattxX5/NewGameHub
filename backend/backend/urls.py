@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("GameHub.urls")),
+    path('forum/', include("Forum.urls")),
 ]
 
 if settings.DEBUG:

@@ -13,41 +13,78 @@ import { useSearchParams, usePathname } from "next/navigation";
 import FilterPopUp from "./FilterPopUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useRouter } from "next/navigation";
-import { Game } from "@/app/types";
+import { Game, ForumPost } from "@/app/types";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "./LoadingSpinner";
 
 type Props = {
-  genreList: Array<{ name: string }>;
+  genreList?: Array<{ name: string }>;
+  searchType: "game" | "forum";
 };
 
 type GenreObj = {
   name: string;
 };
 
-const SearchBar = ({ genreList }: Props) => {
+/**
+ * SearchBar component allows users to search for games by title,
+ * filter them by genre, and sort the results.
+ *
+ * It updates the URL with query parameters based on the search input,
+ * selected genre, and sort option—useful for integrating with routing or
+ * fetching filtered/sorted data from the backend.
+ *
+ */
+const SearchBar = ({ genreList, searchType }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("q");
   const sort = searchParams.get("s");
   const genre = searchParams.get("g");
+  const display = searchParams.get("posts");
+  let forumSearchType = "";
 
-  const genres: GenreObj[] = [{ name: "All" }, ...genreList];
-  const sortOptions = [
-    { value: "relevance", label: "Relevance" },
-    { value: "name", label: "Name" },
-    { value: "release(asc)", label: "Release(Asc)" },
-    { value: "release(desc)", label: "Release(Desc)" },
-    { value: "rating", label: "Rating" },
-  ];
+  if (!display) {
+  } else if (
+    display === "general" ||
+    display === "liked" ||
+    display === "game"
+  ) {
+    forumSearchType = display + " posts";
+  } else if (display === "myposts") {
+    forumSearchType = "my posts";
+  }
 
-  const [searchSuggestions, setSearchSuggestions] = useState<Game[]>([]);
+  const genres: GenreObj[] = [{ name: "All" }, ...(genreList || [])];
+  const gameSortOptions =
+    searchType === "game"
+      ? [
+          { value: "relevance", label: "Relevance" },
+          { value: "name", label: "Name" },
+          { value: "release(asc)", label: "Release(Asc)" },
+          { value: "release(desc)", label: "Release(Desc)" },
+          { value: "rating", label: "Rating" },
+        ]
+      : [
+          { value: "relevance", label: "Relevance" },
+          { value: "title", label: "Title" },
+          { value: "likes", label: "Likes" },
+          { value: "created(asc)", label: "Created(Asc)" },
+          { value: "created(desc)", label: "Created(Desc)" },
+        ];
+
+  const [gameSearchSuggestions, setGameSearchSuggestions] = useState<Game[]>(
+    []
+  );
+  const [postSearchSuggestions, setPostSearchSuggestions] = useState<
+    ForumPost[]
+  >([]);
   const [gettingSuggestions, setGettingSuggestions] = useState(false);
 
   // Makes sure that the sort and genre variables are not null and are in
   // the list of options
-  const isValidSort = sortOptions.some((option) => option.value === sort);
+  const isValidSort = gameSortOptions.some((option) => option.value === sort);
   const isValidGenre = genres.some((option) => option.name === genre);
 
   const [currentSearch, setCurrentSearch] = useState(
@@ -66,6 +103,7 @@ const SearchBar = ({ genreList }: Props) => {
   const [newGenre, setNewGenre] = useState(currentGenre);
   const [showFilterPopup, setShowFilterPopup] = useState(false);
 
+  // Sets the useState variables to the search params
   useEffect(() => {
     setCurrentSearch(search ? search.replace(/\-/g, " ") : "");
     setCurrentSortOption(isValidSort ? sort : "relevance");
@@ -74,9 +112,10 @@ const SearchBar = ({ genreList }: Props) => {
     setNewGenre(isValidGenre ? genre : "All");
   }, [search, genre, sort]);
 
+  // Automatically sets genre or sort in the url when one of the options is changed
   useEffect(() => {
     if (newSort !== currentSortOption || newGenre !== currentGenre) {
-      updateSearchParams();
+      updateGameSearchParams();
     }
   }, [newGenre, newSort]);
 
@@ -90,7 +129,8 @@ const SearchBar = ({ genreList }: Props) => {
   }, []);
 
   useEffect(() => {
-    setSearchSuggestions([]);
+    setGameSearchSuggestions([]);
+    setPostSearchSuggestions([]);
   }, [searchParams]);
 
   const toggleFilterPopup = (opt?: boolean) => {
@@ -101,33 +141,42 @@ const SearchBar = ({ genreList }: Props) => {
     }
   };
 
+  // Fetches a list of 5 suggestions for the user while they are typing in their search
   const fetchSuggestions = async (search_word: string) => {
     if (search_word.length < 3) {
-      setSearchSuggestions([]);
+      setGameSearchSuggestions([]);
+      setPostSearchSuggestions([]);
       return;
     }
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("q", search_word.trim().replace(/\s+/g, "-"));
+    const url =
+      searchType === "game"
+        ? "/api/games/gameSuggestions"
+        : "/api/forum/get-suggestions/";
     try {
-      const response = await fetch(
-        `/api/games/gameSuggestions?${params.toString()}`,
-        {
-          method: "GET",
-          cache: "no-cache",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${url}?${params.toString()}`, {
+        method: "GET",
+        cache: "no-cache",
+        headers: {
+          Accept: "application/json",
+        },
+      });
 
       if (response.ok) {
         response.json().then((data) => {
-          setSearchSuggestions(data.data);
+          if (searchType === "game") {
+            setGameSearchSuggestions(data.data);
+          } else {
+            setPostSearchSuggestions(data.data);
+          }
+
           setGettingSuggestions(false);
         });
       } else if (response.status === 404) {
-        setSearchSuggestions([]);
+        setPostSearchSuggestions([]);
+        setGameSearchSuggestions([]);
         setGettingSuggestions(false);
         return;
       } else {
@@ -141,7 +190,8 @@ const SearchBar = ({ genreList }: Props) => {
     }
   };
 
-  const updateSearchParams = () => {
+  // Updates the search params with the useState variables
+  const updateGameSearchParams = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("q", currentSearch.trim().replace(/\s+/g, "-"));
@@ -189,7 +239,7 @@ const SearchBar = ({ genreList }: Props) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      updateSearchParams();
+      updateGameSearchParams();
     }
   };
 
@@ -198,7 +248,13 @@ const SearchBar = ({ genreList }: Props) => {
       <Grid id={"search_bar_input_box"}>
         <Grid id="search_input_box">
           <TextField
-            placeholder="Search for games..."
+            placeholder={
+              searchType === "game"
+                ? "Search for games..."
+                : `Search for ${
+                    forumSearchType ? forumSearchType : "forum posts"
+                  }...`
+            }
             fullWidth
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
@@ -213,12 +269,12 @@ const SearchBar = ({ genreList }: Props) => {
             }}
           />
           <Grid>
-            {gettingSuggestions ? (
+            {gettingSuggestions && searchType === "game" ? (
               <span style={{ padding: "10px 0px", width: "100%" }}>
                 <LoadingSpinner spinnerSize={40} />
               </span>
-            ) : searchSuggestions ? (
-              searchSuggestions.map((suggestion) => (
+            ) : gameSearchSuggestions && searchType === "game" ? (
+              gameSearchSuggestions.map((suggestion) => (
                 <Link
                   href={`/games/${suggestion.slug}/`}
                   key={suggestion.game_id}
@@ -237,12 +293,32 @@ const SearchBar = ({ genreList }: Props) => {
                 </Link>
               ))
             ) : null}
+            {gettingSuggestions && searchType === "forum" ? (
+              <span style={{ padding: "10px 0px", width: "100%" }}>
+                <LoadingSpinner spinnerSize={40} />
+              </span>
+            ) : postSearchSuggestions && searchType === "forum" ? (
+              postSearchSuggestions.map((suggestion) => (
+                <Link href={`/forum/${suggestion.slug}/`} key={suggestion.id}>
+                  <Typography component={"p"} sx={{ paddingLeft: "10px" }}>
+                    {suggestion.title}
+                  </Typography>
+                </Link>
+              ))
+            ) : null}
+            {/* postSearchSuggestions ? (
+              postSearchSuggestions.map((suggestion) => (
+                <Link href={`/games/${suggestion.slug}/`} key={suggestion.id}>
+                  <Typography component={"p"}>{suggestion.title}</Typography>
+                </Link>
+              ))
+            ) : null} */}
           </Grid>
         </Grid>
         <Grid id={"search_bar_search_btn"}>
           <IconButton
             onClick={() => {
-              updateSearchParams();
+              updateGameSearchParams();
             }}
           >
             <SearchIcon />
@@ -265,35 +341,38 @@ const SearchBar = ({ genreList }: Props) => {
               },
             }}
           >
-            {sortOptions.map((option) => (
+            {gameSortOptions.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
             ))}
           </TextField>
         </Grid>
-        <Grid>
-          <Typography component={"p"}>Genre:</Typography>
-          <TextField
-            select
-            value={currentGenre}
-            onChange={handleGenreChange}
-            slotProps={{
-              input: {
-                className: "search_bar_select",
-              },
-              root: {
-                className: "search_bar_input_root",
-              },
-            }}
-          >
-            {genres.map((genreOpt) => (
-              <MenuItem key={genreOpt.name} value={genreOpt.name}>
-                {genreOpt.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
+
+        {searchType === "game" ? (
+          <Grid>
+            <Typography component={"p"}>Genre:</Typography>
+            <TextField
+              select
+              value={currentGenre}
+              onChange={handleGenreChange}
+              slotProps={{
+                input: {
+                  className: "search_bar_select",
+                },
+                root: {
+                  className: "search_bar_input_root",
+                },
+              }}
+            >
+              {genres.map((genreOpt) => (
+                <MenuItem key={genreOpt.name} value={genreOpt.name}>
+                  {genreOpt.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        ) : null}
       </Grid>
       <Button
         id="filter_popup_btn"
@@ -306,13 +385,13 @@ const SearchBar = ({ genreList }: Props) => {
       </Button>
       {showFilterPopup ? (
         <FilterPopUp
-          sortOptions={sortOptions}
-          genres={genres}
+          sortOptions={gameSortOptions}
+          genres={searchType === "game" ? genres : undefined}
           toggleFilterPopup={toggleFilterPopup}
           currentSort={currentSortOption}
-          currentGenre={currentGenre}
+          currentGenre={searchType === "game" ? currentGenre : undefined}
           updateSort={updateSort}
-          updateGenre={updateGenre}
+          updateGenre={searchType === "game" ? updateGenre : undefined}
         />
       ) : null}
     </Grid>

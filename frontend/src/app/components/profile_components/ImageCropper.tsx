@@ -21,6 +21,13 @@ type Props = {
   toggleImageCropper: () => void;
 };
 
+/**
+ * ImageCropper component renders an image cropping interface and allows the user to crop images.
+ *
+ * This component provides the functionality for selecting and cropping an image, typically used for profile pictures
+ * or other user-uploaded images. It includes a toggle to open or close the cropping interface.
+ *
+ */
 const ImageCropper = ({ toggleImageCropper }: Props) => {
   const { fetchUserInfo, logout, csrfToken, userInfo } = useAuth();
   const { theme } = useTheme();
@@ -29,6 +36,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
   const hasImageLoaded = useRef(false);
   const [uploadError, setUploadError] = useState("");
 
+  // Sets default position and crop size
   const [crop, setCrop] = useState<Crop>({
     unit: "px",
     x: 0,
@@ -38,6 +46,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
   });
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
 
+  // Resizes uploaded image to 200x200px
   const resizeImage = (file: File, maxSize = 200): Promise<string> => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -63,6 +72,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
     });
   };
 
+  // Makes sure inputed file is an image then resizes it for set it to src useState variable
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !file.type.startsWith("image/")) {
@@ -79,6 +89,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
     setCrop(newCrop);
   };
 
+  // Gets the image from the image cropper
   const getCroppedImg = (
     image: HTMLImageElement,
     crop: Crop
@@ -126,6 +137,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
     });
   };
 
+  // Gets the image cropped then sets it to croppedImageUrl useState variable
   const handleComplete = async (crop: Crop) => {
     if (src) {
       const image = new window.Image();
@@ -137,6 +149,7 @@ const ImageCropper = ({ toggleImageCropper }: Props) => {
     }
   };
 
+  // Sends request to backend containing new profile picture then updates frontend's userInfo if succesful
   const uploadCroppedImage = async (base64Url: string) => {
     const response = await fetch(base64Url);
     const blob = await response.blob();

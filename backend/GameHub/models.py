@@ -10,50 +10,67 @@ from datetime import timedelta
 import datetime
 
 
-LAST_SEEN_OPTIONS = [
+NAME_VISIBILITY = [
     ('visible', 'Visible'),
     ('hidden', 'Hidden'),
 ]
 PROFILE_VISIBILITY_OPTIONS = [
-    ('allow', 'Allow'),
-    ('hide', 'Hide')
+   ('visible', 'Visible'),
+    ('hidden', 'Hidden'),
 ]
 
+# -------------------- Profile & Authentication --------------------
+
 class Profile(models.Model):
+    """
+    Profile model that holds extra user information,
+    such as full name, visibility settings, and profile picture.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    full_name = models.CharField(max_length=150, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/blank-profile-picture.png")
     last_seen = models.DateField(default=datetime.date.today)
-    show_last_seen = models.CharField(
-        max_length=20,
-        choices=LAST_SEEN_OPTIONS,
-        default='visible'
-    )
     profile_visibility = models.CharField(
         max_length=20,
         choices=PROFILE_VISIBILITY_OPTIONS,
-        default='allow'
+        default='visible'
+    )
+    name_visibility = models.CharField(
+        max_length=20,
+        choices=NAME_VISIBILITY,
+        default='hidden'
     )
 
     def __str__(self):
         return f'{self.user.username} Profile'
 
-# Auth Tokens
+
 class Token(models.Model):
+    """
+    Stores API authentication tokens.
+    """
     access_token = models.CharField(max_length=50)
     expires_in = models.DateTimeField()
     token_type = models.CharField(max_length=50)
 
-# Game genres
+
+
+# -------------------- Game & Media Models --------------------
+
 class Genre(models.Model):
+    """
+    Represents a genre associated with games.
+    """
     name = models.CharField(255)
 
     def __str__(self):
         return self.name
 
 
-
-# Models for games and there details
 class Game(models.Model):
+    """
+    Stores information about a game, including metadata, genre, and search indexing.
+    """
     game_id = models.CharField(max_length=100)
     title = models.CharField(max_length=255)
     cover_image =  models.URLField(null=True, blank=True)
@@ -66,21 +83,16 @@ class Game(models.Model):
     search_vector = SearchVectorField(null=True)
 
     def save(self, *args, **kwargs):
-       
-        # Check if the title has changed or if the slug is missing
+        """
+        Auto-generates a unique slug and updates the search vector for the title field.
+        """
         if not self.slug or self._state.old_values.get('title') != self.title:
-            # Generate a new slug based on the title and game_id
             self.slug = slugify(f"{self.title[:80]}-{self.game_id}")
-        
-            # Ensure the slug is unique
             count = Game.objects.filter(slug=self.slug).count()
             if count:
                 self.slug = f"{self.slug}-{count+1}"
 
-        # Automatically update the search_vector with only the title
         self.search_vector = SearchVector('title')
-
-        # Call save again to update the slug field
         super(Game, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -96,33 +108,52 @@ class Game(models.Model):
             GinIndex(fields=['search_vector'], name='game_search_vector_idx'),
         ]
 
-# Game related videos
+
 class Video(models.Model):
+    """
+    Stores a video related to a game.
+    """
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     src = models.URLField()
 
     def __str__(self):
         return f"{self.game.title}-{self.id}"
 
-# Game related screenshots
+
 class Screenshot(models.Model):
+    """
+    Stores a screenshot related to a game.
+    """
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     src = models.URLField()
 
     def __str__(self):
         return f"{self.game.title}-{self.id}"
 
+# -------------------- Password Recovery --------------------
 
 def generate_unique_code(length=50):
+    """
+    Generates a unique URL-safe token string for password recovery.
+    """
     while True:
         code = secrets.token_urlsafe(length)[:length]
         if not PasswordRecoveryToken.objects.filter(code=code).exists():
             return code
 
+
 def expiration_time():
+    """
+    Returns a timestamp 20 minutes from now for token expiration.
+    """
     return timezone.now() + timedelta(minutes=20)
 
+
 class PasswordRecoveryToken(models.Model):
+    """
+    Stores password recovery tokens for users.
+    Each token is unique and expires after 20 minutes.
+    """
     code = models.CharField(max_length=250,unique=True, default=generate_unique_code)
     user = models.ForeignKey(
         User,
@@ -132,10 +163,13 @@ class PasswordRecoveryToken(models.Model):
 
     expiration_date = models.DateTimeField(default=expiration_time)
 
-   
-
     def __str__(self):
         return f"{self.user.username}"
 
     def is_expired(self):
+        """
+        Returns True if the token has expired.
+        """
         return timezone.now() > self.expiration_date 
+    
+    

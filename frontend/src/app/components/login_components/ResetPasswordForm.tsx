@@ -15,6 +15,19 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useParams, useRouter } from "next/navigation";
 
+/**
+ * ResetPasswordForm component allows users to set a new password after initiating a password reset.
+ *
+ * This form is typically accessed via a link sent to the user's email, which includes a unique reset `code`.
+ *
+ * Features:
+ * - Takes the reset `code` from the URL using `useParams`.
+ * - Accepts and validates user input for the new password and its confirmation.
+ * - Displays errors for mismatched passwords or other validation issues.
+ * - Submits the new password securely using the CSRF token.
+ * - Indicates whether the reset token has expired.
+ *
+ */
 const ResetPasswordForm = () => {
   const router = useRouter();
   const { csrfToken } = useAuth();
@@ -39,6 +52,7 @@ const ResetPasswordForm = () => {
     const uppercaseValid = /[A-Z]/.test(newPass);
     const specialCharValid = /[!@#$%^&*(),.?":{}|<>]/.test(newPass);
 
+    // Makes sure password contains a special character, a capital letter, and is a valid length
     if (!lengthValid) {
       setFormErrors((prev) => ({
         ...prev,
@@ -67,6 +81,7 @@ const ResetPasswordForm = () => {
   const handlePasswordConfirmChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    // Ensure password_confirm matches password
     if (e.target.value !== password) {
       setFormErrors((prev) => ({
         ...prev,
@@ -85,6 +100,7 @@ const ResetPasswordForm = () => {
     setShowPasswordConfirm((prev) => !prev);
   };
 
+  // Attempts to update the password on the related account and redirect user to login if succesful
   const resetPassword = async () => {
     if (formErrors.error1 || formErrors.error2) {
       return;

@@ -9,8 +9,8 @@ export function middleware(request: NextRequest) {
     "/login/forgot-password",
     new RegExp("/login/reset-password/[^/]+"), // Regex to match /login/reset-password/[code]
   ];
-  const path = request.nextUrl.pathname;
 
+  // Redirects user if they try to access a can't be logged in path while authenticated
   if (
     cantBeLogged.some((route) =>
       route instanceof RegExp
@@ -22,6 +22,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // Redirects user if they try to access a login protected page while not authenticated
   if (mustBeLogged.includes(request.nextUrl.pathname) && !loggedIn) {
     const original_destination = request.nextUrl.pathname;
     return NextResponse.redirect(
