@@ -227,6 +227,15 @@
   overflow: hidden;
   min-height: 150px;
 }
+.normal_post_content ul,
+.normal_post_content ol {
+  padding: 0 1rem;
+  margin: 1.25rem 1rem 1.25rem 0.4rem;
+}
+.normal_post_content li p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
 
 .normal_post_image_wrapper {
   position: relative;
@@ -420,9 +429,21 @@
 #view_post_title {
   font-size: 35px;
 }
+#view_forum_post_content_box {
+  min-height: 150px;
+}
 #view_forum_post_content_text {
   font-size: 17px;
   margin: 5px 0px;
+}
+#view_forum_post_content_text ul,
+#view_forum_post_content_text ol {
+  padding: 0 1rem;
+  margin: 1.25rem 1rem 1.25rem 0.4rem;
+}
+#view_forum_post_content_text li p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
 }
 #view_post_bottom_bar {
   display: flex;
@@ -445,9 +466,163 @@
   align-items: center;
   color: #1976d2;
 }
+.view_post_main_container_dark #view_post_view_count,
+.view_post_main_container_dark #view_post_comment_count {
+  background-color: rgb(39, 42, 48, 0.5);
+}
+
+.view_post_main_container_light #view_post_view_count,
+.view_post_main_container_light #view_post_comment_count {
+  background-color: rgba(39, 42, 48, 0.09);
+}
+
+.view_post_main_container_dark #view_post_view_count:hover,
+.view_post_main_container_dark #view_post_comment_count:hover {
+  background-color: rgb(39, 42, 48, 0.8);
+}
+
+.view_post_main_container_light #view_post_view_count:hover,
+.view_post_main_container_light #view_post_comment_count:hover {
+  background-color: rgba(39, 42, 48, 0.2);
+}
+
 #view_post_view_count p,
 #view_post_comment_count p {
   font-size: 14px;
+}
+
+/*Edit And Delete Button Styles*/
+#post_edit_button,
+#post_delete_button {
+  min-width: 0;
+  text-transform: none;
+  padding: 6px 10px;
+  color: #1976d2;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 4px;
+}
+#post_edit_button p,
+#post_delete_button p {
+  font-size: 14px;
+}
+#post_edit_button svg,
+#post_delete_button svg {
+  font-size: 20px;
+}
+
+/*Edit Create Component Styles*/
+#edit_create_main_container {
+  max-width: 900px;
+  width: 100%;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  padding: 0px 10px;
+}
+#create_edit_page_header {
+  font-size: 40px;
+}
+
+#create_edit_input_group1 {
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+#edit_create_row1 {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  row-gap: 5px;
+}
+#edit_create_type_box div {
+  overflow: hidden !important;
+}
+#edit_create_type_box > div {
+  background-color: white;
+}
+#edit_create_title_box {
+  flex-grow: 1;
+}
+#edit_create_title_box input {
+  background-color: white;
+}
+#edit_create_game_box {
+  position: relative;
+  flex-grow: 1;
+}
+#edit_create_game_box input {
+  background-color: white;
+}
+
+#create_edit_game_suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: white;
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+}
+#create_edit_game_suggestions button {
+  text-transform: none;
+  justify-content: left;
+}
+#create_edit_game_suggestions p {
+  margin-left: 10px;
+}
+#create_edit_selected_game_box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--purple);
+  width: fit-content;
+  padding: 2px;
+}
+#create_edit_selected_game_box p {
+  margin-left: 10px;
+  max-width: 200px;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#create_edit_image_upload_box {
+  max-width: 500px;
+  width: 100%;
+}
+#create_edit_image_upload_box input {
+  background-color: white;
+}
+#create_edit_uploaded_image {
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+}
+#create_edit_uploaded_image > img {
+  max-width: 100%;
+}
+#create_edit_uploaded_image > button {
+  background-color: rgb(0, 0, 0, 0.5);
+  border-radius: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#create_edit_uploaded_image > button > svg {
+  color: white;
+  font-size: 25px;
+}
+.create_edit_submit_btn {
+  background-color: var(--purple) !important;
+  color: white !important;
+  text-transform: none !important;
+  font-size: 19px !important;
 }
 
 @media (max-width: 1300px) {
@@ -485,6 +660,10 @@
   }
   #forum_search_bar_container {
     padding-left: 0px;
+  }
+  #edit_create_main_container {
+    padding-left: 40px;
+    padding-right: 10px;
   }
 }
 

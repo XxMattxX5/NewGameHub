@@ -8,7 +8,7 @@ User = get_user_model()
 class GameMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ['slug','title', 'cover_image']
+        fields = ['id','slug','title', 'cover_image']
 
 class UserMiniSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField(source='profile.profile_picture', read_only=True)

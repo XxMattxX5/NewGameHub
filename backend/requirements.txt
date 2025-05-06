@@ -6,3 +6,5 @@ psycopg2-binary==2.9.10
 gunicorn==23.0.0
 django-debug-toolbar
 django-redis==3.1.6
+# html-sanitizer==2.5.0
+lxml==5.4.0 

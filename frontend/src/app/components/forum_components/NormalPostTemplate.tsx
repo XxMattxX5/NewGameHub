@@ -26,7 +26,7 @@ const NormalPostTemplate = async ({ forumPost }: Props) => {
   return (
     <span className={styles.normal_post_parent}>
       <Link
-        href={`/forum/${forumPost.slug}`}
+        href={`/forum/post/${forumPost.slug}`}
         className={styles.normal_post_container}
       >
         <Grid className={styles.normal_post_header}>
@@ -72,7 +72,10 @@ const NormalPostTemplate = async ({ forumPost }: Props) => {
               </Grid>
             </Grid>
           ) : (
-            <Typography component={"p"}>{forumPost.content}</Typography>
+            <Typography
+              component={"p"}
+              dangerouslySetInnerHTML={{ __html: forumPost.content }}
+            ></Typography>
           )}
         </Grid>
         <Grid className={styles.normal_post_bottom_bar}>

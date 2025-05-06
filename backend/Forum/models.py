@@ -39,10 +39,10 @@ class ForumPost(models.Model):
     post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES, default="general")
     game = models.ForeignKey(Game, on_delete=models.SET_NULL, related_name='game_posts', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
-    content = models.TextField()
+    content = models.TextField( max_length=30000)
     created_at = models.DateTimeField(default=now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(unique=True, blank=True, max_length=100)
+    slug = models.SlugField(unique=True, blank=True, max_length=150)
     like_count = models.PositiveIntegerField(default=0)
     dislike_count = models.PositiveIntegerField(default=0)
     views = models.PositiveIntegerField(default=0)
@@ -60,12 +60,13 @@ class ForumPost(models.Model):
 
 
     def save(self, *args, **kwargs):
-    # Regenerate slug if new object or title has changed
+        
+        # Regenerate slug if new object or title has changed
         if self.pk:
             old_title = ForumPost.objects.filter(pk=self.pk).values_list('title', flat=True).first()
         else:
             old_title = None
-
+        
         if not self.slug or self.title != old_title:
             truncated_title = self.title[:80]
             base_slug = slugify(f"{truncated_title}")
@@ -78,7 +79,8 @@ class ForumPost(models.Model):
 
         # Materialize the actual title into the search vector
         self.search_vector = SearchVector(Value(self.title), config='simple')
-
+        print(self.slug)
+        print(len(self.slug))
         super().save(*args, **kwargs)
 
     def __str__(self):

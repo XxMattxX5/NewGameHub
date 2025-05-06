@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, IconButton, Typography } from "@mui/material";
 import Link from "next/link";
 import styles from "@/app/styles/forum.module.css";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { RecentlyViewedPost } from "@/app/types";
 import FallbackProfileImage from "./FallbackProfileImage";
 import { useTheme } from "../global_components/ThemeProvider";
@@ -21,6 +21,7 @@ const ForumSideBar = () => {
   const { theme } = useTheme();
   const { isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const display = searchParams.get("posts");
 
   const [showSideBar, setShowSideBar] = useState(false);
@@ -70,6 +71,7 @@ const ForumSideBar = () => {
               display={display}
               theme={theme}
               isAuthenticated={isAuthenticated}
+              path={pathname}
             />
           </Grid>
           {recentlyViewed && recentlyViewed.length !== 0 ? (
@@ -88,7 +90,7 @@ const ForumSideBar = () => {
               </Typography>
               {recentlyViewed.map((post) => (
                 <Link
-                  href={"/forum/" + post.slug}
+                  href={"/forum/post/" + post.slug}
                   key={post.slug}
                   className={styles.forum_recent_post_link}
                 >
@@ -130,7 +132,7 @@ const ForumSideBar = () => {
           {isAuthenticated ? (
             <Grid className={styles.forum_side_bar_content_section}>
               <Link
-                href="/forum/create-post"
+                href="/forum/post/create-post"
                 id={styles.forum_create_post_link}
               >
                 <AddIcon />

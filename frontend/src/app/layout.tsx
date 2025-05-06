@@ -8,6 +8,7 @@ import { CookiesProvider } from "next-client-cookies/server";
 import ThemeProvider from "./components/global_components/ThemeProvider";
 import NavBarBackground from "./components/global_components/NavBarBackground";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { cookies } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,16 +42,18 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-const RootLayout = ({
+const RootLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
   return (
     <CookiesProvider>
       <AppRouterCacheProvider>
         <AuthProvider>
-          <html lang="en">
+          <html lang="en" className={theme === "dark" ? "dark" : ""}>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
               <ThemeProvider>
                 <NavBarBackground>

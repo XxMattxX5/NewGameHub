@@ -12,26 +12,30 @@ type Props = {
   display?: string | null;
   theme: string | null;
   isAuthenticated: boolean;
+  path: string;
 };
 
-const ForumNav = ({ display, theme, isAuthenticated }: Props) => {
+const ForumNav = ({ display, theme, isAuthenticated, path }: Props) => {
   return (
     <Grid>
       <Link
-        href="/forum?posts=home"
+        href="/forum"
         className={styles.forum_side_bar_link_box}
         style={{
-          backgroundColor: display === "home" ? "var(--purple" : undefined,
+          backgroundColor:
+            !display && path == "/forum" ? "var(--purple)" : undefined,
         }}
       >
         <HomeIcon
-          sx={{ color: display === "home" ? "white" : "var(--purple)" }}
+          sx={{
+            color: !display && path == "/forum" ? "white" : "var(--purple)",
+          }}
         />
         <Typography
           component={"p"}
           sx={{
             color:
-              display === "home"
+              display! && path == "/forum"
                 ? "white"
                 : theme === "dark"
                 ? "white"

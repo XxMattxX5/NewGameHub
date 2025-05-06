@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
@@ -39,6 +39,12 @@ const LikeAndDislikeButtons = ({
     notation: "compact",
     compactDisplay: "short",
   });
+
+  useEffect(() => {
+    setPostReaction(reaction);
+    setLikeCount(like_count);
+    setDislikeCount(dislike_count);
+  }, [reaction, like_count, dislike_count]);
 
   const reactToPost = (action: "like" | "dislike") => {
     const url =

@@ -17,24 +17,6 @@ export const metadata: Metadata = {
     "Explore forum post and chat with other users about your favorite games or other topics",
 };
 
-// const SearchBar = dynamic(
-//   () => import("../components/global_components/SearchBar"),
-//   { ssr: !!false }
-// );
-
-// const ForumSideBar = dynamic(
-//   () => import("../components/forum_components/ForumSideBar"),
-//   { ssr: true }
-// );
-// const ForumContent = dynamic(
-//   () => import("../components/forum_components/ForumContent"),
-//   { ssr: !!false }
-// );
-// const PageButtons = dynamic(
-//   () => import("../components/global_components/PageButtons"),
-//   { ssr: !!false }
-// );
-
 const getForumPost = async (
   type?: string,
   q?: string,
@@ -53,7 +35,6 @@ const getForumPost = async (
 
   return fetch(`${backendUrl}/api/forum/get-posts/?${params.toString()}`, {
     method: "GET",
-    next: { revalidate: 0 },
     headers: {
       Cookie: `sessionid=${sessionId}`,
       Accept: "application/json",

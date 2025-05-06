@@ -1,5 +1,5 @@
 "use client";
-import react, { useState } from "react";
+import react, { useState, useEffect } from "react";
 import Image from "next/image";
 
 type Props = {
@@ -18,6 +18,10 @@ export default function FallbackProfileImage({
   className = "",
 }: Props) {
   const [imgSrc, setImgSrc] = useState(src);
+
+  useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
   return (
     <Image
       src={imgSrc}

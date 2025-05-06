@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const sessionId = request.cookies.get("sessionid")?.value;
   const loggedIn = sessionId ? true : false;
-  const mustBeLogged = ["/profile"];
+  const mustBeLogged = [
+    "/profile",
+    "/forum/post/create-post",
+    new RegExp("^/forum/post/edit/[^/]+$"),
+  ];
   const cantBeLogged = [
     "/login",
     "/login/forgot-password",
@@ -23,7 +27,14 @@ export function middleware(request: NextRequest) {
   }
 
   // Redirects user if they try to access a login protected page while not authenticated
-  if (mustBeLogged.includes(request.nextUrl.pathname) && !loggedIn) {
+  if (
+    mustBeLogged.some((route) =>
+      route instanceof RegExp
+        ? route.test(request.nextUrl.pathname)
+        : route === request.nextUrl.pathname
+    ) &&
+    !loggedIn
+  ) {
     const original_destination = request.nextUrl.pathname;
     return NextResponse.redirect(
       new URL(`/login?redirect=${original_destination}`, request.url)

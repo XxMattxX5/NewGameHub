@@ -6,8 +6,9 @@ from .models import ForumPost, PostReaction
 from .serializer import PostSerializerWithGame
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-
 from .utils import getPostList, getPostSuggestions
+from .forms import PostForm
+from GameHub.models import Game
 
 # Create your views here.
 def home(request):
@@ -25,9 +26,9 @@ class GetPosts(APIView):
             posts = ForumPost.objects.filter(post_type=type)
         elif (type == "game"):
             posts = ForumPost.objects.filter(post_type=type)
-        elif (type == "myposts" and request.user.is_authenticated):
+        elif ((type == "myposts") and request.user.is_authenticated):
             posts = ForumPost.objects.filter(user=request.user)
-        elif (type == "liked" and request.user.is_authenticated):
+        elif ((type == "liked") and request.user.is_authenticated):
             posts = ForumPost.objects.filter(
                 postreaction__user=request.user,
                 postreaction__reaction=PostReaction.LIKE
@@ -110,14 +111,104 @@ class DislikePost(APIView):
             return Response({"error": "An unexpected error occured"}, status=status.HTTP_400_BAD_REQUEST)
         
 
-class GetPostDetails(APIView):
+class Post(APIView):
 
     def get(self, request, slug):
 
         post = get_object_or_404(ForumPost, slug=slug)
-        # post.increase_views()
         data = PostSerializerWithGame(post, context={"user":request.user}).data
         return Response({"data": data}, status=status.HTTP_200_OK)
+    
+
+    def delete(self, request, slug):
+        # Ensure user is logged in
+        if not request.user.is_authenticated:
+            return Response({"error": "Must be logged in"}, status=status.HTTP_403_FORBIDDEN)
+
+        user = request.user
+        post = get_object_or_404(ForumPost, slug=slug)
+
+        if (post.user != user):
+            return Response({"error": "You can't delete another user's post"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        post.delete()
+        return Response(status=status.HTTP_200_OK)
+    
+    def patch(self, request, slug):
+        # Ensure user is logged in
+        if not request.user.is_authenticated:
+            return Response({"error": "Must be logged in"}, status=status.HTTP_403_FORBIDDEN)
+
+        user = request.user
+
+        # Retrieve the post using the slug
+        post = get_object_or_404(ForumPost,slug=slug)
+
+        if (user != post.user):
+            return Response({"error": "You can't edit other user's post"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+        form = PostForm(request.data, request.FILES)  # Handling form data and image files
+
+        if form.is_valid():
+            # Form data is valid, proceed with the action
+            type = form.cleaned_data['type']
+            title = form.cleaned_data['title']
+            id = form.cleaned_data.get('game_id')
+            image = form.cleaned_data.get('image')
+            content = form.cleaned_data.get('content')
+
+            # Update post fields
+            post.title = title
+            post.post_type = type
+            post.content = content
+
+            if id:
+                post.game = Game.objects.get(id=id)
+
+            if image:
+                post.header_image = image
+
+            post.save()  # Save the updated post
+
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CreatePost(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self, request):
+        form = PostForm(request.data, request.FILES)  # Handling form data and image files
+
+        if form.is_valid():
+            # Form data is valid, proceed with the action
+            user = request.user
+            type = form.cleaned_data['type']
+            title = form.cleaned_data['title']
+            id = form.cleaned_data.get('game_id')
+            image = form.cleaned_data.get('image')
+            content = form.cleaned_data.get('content')
+
+            post_data = {
+                'user': user,
+                'post_type': type,
+                'title': title,
+                "content": content
+            }
+            if id:
+                post_data['game'] = Game.objects.get(id=id)
+
+            if image:
+                post_data['header_image'] = image
+
+            ForumPost.objects.create(**post_data)
+
+            return Response(status=status.HTTP_200_OK)
+
+        # If form is not valid, return the errors
+        return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class IncreasePostViews(APIView):
     def post(self, request, slug):

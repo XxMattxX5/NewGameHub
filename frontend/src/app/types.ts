@@ -1,9 +1,16 @@
 export type Game = {
+  id: string;
   game_id: string;
   cover_image: string;
   title: string;
   rating: string;
   release: string;
+  slug: string;
+};
+export type GameSuggestion = {
+  id: string;
+  cover_image: string | null;
+  title: string;
   slug: string;
 };
 
@@ -52,7 +59,7 @@ export type ForumPost = {
   title: string;
   header_image: string;
   user: { id: string; username: string; profile_picture: string };
-  game: { slug: string; title: string; cover_image: string } | null;
+  game: { id: string; slug: string; title: string; cover_image: string } | null;
   post_type: string;
   content: string;
   created_at: string;

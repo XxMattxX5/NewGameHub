@@ -22,35 +22,35 @@ const NavBar = () => {
           <ToggleSideBarBtn />
         </Grid>
 
-        <Link href="/" className="main_nav_logo_container" passHref>
+        <Link href="/" className="main_nav_logo_container">
           <SportsEsportsRoundedIcon />
           <Typography component={"p"}>Game Hub</Typography>
         </Link>
 
         <Grid container id="nav_link_container">
           <Grid component="div">
-            <Link href="/" passHref>
+            <Link href="/">
               <Grid component="div">
                 <Typography component="p">Home</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="/games" passHref>
+            <Link href="/games">
               <Grid component="div">
                 <Typography component="p">Games</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="/forum?posts=home" passHref>
+            <Link href="/forum">
               <Grid component="div">
                 <Typography component="p">Forum</Typography>
               </Grid>
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="#" passHref>
+            <Link href="#">
               <Grid component="div">
                 <Typography component="p">Contact Us</Typography>
               </Grid>

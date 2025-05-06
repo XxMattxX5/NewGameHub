@@ -24,18 +24,18 @@ def getPostList(posts,search_word,sort,type, page, user):
     except ValueError:
         page = 1
 
-    # Create a cache key based on the search parameters
+    # # Create a cache key based on the search parameters
     cache_key = f"search_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}'.encode()).hexdigest()}"
 
     
     cached_results = cache.get(cache_key)
 
-    # Returns cached results if they exist
+    # # Returns cached results if they exist
     if cached_results:
         return cached_results["forum_page"], cached_results["pages"]
     
     if not search_word and sort == "relevance":
-        sort = "release(desc)"
+        sort = "created(desc)"
 
     # Search using postgres full text search if it returns results
     # else it uses a trigram similiarity search instead
@@ -56,7 +56,7 @@ def getPostList(posts,search_word,sort,type, page, user):
                 posts = posts.order_by("-rank")
         else:
             # Fallback to Trigram
-            trigram_results = ForumPost.objects.annotate(
+            trigram_results = posts.objects.annotate(
                 similarity=TrigramSimilarity('title', search_word)
             ).filter(
                 similarity__gt=search_threshold
