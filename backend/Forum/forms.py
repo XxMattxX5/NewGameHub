@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
 from GameHub.models import Game
+from .models import Comment
 
 from PIL import Image
 from io import BytesIO
@@ -90,7 +91,7 @@ class PostForm(forms.Form):
             'invalid': 'Please enter a valid Game ID.',
         }
     )
-
+  
     # Image field, now checking for base64 string
     image = forms.CharField(
         required=False,  # Image is optional now as it's base64
@@ -143,8 +144,6 @@ class PostForm(forms.Form):
     def clean_content(self):
         content = self.cleaned_data.get('content')
 
-        print(content)
-
         if content:
             try:
                 # Use the sanitizer to clean the content
@@ -165,28 +164,33 @@ class PostForm(forms.Form):
 
         return cleaned_data
 
-# def validate_image_size(value):
-#     """Validate image dimensions (200x200px minimum, 1200x1200px maximum) for base64 image."""
-#     if value and is_valid_base64_image(value):
-#         try:
-#             # Decode base64 image
-#             image_data = base64.b64decode(value.split(',')[1])
-#             img = Image.open(BytesIO(image_data))
-            
-#             # Get image dimensions
-#             width, height = img.size
-            
-#             # Check the dimensions
-#             if width < 200 or height < 200:
-#                 raise ValidationError('Image is too small. Minimum dimensions are 200x200px.')
-#             if width > 1200 or height > 1200:
-#                 raise ValidationError('Image is too large. Maximum dimensions are 1200x1200px.')
-#         except Exception as e:
-#             raise ValidationError("Invalid image data.")
 
-# def validate_image_file_size(value):
-#     """Validate image file size (must be less than 2 MB)."""
-#     if value and is_valid_base64_image(value):
-#         # Check size of the base64 string; 2MB limit for base64-encoded image
-#         if len(value) > MAX_IMAGE_SIZE:
-#             raise ValidationError('Image size is too large. Maximum size is 2 MB.')
+class CommentForm(forms.Form):
+    content = forms.CharField()
+
+    def clean_content(self):
+        content = self.cleaned_data['content'].strip()
+        if not content:
+            raise forms.ValidationError("Comment cannot be blank.")
+        content = sanitize_html(content)
+        return content
+    
+class ReplyForm(forms.Form):
+    content = forms.CharField()
+    comment_id = forms.IntegerField()
+
+    def clean_content(self):
+        content = self.cleaned_data['content'].strip()
+        if not content:
+            raise forms.ValidationError("Comment cannot be blank.")
+        content = sanitize_html(content)
+        return content
+    
+    def clean_comment_id(self):
+        comment_id = self.cleaned_data['comment_id']
+        
+        if not Comment.objects.filter(id=comment_id).exists():
+            raise ValidationError("The specified comment does not exist.")
+        return comment_id
+
+    

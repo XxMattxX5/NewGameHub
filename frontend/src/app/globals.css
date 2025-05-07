@@ -7,7 +7,7 @@
 }
 
 * {
-  padding: 0;
+  /* padding: 0; */
   margin: 0;
 }
 
@@ -550,12 +550,12 @@ html.dark {
 #page_button_container > div {
   margin: 0 auto;
   width: 100%;
-  /* max-width: 600px; */
 }
 
 #page_button_container > div > input {
   width: 100%;
 }
+
 #page_quick_change_container {
   width: 100%;
   display: flex;
@@ -601,7 +601,8 @@ html.dark {
 
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  height: 100%;
+  min-height: 150px;
 }
 #editor_toolbar {
   display: flex;
@@ -609,6 +610,7 @@ html.dark {
   gap: 4px;
   align-items: center;
   padding: 2 4px;
+  flex-wrap: wrap;
 }
 #editor_toolbar button {
   min-width: 0;
@@ -618,10 +620,16 @@ html.dark {
   color: black;
   overflow: hidden;
 }
+
+/* #editor_font_size input {
+  padding-right: 32px;
+} */
 #editor_font_family {
   background-color: white;
   color: black;
   overflow: hidden;
+  padding: 4px 14px;
+  padding-right: 32px;
 }
 
 #editor_text_box {
@@ -649,6 +657,18 @@ html.dark {
 
 .ProseMirror {
   font-family: sans-serif;
+}
+
+.ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  color: #999;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.ProseMirror:focus {
+  outline: none;
+  box-shadow: none; /* optional, if there's a box-shadow too */
 }
 
 /* Footer styles*/
@@ -791,6 +811,9 @@ html.dark {
   width: 100%;
   padding: 5px 0px;
 }
+#footer_theme_button_container > div {
+  margin: 0 auto;
+}
 
 #password_recover_code_invalid {
   min-height: 800px;
@@ -870,6 +893,9 @@ html.dark {
   #footer_promotion_signup_container > input,
   #footer_promotion_signup_container > button {
     width: 100%;
+  }
+  #editor_container {
+    min-height: 250px;
   }
 }
 

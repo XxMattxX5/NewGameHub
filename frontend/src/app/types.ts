@@ -71,3 +71,11 @@ export type ForumPost = {
   comment_count: number;
   user_reaction: string | null;
 };
+
+export interface PostComment {
+  id: number;
+  content: string;
+  created_at: string;
+  reply_count: number;
+  user: UserInfo;
+}

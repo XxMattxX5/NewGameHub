@@ -8,7 +8,6 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FontSize from "@/app/extensions/FontSize";
 import ListIcon from "@mui/icons-material/List";
 import { Color } from "@tiptap/extension-color";
-import Text from "@tiptap/extension-text";
 import TextStyle from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
 import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
@@ -17,14 +16,19 @@ import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import TextAlign from "@tiptap/extension-text-align";
 import { useTheme } from "./ThemeProvider";
-import "@fontsource/roboto";
+import Placeholder from "@tiptap/extension-placeholder";
 
 type Props = {
   contentCallBack: (newContent: string) => void;
   original_content: string;
+  placeholder_text?: string;
 };
 
-const Tiptap = ({ contentCallBack, original_content }: Props) => {
+const Tiptap = ({
+  contentCallBack,
+  original_content,
+  placeholder_text,
+}: Props) => {
   const { theme } = useTheme();
   const [currentFontSize, setCurrentFontSize] = useState<string>("16px"); // Default font size
   const [currentFontFamily, setCurrentFontFamily] =
@@ -57,16 +61,19 @@ const Tiptap = ({ contentCallBack, original_content }: Props) => {
     content: original_content,
     extensions: [
       StarterKit,
-      Text,
+
       TextStyle,
       Color,
       FontFamily,
-
+      Placeholder.configure({
+        placeholder: placeholder_text,
+      }),
       FontSize.configure({ defaultSize: "16px" }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
     ],
+    immediatelyRender: false,
 
     onUpdate: ({ editor }) => {
       const { from, to } = editor.state.selection;
@@ -93,7 +100,7 @@ const Tiptap = ({ contentCallBack, original_content }: Props) => {
   }
 
   const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
+    contentCallBack(e.target.value);
   };
 
   // Handles changes to font size

@@ -16,6 +16,15 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ForumPostContent from "@/app/components/forum_components/ForumPostContent";
 import DeleteButton from "@/app/components/forum_components/DeleteButton";
 import EditButton from "@/app/components/forum_components/EditButton";
+import LoadingSpinner from "@/app/components/global_components/LoadingSpinner";
+import Link from "next/link";
+
+const Comments = dynamic(
+  () => import("@/app/components/forum_components/Comments"),
+  {
+    loading: () => <LoadingSpinner spinnerSize={50} />,
+  }
+);
 
 const getPost = async (slug: string) => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost";
@@ -29,6 +38,8 @@ const getPost = async (slug: string) => {
     .then((res) => {
       if (res.ok) {
         return res.json();
+      } else if (res.status === 404) {
+        return;
       } else {
         throw Error("Failed to fetch forum post");
       }
@@ -44,9 +55,45 @@ const getPost = async (slug: string) => {
     });
 };
 
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
+  const { slug } = await params;
+  const post = await getPost(slug);
+
+  if (!post) {
+    notFound();
+  }
+  // Strip HTML from content
+  const plainText = post.content.replace(/<[^>]*>/g, "");
+
+  // Truncate description to 160 characters
+  const truncatedDescription =
+    plainText.length > 160 ? plainText.slice(0, 157).trim() + "..." : plainText;
+
+  // Truncate title to ensure total length does not exceed 60 characters
+  const baseTitle = "Game Hub - ";
+  const maxTitleLength = 60;
+  const remainingLength = maxTitleLength - baseTitle.length;
+
+  const safeTitle =
+    post.title.length > remainingLength
+      ? post.title.slice(0, remainingLength - 3).trim() + "..."
+      : post.title;
+
+  return {
+    title: `${baseTitle}${safeTitle}`,
+    description: truncatedDescription,
+  };
+};
+
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const post: ForumPost = await getPost(slug);
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
 
   if (!post) {
     notFound();
@@ -70,24 +117,27 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
       <ForumPostContent>
         <Grid id={styles.view_forum_post_container}>
           <ForumSideBar />
+
           <Grid id={styles.view_forum_post_content_container}>
             <Grid id={styles.view_forum_post_header}>
-              <FallbackProfileImage
-                src={"/api" + post.user.profile_picture}
-                alt={`${post.user.username}'s profile picture`}
-                width={30}
-                height={30}
-              />
-              <Typography component={"p"} id={styles.view_post_username}>
-                {post.user.username}
-              </Typography>
+              <Link href={`/profile/view/${post.user.id}`}>
+                <FallbackProfileImage
+                  src={"/api" + post.user.profile_picture}
+                  alt={`${post.user.username}'s profile picture`}
+                  width={35}
+                  height={35}
+                />
+                <Typography component={"p"} id={styles.view_post_username}>
+                  {post.user.username}
+                </Typography>
+              </Link>
               {"|"}
               {post.game ? <ForumGamePopUp game={post.game} /> : null}
               <Typography component={"p"} id={styles.view_post_time_ago}>
                 {timeAgo}
               </Typography>
             </Grid>
-            <Typography component={"h2"} id={styles.view_post_title}>
+            <Typography component={"h1"} id={styles.view_post_title}>
               {post.title}
             </Typography>
             <Grid id={styles.view_forum_post_content_box}>
@@ -140,6 +190,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
               </Tooltip>
               <EditButton user_id={post.user.id} slug={post.slug} />
               <DeleteButton user_id={post.user.id} slug={post.slug} />
+            </Grid>
+            <Grid id={styles.view_post_comment_container}>
+              <Comments id={post.id} />
             </Grid>
           </Grid>
         </Grid>

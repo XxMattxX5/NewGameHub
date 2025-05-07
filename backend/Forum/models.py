@@ -79,8 +79,7 @@ class ForumPost(models.Model):
 
         # Materialize the actual title into the search vector
         self.search_vector = SearchVector(Value(self.title), config='simple')
-        print(self.slug)
-        print(len(self.slug))
+        
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -102,6 +101,21 @@ class ForumPost(models.Model):
         """
         reaction = PostReaction.objects.filter(user=user, post=self).first()
         return reaction.reaction if reaction else None
+    
+    def delete(self, *args, **kwargs):
+        """
+        Custom delete to remove comments in the correct order (roots first).
+        """
+        def delete_root_comments(post):
+            root_comments = post.comments.filter(parent__isnull=True)
+            while root_comments.exists():
+                for comment in root_comments:
+                    comment.delete()
+                root_comments = post.comments.filter(parent__isnull=True)
+
+        delete_root_comments(self)
+        super().delete(*args, **kwargs)
+    
     
 class PostReaction(models.Model):
     """
@@ -168,14 +182,35 @@ class PostReaction(models.Model):
 class Comment(models.Model):
     """
     Represents a comment made by a user on a forum post.
-    
-    Each comment is tied to a specific user and post. Comments are
-    automatically timestamped when created.
+
+    Fields:
+        post (ForeignKey): The forum post this comment is associated with.
+        user (ForeignKey): The user who created the comment.
+        parent (ForeignKey): Optional. The parent comment if this is a reply to another comment.
+        content (TextField): The textual content of the comment.
+        created_at (DateTimeField): The timestamp when the comment was created.
+        reply_count (PositiveIntegerField): The number of replies to this comment.
+
+    Meta:
+        ordering (list): Comments are ordered by creation date in descending order.
+
+    Methods:
+        __str__(): Returns a readable string representation of the comment.
     """
     post = models.ForeignKey('ForumPost', on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='replies')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    reply_count = models.PositiveIntegerField(default=0)  # Track number of replies
+
+    class Meta:
+        ordering = ['created_at']
 
     def __str__(self):
         return f'Comment by {self.user} on {self.post}'
+    
+    
+   
+    
+

@@ -51,7 +51,7 @@ const RootLayout = async ({
   const theme = cookieStore.get("theme")?.value;
   return (
     <CookiesProvider>
-      <AppRouterCacheProvider>
+      <AppRouterCacheProvider options={{ enableCssLayer: true }}>
         <AuthProvider>
           <html lang="en" className={theme === "dark" ? "dark" : ""}>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>

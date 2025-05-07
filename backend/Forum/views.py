@@ -2,12 +2,12 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from .models import ForumPost, PostReaction
-from .serializer import PostSerializerWithGame
+from .models import ForumPost, PostReaction, Comment
+from .serializer import PostSerializerWithGame, CommentSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .utils import getPostList, getPostSuggestions
-from .forms import PostForm
+from .forms import PostForm, CommentForm, ReplyForm
 from GameHub.models import Game
 
 # Create your views here.
@@ -114,7 +114,7 @@ class DislikePost(APIView):
 class Post(APIView):
 
     def get(self, request, slug):
-
+    
         post = get_object_or_404(ForumPost, slug=slug)
         data = PostSerializerWithGame(post, context={"user":request.user}).data
         return Response({"data": data}, status=status.HTTP_200_OK)
@@ -157,6 +157,7 @@ class Post(APIView):
             id = form.cleaned_data.get('game_id')
             image = form.cleaned_data.get('image')
             content = form.cleaned_data.get('content')
+            sameImage = request.POST.get("sameImage")
 
             # Update post fields
             post.title = title
@@ -166,8 +167,12 @@ class Post(APIView):
             if id:
                 post.game = Game.objects.get(id=id)
 
-            if image:
+            if (image and sameImage != "true"):
                 post.header_image = image
+            elif (image and sameImage == "true"):
+                pass
+            else:
+                post.header_image = None
 
             post.save()  # Save the updated post
 
@@ -215,3 +220,62 @@ class IncreasePostViews(APIView):
          post = get_object_or_404(ForumPost, slug=slug)
          post.increase_views()
          return Response( status=status.HTTP_200_OK)
+    
+class GetPostComments(APIView):
+
+    def get(self, request, id):
+
+        post = get_object_or_404(ForumPost, id=id)
+
+        comments = post.comments.filter(parent__isnull=True)
+
+        data = CommentSerializer(comments, many=True).data
+
+        return Response({"data":data}, status=status.HTTP_200_OK)
+    
+
+class CreateComment(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        form = CommentForm(request.data)
+
+        if form.is_valid():
+            user = request.user
+            post = get_object_or_404(ForumPost, id=id)
+            content = form.cleaned_data.get("content")
+
+            Comment.objects.create(post=post, user=user, content=content)
+
+            return Response( status=status.HTTP_200_OK)
+
+        else:
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class Reply(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id): 
+        
+        comment = get_object_or_404(Comment, id=id)
+        comments = comment.replies.all()
+        data = CommentSerializer(comments, many=True).data
+
+        return Response({"data":data}, status=status.HTTP_200_OK)
+
+    def post(self, request, id):
+        form = ReplyForm(request.data)
+
+        if form.is_valid():
+            user = request.user
+            post = get_object_or_404(ForumPost, id=id)
+            content = form.cleaned_data.get("content")
+            comment_id = form.cleaned_data.get("comment_id")
+            comment = Comment.objects.get(id=comment_id)
+
+            Comment.objects.create(post=post, user=user, content=content, parent=comment)
+
+            return Response( status=status.HTTP_200_OK)
+
+        else:
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)

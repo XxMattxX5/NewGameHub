@@ -68,6 +68,8 @@ const Forum = async ({
   const { posts, q, s, page } = await searchParams;
   const data = await getForumPost(posts, q, s, page);
   const postList: ForumPost[] = data.data;
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
 
   const page_amount = data.pages;
 
@@ -78,6 +80,7 @@ const Forum = async ({
       </Grid>
       <Grid id={styles.forum_main_container}>
         <ForumSideBar />
+
         <Grid id={styles.forum_main_content_container}>
           <ForumContent>
             {postList.map((post) => (

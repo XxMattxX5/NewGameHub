@@ -5,7 +5,13 @@ import styles from "@/app/styles/gamedetail.module.css";
 import { GameDetail } from "@/app/types";
 import Image from "next/image";
 import StarIcon from "@mui/icons-material/Star";
-import GameSlideShow from "@/app/components/games_components/GameSlideShow";
+import dynamic from "next/dynamic";
+import LoadingSpinner from "@/app/components/global_components/LoadingSpinner";
+
+const GameSlideShow = dynamic(
+  () => import("@/app/components/games_components/GameSlideShow"),
+  { loading: () => <LoadingSpinner spinnerSize={50} /> }
+);
 
 /**
  * Fetches detailed information for a specific game by its slug.
@@ -107,7 +113,7 @@ const GameDetails = async ({
     }
     return "https://www.youtube.com/embed/YZ0Qbemz4lI";
   };
-  console.log(game_details.release);
+
   return (
     <Grid container id={styles.game_details_container}>
       <Grid id={styles.game_details_title_date}>

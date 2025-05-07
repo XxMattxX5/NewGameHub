@@ -23,19 +23,19 @@ const ForumNav = ({ display, theme, isAuthenticated, path }: Props) => {
         className={styles.forum_side_bar_link_box}
         style={{
           backgroundColor:
-            !display && path == "/forum" ? "var(--purple)" : undefined,
+            !display && path === "/forum" ? "var(--purple)" : undefined,
         }}
       >
         <HomeIcon
           sx={{
-            color: !display && path == "/forum" ? "white" : "var(--purple)",
+            color: !display && path === "/forum" ? "white" : "var(--purple)",
           }}
         />
         <Typography
           component={"p"}
           sx={{
             color:
-              display! && path == "/forum"
+              !display && path === "/forum"
                 ? "white"
                 : theme === "dark"
                 ? "white"

@@ -13,7 +13,7 @@ import { useSearchParams, usePathname } from "next/navigation";
 import FilterPopUp from "./FilterPopUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useRouter } from "next/navigation";
-import { Game, ForumPost } from "@/app/types";
+import { ForumPost, GameSuggestion } from "@/app/types";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "./LoadingSpinner";
@@ -74,9 +74,9 @@ const SearchBar = ({ genreList, searchType }: Props) => {
           { value: "created(desc)", label: "Created(Desc)" },
         ];
 
-  const [gameSearchSuggestions, setGameSearchSuggestions] = useState<Game[]>(
-    []
-  );
+  const [gameSearchSuggestions, setGameSearchSuggestions] = useState<
+    GameSuggestion[]
+  >([]);
   const [postSearchSuggestions, setPostSearchSuggestions] = useState<
     ForumPost[]
   >([]);
@@ -275,10 +275,7 @@ const SearchBar = ({ genreList, searchType }: Props) => {
               </span>
             ) : gameSearchSuggestions && searchType === "game" ? (
               gameSearchSuggestions.map((suggestion) => (
-                <Link
-                  href={`/games/${suggestion.slug}/`}
-                  key={suggestion.game_id}
-                >
+                <Link href={`/games/${suggestion.slug}/`} key={suggestion.id}>
                   <Image
                     src={
                       suggestion.cover_image
@@ -299,20 +296,16 @@ const SearchBar = ({ genreList, searchType }: Props) => {
               </span>
             ) : postSearchSuggestions && searchType === "forum" ? (
               postSearchSuggestions.map((suggestion) => (
-                <Link href={`/forum/${suggestion.slug}/`} key={suggestion.id}>
+                <Link
+                  href={`/forum/post/${suggestion.slug}/`}
+                  key={suggestion.id}
+                >
                   <Typography component={"p"} sx={{ paddingLeft: "10px" }}>
                     {suggestion.title}
                   </Typography>
                 </Link>
               ))
             ) : null}
-            {/* postSearchSuggestions ? (
-              postSearchSuggestions.map((suggestion) => (
-                <Link href={`/games/${suggestion.slug}/`} key={suggestion.id}>
-                  <Typography component={"p"}>{suggestion.title}</Typography>
-                </Link>
-              ))
-            ) : null} */}
           </Grid>
         </Grid>
         <Grid id={"search_bar_search_btn"}>

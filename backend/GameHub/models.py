@@ -30,6 +30,8 @@ class Profile(models.Model):
     full_name = models.CharField(max_length=150, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/blank-profile-picture.png")
     last_seen = models.DateField(default=datetime.date.today)
+    post_count = models.PositiveIntegerField(default=0)
+    comment_count = models.PositiveIntegerField(default=0)
     profile_visibility = models.CharField(
         max_length=20,
         choices=PROFILE_VISIBILITY_OPTIONS,

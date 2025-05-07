@@ -14,6 +14,7 @@ const ForumGamePopUp = ({ game }: Props) => {
 
   const gameClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     router.push(`/games/${game.slug}`);
   };
 

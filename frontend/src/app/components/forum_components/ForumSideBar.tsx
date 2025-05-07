@@ -54,7 +54,11 @@ const ForumSideBar = () => {
     <Grid
       id={styles.forum_side_bar_container}
       sx={{
-        backgroundColor: theme === "dark" ? "var(--gray2)" : "#fcfcfc",
+        backgroundColor: theme
+          ? theme === "dark"
+            ? "var(--gray2)"
+            : "#fcfcfc"
+          : "inherit",
         left: showSideBar ? 0 : "-275px",
       }}
     >

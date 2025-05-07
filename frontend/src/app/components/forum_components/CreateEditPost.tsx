@@ -60,6 +60,7 @@ const CreateEditPost = ({
   const [type, setType] = useState(old_type ? old_type : "general");
   const [title, setTitle] = useState(old_title ? old_title : "");
 
+  const [oldHeaderImage, setOldHeaderImage] = useState<string | null>("");
   const [headerImage, setHeaderImage] = useState<string | null>("");
 
   const [gameSearchQuery, setGameSearchQuery] = useState("");
@@ -90,6 +91,7 @@ const CreateEditPost = ({
   useEffect(() => {
     if (old_header_image) {
       toBase64("/api" + old_header_image).then((base64) => {
+        setOldHeaderImage(base64);
         setHeaderImage(base64);
       });
     }
@@ -107,6 +109,10 @@ const CreateEditPost = ({
 
     if (headerImage) {
       formData.append("image", headerImage);
+    }
+
+    if (headerImage === oldHeaderImage) {
+      formData.append("sameImage", "true");
     }
 
     formData.append("content", content);
@@ -506,6 +512,13 @@ const CreateEditPost = ({
             fullWidth
             onChange={handleFileChange}
             ref={fileInputRef}
+            slotProps={{
+              input: {
+                inputProps: {
+                  accept: "image/*",
+                },
+              },
+            }}
           />
         </Grid>
       ) : (

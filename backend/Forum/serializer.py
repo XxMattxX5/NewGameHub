@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import ForumPost
+from .models import ForumPost,Comment
 from GameHub.models import Game
 
 User = get_user_model()
@@ -16,9 +16,6 @@ class UserMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', "profile_picture"]
-
-   
-   
 
 class PostSerializerWithGame(serializers.ModelSerializer):
     user = UserMiniSerializer(read_only=True)
@@ -36,3 +33,15 @@ class PostSerializerWithGame(serializers.ModelSerializer):
         return None
         
     
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserMiniSerializer(read_only=True)
+    # replies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'content', 'created_at',  'reply_count']
+
+    # def get_replies(self, obj):
+    #     if obj.replies.exists():
+    #         return CommentSerializer(obj.replies.all(), many=True).data
+    #     return []
