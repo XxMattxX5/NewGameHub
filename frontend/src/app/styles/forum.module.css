@@ -811,6 +811,12 @@
   }
 }
 
+@media (max-width: 600px) {
+  #view_forum_post_container {
+    min-height: 500px;
+  }
+}
+
 @media (max-width: 500px) {
   .normal_post_header {
     flex-wrap: wrap;

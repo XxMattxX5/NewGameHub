@@ -38,6 +38,13 @@ export type UserInfo = {
   profile_picture: string;
 };
 
+export type ProfileInfo = {
+  username: string;
+  email?: string;
+  date_joined: string;
+  profile: { full_name?: string; post_count: number; comment_count: number };
+};
+
 export type RegistrationError = {
   username?: string;
   full_name?: string;

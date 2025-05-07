@@ -1,9 +1,18 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Game, Video, Screenshot, Genre, PasswordRecoveryToken, Profile
-from .serializer import GetGameSerializer, VideoSerializer, ScreenshotSerializer, GenreSerializer, ProfilePictureSerializer ,GetGameSuggetionsSerializer
+from .serializer import (
+    GetGameSerializer, 
+    VideoSerializer, 
+    ScreenshotSerializer, 
+    GenreSerializer, 
+    ProfilePictureSerializer, 
+    GetGameSuggetionsSerializer,
+    UserInfoSerializer,
+    ViewUserInfoSerializer,
+    )
 from .utils import getGameList, getSuggestionList
 from django.core.cache import cache
 import re
@@ -567,5 +576,26 @@ class UserSettings(APIView):
         profile.save(update_fields=["name_visibility", "profile_visibility"])
 
         return Response(status=status.HTTP_200_OK)
+    
+class UserProfile(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        data = UserInfoSerializer(user).data
+
+        return Response({"data":data}, status=status.HTTP_200_OK)
+    
+class ViewUserProfile(APIView):
+    
+    def get(self, request, id):
+        user = get_object_or_404(User, id=id)
+
+        if (user.profile.profile_visibility != "visible"):
+            return Response( status=status.HTTP_401_UNAUTHORIZED)
+
+        data = ViewUserInfoSerializer(user).data
+
+        return Response({"data":data}, status=status.HTTP_200_OK)
 
         

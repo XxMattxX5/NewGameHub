@@ -17,4 +17,6 @@ urlpatterns = [
     path("user/info/", views.UserInfo.as_view(), name="User_Info"),
     path("user/profile/image/",views.UploadImageView.as_view(), name="Upload_Profile_Picture"),
     path("user/settings/",views.UserSettings.as_view(), name="User_Settings"),
+    path("user/profile/", views.UserProfile.as_view(), name="Profile"),
+    path("user/profile/<int:id>/", views.ViewUserProfile.as_view(), name="View-Profile"),
 ]

@@ -3,27 +3,21 @@ import dynamic from "next/dynamic";
 import { Grid } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
 import ProfileSideBar from "@/app/components/profile_components/ProfileSideBar";
-import Dashboard from "@/app/components/profile_components/Dashboard";
-import Settings from "@/app/components/profile_components/Settings";
+import LoadingSpinner from "../components/global_components/LoadingSpinner";
 
-// const ProfileSideBar = dynamic(
-//   () => import("@/app/components/profile_components/ProfileSideBar"),
-//   { ssr: !!false }
-// );
+const Dashboard = dynamic(
+  () => import("@/app/components/profile_components/Dashboard"),
+  {
+    loading: () => <LoadingSpinner spinnerSize={50} />,
+  }
+);
 
-// const Dashboard = dynamic(
-//   () => import("@/app/components/profile_components/Dashboard"),
-//   {
-//     ssr: !!false,
-//   }
-// );
-
-// const Settings = dynamic(
-//   () => import("@/app/components/profile_components/Settings"),
-//   {
-//     ssr: !!false,
-//   }
-// );
+const Settings = dynamic(
+  () => import("@/app/components/profile_components/Settings"),
+  {
+    loading: () => <LoadingSpinner spinnerSize={50} />,
+  }
+);
 
 /**
  * Profile page component that renders the user dashboard or settings based on URL query parameters.
