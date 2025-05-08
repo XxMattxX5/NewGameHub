@@ -25,10 +25,7 @@ const NormalPostTemplate = async ({ forumPost }: Props) => {
 
   return (
     <span className={styles.normal_post_parent}>
-      <Link
-        href={`/forum/post/${forumPost.slug}`}
-        className={styles.normal_post_container}
-      >
+      <Grid className={styles.normal_post_container}>
         <Grid className={styles.normal_post_header}>
           <FallbackProfileImage
             className={styles.normal_post_profile_picture}
@@ -102,7 +99,7 @@ const NormalPostTemplate = async ({ forumPost }: Props) => {
             </Grid>
           </Tooltip>
         </Grid>
-      </Link>
+      </Grid>
     </span>
   );
 };

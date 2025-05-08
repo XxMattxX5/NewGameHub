@@ -94,6 +94,7 @@ const ForumSideBar = () => {
               </Typography>
               {recentlyViewed.map((post) => (
                 <Link
+                  prefetch={false}
                   href={"/forum/post/" + post.slug}
                   key={post.slug}
                   className={styles.forum_recent_post_link}

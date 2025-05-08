@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles/games.module.css";
 import { Grid, Button, Box } from "@mui/material";
 import Link from "next/link";
@@ -26,25 +26,30 @@ const GameCardButton = ({
   changeVisibleCard,
   cardType,
 }: Props) => {
+  const [prefetchGame, setPrefetchGame] = useState(false);
+  const ref = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setPrefetchGame(true);
+      }
+    });
+
+    const current = ref.current;
+    if (current) observer.observe(current);
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, []);
   return (
     <>
-      {/* {cardType === "top_rated" || visibleCard === slug ? (
-        // Renders a Link if the card is top-rated or it matches the visibleCard
-        <Link
-          href={`/games/${slug}`}
-          passHref
-          className={
-            styles.card_button_container + " " + styles.card_button_active
-          }
-          style={{
-            boxShadow: cardType === "top_rated" ? "none" : undefined,
-          }}
-        >
-          <Grid className={styles.game_card}>{children}</Grid>
-        </Link>
-      ) : ( */}
-      {/* // Renders a Button if the card is not top-rated or not visible */}
       <Link
+        prefetch={
+          cardType === "top_rated" ? false : prefetchGame ? true : false
+        }
+        ref={ref}
         href={`/games/${slug}`}
         onMouseEnter={() => changeVisibleCard(slug)}
         onMouseLeave={() => changeVisibleCard(null)}
@@ -59,7 +64,6 @@ const GameCardButton = ({
       >
         <Grid className={styles.game_card}>{children}</Grid>
       </Link>
-      {/* )} */}
     </>
   );
 };

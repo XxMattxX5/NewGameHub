@@ -10,6 +10,14 @@ import ForumSideBar from "../components/forum_components/ForumSideBar";
 import SearchBar from "../components/global_components/SearchBar";
 import ForumContent from "../components/forum_components/ForumContent";
 import PageButtons from "../components/global_components/PageButtons";
+import LoadingSpinner from "../components/global_components/LoadingSpinner";
+
+const ClickPostWrapper = dynamic(
+  () => import("../components/forum_components/ClickPostWrapper"),
+  {
+    loading: () => <LoadingSpinner spinnerSize={50} />,
+  }
+);
 
 export const metadata: Metadata = {
   title: "Game Hub - Forum",
@@ -84,7 +92,12 @@ const Forum = async ({
         <Grid id={styles.forum_main_content_container}>
           <ForumContent>
             {postList.map((post) => (
-              <NormalPostTemplate key={post.slug} forumPost={post} />
+              <ClickPostWrapper
+                key={post.slug}
+                post_link={`/forum/post/${post.slug}`}
+              >
+                <NormalPostTemplate forumPost={post} />
+              </ClickPostWrapper>
             ))}
           </ForumContent>
           {page_amount > 1 ? (

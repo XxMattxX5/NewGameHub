@@ -428,7 +428,7 @@
   column-gap: 8px;
 }
 
-#view_forum_post_header img {
+#view_forum_post_header > a > img {
   border-radius: 50%;
 }
 #view_forum_post_header p {
@@ -523,9 +523,6 @@
 
 #view_post_comment_container {
   margin: 20px 0px;
-  /* display: flex;
-  flex-direction: column;
-  row-gap: 15px; */
 }
 
 /*Edit Create Component Styles*/
@@ -655,8 +652,7 @@
 #leave_comment_button {
   font-size: 21px;
   width: 100%;
-  background-color: var(--gray);
-  color: var(--white);
+
   text-transform: none;
 }
 #leave_comment_button:hover {

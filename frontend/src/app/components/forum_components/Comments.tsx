@@ -7,6 +7,7 @@ import Comment from "./Comment";
 import { PostComment } from "@/app/types";
 import { useAuth } from "@/app/hooks/useAuth";
 import ReplyPopup from "./ReplyPopup";
+import { useTheme } from "@/app/components/global_components/ThemeProvider";
 
 type Props = {
   id: string;
@@ -14,6 +15,7 @@ type Props = {
 
 const Comments = ({ id }: Props) => {
   const { isAuthenticated, userInfo, logout, csrfToken } = useAuth();
+  const { theme } = useTheme();
   const [commentList, setCommentList] = useState<PostComment[]>([]);
   const [content, setContent] = useState("");
   const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
@@ -97,6 +99,10 @@ const Comments = ({ id }: Props) => {
             <Button
               onClick={toggleShowCommentBox}
               id={styles.leave_comment_button}
+              sx={{
+                backgroundColor: theme === "dark" ? "var(--gray)" : "#cacaca",
+                color: theme === "dark" ? "white" : "inherit",
+              }}
             >
               Leave a Comment
             </Button>
