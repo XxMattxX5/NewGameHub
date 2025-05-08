@@ -138,7 +138,6 @@ const CreateEditPost = ({
       })
       .then((data) => {
         if (data) {
-          console.log(data);
           if (data.errors) {
             setFormErrors({
               error1: data.errors.title ?? "",

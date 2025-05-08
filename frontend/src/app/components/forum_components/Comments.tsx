@@ -58,7 +58,6 @@ const Comments = ({ id }: Props) => {
   };
 
   const getComments = () => {
-    console.log("REFRESH");
     fetch(`/api/forum/post/comments/${id}/`, {
       method: "GET",
     })

@@ -29,14 +29,16 @@ const TopRatedList = () => {
   const [loading, setLoading] = useState(true);
 
   // Changes which card is visible and becomes a link
-  const changeVisibleCard = (cardSlug: string) => {
+  const changeVisibleCard = (cardSlug: string | null) => {
     setExpandedCard(cardSlug);
 
-    if (!titleHeights[cardSlug] && titleRefs.current[cardSlug]) {
-      setTitleHeights((prev) => ({
-        ...prev,
-        [cardSlug]: titleRefs.current[cardSlug]?.offsetHeight || 0,
-      }));
+    if (cardSlug) {
+      if (!titleHeights[cardSlug] && titleRefs.current[cardSlug]) {
+        setTitleHeights((prev) => ({
+          ...prev,
+          [cardSlug]: titleRefs.current[cardSlug]?.offsetHeight || 0,
+        }));
+      }
     }
   };
 

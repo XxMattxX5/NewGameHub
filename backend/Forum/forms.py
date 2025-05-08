@@ -126,6 +126,7 @@ class PostForm(forms.Form):
                     # Validate dimensions
                     img = Image.open(BytesIO(decoded_image))
                     width, height = img.size
+                    
                     if width < 200 or height < 200:
                         raise ValidationError('Image is too small. Minimum dimensions are 200x200px.')
                     if width > 1200 or height > 1200:

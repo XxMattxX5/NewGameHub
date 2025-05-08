@@ -49,7 +49,7 @@ const GameCard = ({ game, titleRef, cardInfoHeight, cardType }: Props) => {
         sx={{
           display: cardType === "top_rated" ? "none" : "block",
           top: cardInfoHeight ? `calc(100% - ${cardInfoHeight}px) ` : "70%",
-          transition: "all 1s linear",
+          transition: "all .2s linear",
         }}
       >
         <Grid className={styles.game_card_rating}>

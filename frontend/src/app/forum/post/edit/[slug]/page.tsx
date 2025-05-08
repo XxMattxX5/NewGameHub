@@ -2,7 +2,6 @@ import React from "react";
 import CreateEditPost from "@/app/components/forum_components/CreateEditPost";
 import { ForumPost } from "@/app/types";
 import { Grid } from "@mui/material";
-import { cookies } from "next/headers";
 import styles from "@/app/styles/forum.module.css";
 import ForumSideBar from "@/app/components/forum_components/ForumSideBar";
 
@@ -36,8 +35,6 @@ const getPost = async (slug: string) => {
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const post: ForumPost = await getPost(slug);
-  const cookieStore = await cookies();
-  const theme = cookieStore.get("theme")?.value;
 
   return (
     <Grid

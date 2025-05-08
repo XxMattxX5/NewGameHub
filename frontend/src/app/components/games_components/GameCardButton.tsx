@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode;
   slug: string;
   visibleCard: string | null;
-  changeVisibleCard: (cardSlug: string) => void;
+  changeVisibleCard: (cardSlug: string | null) => void;
   cardType: "top_rated" | "default";
 };
 
@@ -28,7 +28,7 @@ const GameCardButton = ({
 }: Props) => {
   return (
     <>
-      {cardType === "top_rated" || visibleCard === slug ? (
+      {/* {cardType === "top_rated" || visibleCard === slug ? (
         // Renders a Link if the card is top-rated or it matches the visibleCard
         <Link
           href={`/games/${slug}`}
@@ -42,24 +42,24 @@ const GameCardButton = ({
         >
           <Grid className={styles.game_card}>{children}</Grid>
         </Link>
-      ) : (
-        // Renders a Button if the card is not top-rated or not visible
-        <Button
-          onClick={() => {
-            changeVisibleCard(slug);
-          }}
-          className={styles.card_button_container}
-          sx={{
-            textTransform: "none",
-            padding: 0,
-            overflowY: "hidden",
-            borderRadius: 0,
-            flexShrink: 0,
-          }}
-        >
-          <Grid className={styles.game_card}>{children}</Grid>
-        </Button>
-      )}
+      ) : ( */}
+      {/* // Renders a Button if the card is not top-rated or not visible */}
+      <Link
+        href={`/games/${slug}`}
+        onMouseEnter={() => changeVisibleCard(slug)}
+        onMouseLeave={() => changeVisibleCard(null)}
+        className={styles.card_button_container}
+        style={{
+          textTransform: "none",
+          padding: 0,
+          overflowY: "hidden",
+          borderRadius: 0,
+          flexShrink: 0,
+        }}
+      >
+        <Grid className={styles.game_card}>{children}</Grid>
+      </Link>
+      {/* )} */}
     </>
   );
 };

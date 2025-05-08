@@ -46,7 +46,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   if (typeof response === "number") {
     if (response === 401) {
-      redirect("/profile/unauthorized");
+      redirect("/profile/view/unauthorized");
     } else if (response === 404) {
       notFound();
     }

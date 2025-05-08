@@ -119,30 +119,33 @@ const ForumNav = ({ display, theme, isAuthenticated, path }: Props) => {
           </Typography>
         </Link>
       ) : null}
-      <Link
-        href="/forum?posts=myposts"
-        className={styles.forum_side_bar_link_box}
-        style={{
-          backgroundColor: display === "myposts" ? "var(--purple)" : undefined,
-        }}
-      >
-        <PersonIcon
-          sx={{ color: display === "myposts" ? "white" : "var(--purple)" }}
-        />
-        <Typography
-          component={"p"}
-          sx={{
-            color:
-              display === "myposts"
-                ? "white"
-                : theme === "dark"
-                ? "white"
-                : "black",
+      {isAuthenticated ? (
+        <Link
+          href="/forum?posts=myposts"
+          className={styles.forum_side_bar_link_box}
+          style={{
+            backgroundColor:
+              display === "myposts" ? "var(--purple)" : undefined,
           }}
         >
-          My Posts
-        </Typography>
-      </Link>
+          <PersonIcon
+            sx={{ color: display === "myposts" ? "white" : "var(--purple)" }}
+          />
+          <Typography
+            component={"p"}
+            sx={{
+              color:
+                display === "myposts"
+                  ? "white"
+                  : theme === "dark"
+                  ? "white"
+                  : "black",
+            }}
+          >
+            My Posts
+          </Typography>
+        </Link>
+      ) : null}
     </Grid>
   );
 };

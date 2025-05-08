@@ -42,15 +42,17 @@ const GameList = ({ gameList, pageAmount }: Props) => {
   }, [gameList]);
 
   // Function to update the expanded card and store its title height
-  const changeVisibleCard = (cardSlug: string) => {
+  const changeVisibleCard = (cardSlug: string | null) => {
     setExpandedCard(cardSlug);
 
-    // Store the height of the title element if not already stored
-    if (!titleHeights[cardSlug] && titleRefs.current[cardSlug]) {
-      setTitleHeights((prev) => ({
-        ...prev,
-        [cardSlug]: titleRefs.current[cardSlug]?.offsetHeight || 0,
-      }));
+    if (cardSlug) {
+      // Store the height of the title element if not already stored
+      if (!titleHeights[cardSlug] && titleRefs.current[cardSlug]) {
+        setTitleHeights((prev) => ({
+          ...prev,
+          [cardSlug]: titleRefs.current[cardSlug]?.offsetHeight || 0,
+        }));
+      }
     }
   };
 
@@ -86,7 +88,13 @@ const GameList = ({ gameList, pageAmount }: Props) => {
         {/* Conditionally render pagination buttons */}
 
         {pageAmount === 0 ? null : (
-          <Grid sx={{ maxWidth: "600px", margin: "0 auto" }}>
+          <Grid
+            sx={{
+              maxWidth: "600px",
+              margin: "0px auto !important",
+              marginTop: "30px !important",
+            }}
+          >
             <PageButtons page_amount={pageAmount} />
           </Grid>
         )}

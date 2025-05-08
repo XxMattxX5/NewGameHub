@@ -74,7 +74,8 @@
   align-items: center;
 }
 .game_card_release > svg {
-  color: #ffd700;
+  /* color: #ffd700; */
+  color: var(--purple);
   margin-right: 3px;
 }
 
@@ -105,7 +106,8 @@
   align-items: center;
 }
 .game_card_rating > svg {
-  color: #ffd700;
+  color: var(--purple);
+  /* color: #ffd700; */
 }
 .game_card_rating > p {
   margin-left: 3px;
@@ -166,7 +168,6 @@
 #top_rated_list .game_card_box {
   height: 210px;
   width: 160px;
-  /* width: auto; */
 }
 #top_rated_list .game_card_box p {
   font-size: 13px;
