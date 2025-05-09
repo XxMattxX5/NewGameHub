@@ -23,9 +23,9 @@ const Settings = dynamic(
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: { menu?: string };
+  searchParams: Promise<{ menu: string }>;
 }): Promise<Metadata> {
-  const menu = searchParams?.menu;
+  const { menu } = await searchParams;
 
   const title =
     menu === "settings" ? "Game Hub - Settings" : "Game Hub - Profile";

@@ -8,9 +8,10 @@ import { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const profile = await fetchProfileInfo(params.id);
+  const { id } = await params;
+  const profile = await fetchProfileInfo(id);
 
   if (!profile) {
     return {
