@@ -338,6 +338,9 @@
   }
 }
 @media (max-width: 400px) {
+  .home_page_forum_section {
+    padding: 0px 10px;
+  }
   .home_page_forum_box > div > h3 {
     font-size: 25px;
   }
