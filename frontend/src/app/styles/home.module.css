@@ -128,7 +128,7 @@
 .home_page_forum_section_content {
   display: flex;
   flex-direction: row;
-  max-width: 1200px;
+  max-width: 1250px;
   margin: 50px auto;
   flex-wrap: wrap;
   column-gap: 20px;
@@ -141,7 +141,8 @@
   justify-content: center;
 }
 .home_page_forum_box {
-  width: 300px;
+  width: 100%;
+  max-width: 400px;
   padding: 15px 30px;
   display: flex;
   flex-direction: column;
@@ -158,12 +159,12 @@
   font-size: 35px;
 }
 .home_page_forum_box > div > h3 {
-  font-size: 30px;
+  font-size: 35px;
 }
 .home_page_forum_box > p {
-  font-size: 21px;
+  font-size: 25px;
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 .home_page_forum_box > a {
   margin-top: auto;
@@ -337,6 +338,12 @@
   }
 }
 @media (max-width: 400px) {
+  .home_page_forum_box > div > h3 {
+    font-size: 25px;
+  }
+  .home_page_forum_box > p {
+    font-size: 21px;
+  }
   .home_page_game_section_info img {
     display: block;
     height: 210px;
