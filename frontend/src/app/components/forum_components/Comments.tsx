@@ -20,6 +20,7 @@ const Comments = ({ id }: Props) => {
   const [content, setContent] = useState("");
   const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [creatingComment, setCreatingComment] = useState(false);
 
   const handleContentChange = (cont: string) => {
     setContent(cont);
@@ -30,6 +31,7 @@ const Comments = ({ id }: Props) => {
   };
 
   const createComment = () => {
+    setCreatingComment(true);
     fetch(`/api/forum/post/comments/comment/${id}/`, {
       method: "POST",
       credentials: "include",
@@ -56,6 +58,9 @@ const Comments = ({ id }: Props) => {
       .catch((err) => {
         console.error(err);
         return;
+      })
+      .finally(() => {
+        setCreatingComment(false);
       });
   };
 
@@ -93,6 +98,7 @@ const Comments = ({ id }: Props) => {
                 placeholder_text={"Start writing your comment..."}
                 submitCallback={createComment}
                 closeCallBack={toggleShowCommentBox}
+                creating={creatingComment}
               />
             </>
           ) : (

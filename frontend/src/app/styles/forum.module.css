@@ -759,7 +759,7 @@
   color: white;
   text-transform: none;
   font-size: 19px;
-  padding: 2px 10px;
+  padding: 6px 10px;
 }
 .reply_popup_container > div > button:hover {
   background-color: #7b10c7;

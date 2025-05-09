@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 import re
+from django.core.validators import RegexValidator
 
 # Password validation function
 def validate_password(password):
@@ -128,3 +129,19 @@ class UserRegistrationForm(forms.Form):
             self.add_error('password_confirm', 'Passwords do not match')
 
         return cleaned_data
+    
+
+class ContactForm(forms.Form):
+    full_name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    phone_number = forms.CharField(
+        required=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\+?\d{10,15}$',
+                message="Enter a valid phone number (10-15 digits, optionally starting with +)."
+            )
+        ]
+    )
+    subject = forms.CharField(required=True)
+    content = forms.CharField(required=True)

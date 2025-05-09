@@ -5,6 +5,7 @@ import { Grid, Button, Typography, IconButton } from "@mui/material";
 import styles from "@/app/styles/forum.module.css";
 import { PostComment } from "@/app/types";
 import CloseIcon from "@mui/icons-material/Close";
+import LoadingSpinner from "../global_components/LoadingSpinner";
 
 type Props = {
   contentCallBack: (cont: string) => void;
@@ -13,6 +14,7 @@ type Props = {
   submitCallback: () => void;
   comment?: PostComment;
   closeCallBack: () => void;
+  creating: boolean;
 };
 
 const ReplyPopup = ({
@@ -22,6 +24,7 @@ const ReplyPopup = ({
   submitCallback,
   comment,
   closeCallBack,
+  creating,
 }: Props) => {
   return (
     <Grid className={styles.reply_popup_container}>
@@ -49,8 +52,18 @@ const ReplyPopup = ({
           original_content={content}
           placeholder_text={placeholder_text}
         />
-        <Button fullWidth onClick={submitCallback}>
-          {comment ? "Create Reply" : "Create Comment"}
+        <Button
+          disabled={creating ? true : false}
+          fullWidth
+          onClick={submitCallback}
+        >
+          {creating ? (
+            <LoadingSpinner spinnerSize={30} />
+          ) : comment ? (
+            "Create Reply"
+          ) : (
+            "Create Comment"
+          )}
         </Button>
       </Grid>
     </Grid>

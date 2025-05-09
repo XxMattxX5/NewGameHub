@@ -6,17 +6,15 @@
   --fontBlack: #333333;
 }
 
-* {
-  /* padding: 0; */
-  margin: 0;
-}
-
 #main {
   min-height: 700px;
 }
 html {
   background-color: #eeeeee;
   color: var(--fontBlack);
+}
+body {
+  margin: 0;
 }
 
 html.dark {
@@ -655,13 +653,15 @@ html.dark {
 #contact_page_form {
   display: flex;
   flex-direction: column;
-  row-gap: 20px;
 }
-#contact_page_form > div > div {
+
+.contact_email_inputs > div {
+  margin-bottom: 15px;
   background-color: white;
 }
-#contact_page_form input,
-#contact_page_form > div > div > div {
+
+.contact_email_inputs > div > div,
+.contact_email_inputs input {
   padding: 10px 15px;
 }
 #contact_page_form > button {

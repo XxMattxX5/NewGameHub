@@ -19,4 +19,5 @@ urlpatterns = [
     path("user/settings/",views.UserSettings.as_view(), name="User_Settings"),
     path("user/profile/", views.UserProfile.as_view(), name="Profile"),
     path("user/profile/<int:id>/", views.ViewUserProfile.as_view(), name="View-Profile"),
+    path("contact/email/", views.SendEmail.as_view(), name="Send_Email"),
 ]

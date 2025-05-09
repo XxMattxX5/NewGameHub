@@ -37,7 +37,10 @@ const Comment = ({
   const [replies, setReplies] = useState<PostComment[]>([]);
   const [showReplies, setShowReplies] = useState(true);
 
+  const [creatingReply, setCreatingReply] = useState(false);
+
   const createReply = () => {
+    setCreatingReply(true);
     fetch(`/api/forum/post/comments/reply/${postid}/`, {
       method: "POST",
       credentials: "include",
@@ -64,6 +67,9 @@ const Comment = ({
       .catch((err) => {
         console.error(err);
         return;
+      })
+      .finally(() => {
+        setCreatingReply(false);
       });
   };
 
@@ -202,6 +208,7 @@ const Comment = ({
                 submitCallback={createReply}
                 comment={comment}
                 closeCallBack={closeReplyBox}
+                creating={creatingReply}
               />
             </Grid>
           ) : null}

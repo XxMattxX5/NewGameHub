@@ -86,3 +86,11 @@ export interface PostComment {
   reply_count: number;
   user: UserInfo;
 }
+
+export type EmailFormField = {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  subject: string;
+  content: string;
+};

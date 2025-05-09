@@ -18,7 +18,7 @@ from django.core.cache import cache
 import re
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.permissions import IsAuthenticated
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, ContactForm
 from django.contrib.auth.models import User
 import json
 from django.core.mail import send_mail
@@ -597,5 +597,39 @@ class ViewUserProfile(APIView):
         data = ViewUserInfoSerializer(user).data
 
         return Response({"data":data}, status=status.HTTP_200_OK)
+    
+class SendEmail(APIView):
+    def post(self, request):
+        form = ContactForm(request.data)
+        if form.is_valid():
+            full_name = form.cleaned_data["full_name"]
+            email = form.cleaned_data["email"]
+            phone_number = form.cleaned_data["phone_number"]
+            subject = form.cleaned_data["subject"]
+            content = form.cleaned_data["content"]
+
+
+            message = f"""
+            You have received a new message from your website contact form.
+
+            Full Name: {full_name}
+            Email: {email}
+            Phone Number: {phone_number}
+            Subject: {subject}
+
+            Message:
+            {content}
+            """
+
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=os.getenv("EMAIL_USER"),
+                recipient_list=[os.getenv("EMAIL_USER")],
+                fail_silently=False,
+            )
+            
+            return Response(status=status.HTTP_200_OK)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
         

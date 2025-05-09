@@ -15,7 +15,6 @@ import Tiptap from "../global_components/Tiptap";
 import { GameSuggestion, Game } from "@/app/types";
 import Image from "next/image";
 import LoadingSpinner from "../global_components/LoadingSpinner";
-import { useTheme } from "../global_components/ThemeProvider";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -75,6 +74,8 @@ const CreateEditPost = ({
     []
   );
 
+  const [sendingRequest, setSendingRequest] = useState(false);
+
   const toBase64 = async (imageUrl: string) => {
     const res = await fetch(imageUrl);
     const blob = await res.blob();
@@ -119,6 +120,7 @@ const CreateEditPost = ({
     const headers = {
       "X-CSRFToken": csrfToken,
     };
+    setSendingRequest(true);
     fetch(`/api/forum/post/${old_slug}/`, {
       headers: headers,
       method: "PATCH",
@@ -149,6 +151,9 @@ const CreateEditPost = ({
       .catch((err) => {
         console.error(err);
         return;
+      })
+      .finally(() => {
+        setSendingRequest(false);
       });
   };
 
@@ -170,6 +175,8 @@ const CreateEditPost = ({
     const headers = {
       "X-CSRFToken": csrfToken,
     };
+
+    setSendingRequest(true);
     fetch("/api/forum/post/create-post/", {
       headers: headers,
       method: "POST",
@@ -200,6 +207,9 @@ const CreateEditPost = ({
       .catch((err) => {
         console.error(err);
         return;
+      })
+      .finally(() => {
+        setSendingRequest(false);
       });
   };
 
@@ -539,12 +549,24 @@ const CreateEditPost = ({
       </Collapse>
       <Tiptap contentCallBack={updateContent} original_content={content} />
       {formVersion === "create" ? (
-        <Button onClick={createPost} className={styles.create_edit_submit_btn}>
-          Create New Post
+        <Button
+          onClick={createPost}
+          disabled={sendingRequest ? true : false}
+          className={styles.create_edit_submit_btn}
+        >
+          {sendingRequest ? (
+            <LoadingSpinner spinnerSize={30} />
+          ) : (
+            "Create New Post"
+          )}
         </Button>
       ) : (
-        <Button onClick={editPost} className={styles.create_edit_submit_btn}>
-          Update Post
+        <Button
+          onClick={editPost}
+          disabled={sendingRequest ? true : false}
+          className={styles.create_edit_submit_btn}
+        >
+          {sendingRequest ? <LoadingSpinner spinnerSize={30} /> : "Update Post"}
         </Button>
       )}
     </Grid>
