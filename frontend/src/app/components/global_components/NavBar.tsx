@@ -50,7 +50,7 @@ const NavBar = () => {
             </Link>
           </Grid>
           <Grid component="div">
-            <Link href="#">
+            <Link href="/contact">
               <Grid component="div">
                 <Typography component="p">Contact Us</Typography>
               </Grid>

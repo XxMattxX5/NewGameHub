@@ -1,5 +1,10 @@
 import React from "react";
 import { Grid, CircularProgress } from "@mui/material";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Game Hub - Loading...",
+};
 
 export default function Loading() {
   return (

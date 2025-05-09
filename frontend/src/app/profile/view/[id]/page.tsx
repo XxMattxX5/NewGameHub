@@ -3,6 +3,25 @@ import { ProfileInfo } from "@/app/types";
 import { notFound, redirect } from "next/navigation";
 import { Grid, Typography } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const profile = await fetchProfileInfo(params.id);
+
+  if (!profile) {
+    return {
+      title: "Game Hub - Profile Not Found",
+    };
+  }
+
+  return {
+    title: `Game Hub - ${profile.username}'s Profile`,
+  };
+}
 
 const fetchProfileInfo = async (id: string): Promise<ProfileInfo | void> => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost";

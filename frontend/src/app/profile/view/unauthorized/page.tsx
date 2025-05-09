@@ -1,6 +1,11 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Game Hub - Unauthorized",
+};
 
 const page = () => {
   return (

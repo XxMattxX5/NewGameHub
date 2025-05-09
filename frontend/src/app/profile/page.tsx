@@ -4,6 +4,7 @@ import { Grid } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
 import ProfileSideBar from "@/app/components/profile_components/ProfileSideBar";
 import LoadingSpinner from "../components/global_components/LoadingSpinner";
+import { Metadata } from "next";
 
 const Dashboard = dynamic(
   () => import("@/app/components/profile_components/Dashboard"),
@@ -18,6 +19,21 @@ const Settings = dynamic(
     loading: () => <LoadingSpinner spinnerSize={50} />,
   }
 );
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { menu?: string };
+}): Promise<Metadata> {
+  const menu = searchParams?.menu;
+
+  const title =
+    menu === "settings" ? "Game Hub - Settings" : "Game Hub - Profile";
+
+  return {
+    title,
+  };
+}
 
 /**
  * Profile page component that renders the user dashboard or settings based on URL query parameters.

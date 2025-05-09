@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { Grid, Typography } from "@mui/material";
 import styles from "../styles/games.module.css";
 import SearchBar from "../components/global_components/SearchBar";
-// import TopRatedList from "../components/games_components/TopRatedList";
 import GameList from "../components/games_components/GameList";
 import dynamic from "next/dynamic";
 import LoadingSpinner from "../components/global_components/LoadingSpinner";
@@ -14,24 +13,11 @@ const TopRatedList = dynamic(
   }
 );
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    q: string;
-    s: string;
-    g: string;
-    page: string;
-  }>;
-}) {
-  const metadata: Metadata = {
-    title: "Game Hub - Explore Games",
-    description:
-      "Search through our game library to discover new games and learn more about them",
-  };
-
-  return metadata;
-}
+export const metadata: Metadata = {
+  title: "Game Hub - Explore Games",
+  description:
+    "Search through our game library to discover new games and learn more about them",
+};
 
 /**
  * Fetches a list of games from the backend based on optional query parameters.

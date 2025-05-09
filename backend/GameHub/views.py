@@ -52,7 +52,7 @@ class GetGameList(APIView):
             200 OK: Successfully returns games and genres.
             404 Not Found: No matching games found.
         """
-        perPage = 60
+        perPage = 40
 
         sort_option = request.GET.get('s', "relevance")
         search_word = request.GET.get('q', '')

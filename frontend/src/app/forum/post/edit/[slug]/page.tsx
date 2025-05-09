@@ -4,6 +4,11 @@ import { ForumPost } from "@/app/types";
 import { Grid } from "@mui/material";
 import styles from "@/app/styles/forum.module.css";
 import ForumSideBar from "@/app/components/forum_components/ForumSideBar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Game Hub - Edit Post",
+};
 
 const getPost = async (slug: string) => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost";

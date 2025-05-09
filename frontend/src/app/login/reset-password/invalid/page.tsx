@@ -1,5 +1,10 @@
 import React from "react";
 import { Typography } from "@mui/material";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Game Hub - Link Invalid",
+};
 
 const Invalid = () => {
   return (
