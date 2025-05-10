@@ -19,7 +19,7 @@ LOGIN_URL = '/login/'
 ALLOWED_HOSTS=os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 USE_X_FORWARDED_HOST = True
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 if CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS.split(",")]
 else:

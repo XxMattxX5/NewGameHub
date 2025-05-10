@@ -789,7 +789,7 @@
   #forum_side_bar_toggle_btn {
     display: flex;
     position: sticky;
-    transform: translateX(20);
+    transform: translateX(20px);
     margin-top: 10px;
   }
   #forum_main_content_container {
