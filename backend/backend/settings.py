@@ -19,6 +19,12 @@ LOGIN_URL = '/login/'
 ALLOWED_HOSTS=os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 USE_X_FORWARDED_HOST = True
 
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+if CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS.split(",")]
+else:
+    CSRF_TRUSTED_ORIGINS = []
+
 EC2_PRIVATE_IP = None
 METADATA_URI = os.environ.get('ECS_CONTAINER_METADATA_URI', 'http://169.254.170.2/v2/metadata')
 
