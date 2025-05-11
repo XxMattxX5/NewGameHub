@@ -47,11 +47,13 @@ const ReplyPopup = ({
             </Grid>
           ) : null}
         </Grid>
-        <Tiptap
-          contentCallBack={contentCallBack}
-          original_content={content}
-          placeholder_text={placeholder_text}
-        />
+        <Grid id={styles.reply_popup_text_editor}>
+          <Tiptap
+            contentCallBack={contentCallBack}
+            original_content={content}
+            placeholder_text={placeholder_text}
+          />
+        </Grid>
         <Button
           disabled={creating ? true : false}
           fullWidth
