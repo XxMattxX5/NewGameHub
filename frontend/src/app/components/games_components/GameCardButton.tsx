@@ -26,30 +26,27 @@ const GameCardButton = ({
   changeVisibleCard,
   cardType,
 }: Props) => {
-  const [prefetchGame, setPrefetchGame] = useState(false);
-  const ref = useRef<HTMLAnchorElement | null>(null);
+  // const [prefetchGame, setPrefetchGame] = useState(false);
+  // const ref = useRef<HTMLAnchorElement | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setPrefetchGame(true);
-      }
-    });
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(([entry]) => {
+  //     if (entry.isIntersecting) {
+  //       setPrefetchGame(true);
+  //     }
+  //   });
 
-    const current = ref.current;
-    if (current) observer.observe(current);
+  //   const current = ref.current;
+  //   if (current) observer.observe(current);
 
-    return () => {
-      if (current) observer.unobserve(current);
-    };
-  }, []);
+  //   return () => {
+  //     if (current) observer.unobserve(current);
+  //   };
+  // }, []);
   return (
     <>
       <Link
-        prefetch={
-          cardType === "top_rated" ? false : prefetchGame ? true : false
-        }
-        ref={ref}
+        prefetch={false}
         href={`/games/${slug}`}
         onMouseEnter={() => changeVisibleCard(slug)}
         onMouseLeave={() => changeVisibleCard(null)}

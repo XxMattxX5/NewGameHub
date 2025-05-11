@@ -11,24 +11,6 @@ const ClickPostWrapper = ({ children, post_link }: Props) => {
   const [prefetchPost, setPrefetchPost] = useState(false);
   const ref = useRef<HTMLAnchorElement>(null);
 
-  //   useEffect(() => {
-  //     const observer = new IntersectionObserver(
-  //       (entries) => {
-  //         const [entry] = entries;
-  //         if (entry.isIntersecting) {
-  //           setPrefetchLink(true);
-  //           observer.disconnect();
-  //         }
-  //       },
-
-  //     );
-
-  //     if (ref.current) {
-  //       observer.observe(ref.current);
-  //     }
-
-  //     return () => observer.disconnect();
-  //   }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -43,6 +25,7 @@ const ClickPostWrapper = ({ children, post_link }: Props) => {
       if (current) observer.unobserve(current);
     };
   }, []);
+
   return (
     <Link
       ref={ref}
