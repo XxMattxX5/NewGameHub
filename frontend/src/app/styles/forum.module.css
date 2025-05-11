@@ -748,6 +748,9 @@
 .reply_comment_details {
   margin-left: 15px;
 }
+.reply_popup_header {
+  color: white;
+}
 .reply_popup_header_row1 {
   display: flex;
   flex-direction: row;
