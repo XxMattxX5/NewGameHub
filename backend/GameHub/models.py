@@ -8,6 +8,7 @@ import secrets
 from django.utils import timezone
 from datetime import timedelta
 import datetime
+from django.db.models import F
 
 
 NAME_VISIBILITY = [
@@ -88,14 +89,28 @@ class Game(models.Model):
         """
         Auto-generates a unique slug and updates the search vector for the title field.
         """
-        if not self.slug or self._state.old_values.get('title') != self.title:
-            self.slug = slugify(f"{self.title[:80]}-{self.game_id}")
-            count = Game.objects.filter(slug=self.slug).count()
-            if count:
-                self.slug = f"{self.slug}-{count+1}"
+        should_update_slug = False
 
-        self.search_vector = SearchVector('title')
-        super(Game, self).save(*args, **kwargs)
+        if self.pk:
+            old = Game.objects.filter(pk=self.pk).first()
+            if old and old.title != self.title:
+                should_update_slug = True
+        else:
+            should_update_slug = True
+
+        if should_update_slug:
+            base_slug = slugify(f"{self.title[:80]}-{self.game_id}")
+            slug = base_slug
+            count = 1
+            while Game.objects.exclude(pk=self.pk).filter(slug=slug).exists():
+                count += 1
+                slug = f"{base_slug}-{count}"
+            self.slug = slug
+
+        super().save(*args, **kwargs)
+
+        # Update search_vector after saving (needs a DB hit)
+        Game.objects.filter(pk=self.pk).update(search_vector=SearchVector(F('title')))
 
     def __str__(self):
         return self.title
