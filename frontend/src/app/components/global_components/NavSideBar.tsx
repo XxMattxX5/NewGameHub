@@ -66,7 +66,7 @@ const NavSideBar = ({ toggleSideBar }: Props) => {
         </Grid>
         <Grid>
           <Link
-            href="#"
+            href="/contact"
             passHref
             onClick={() => {
               toggleSideBar();
