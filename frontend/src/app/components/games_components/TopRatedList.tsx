@@ -13,10 +13,6 @@ import GameCard from "./GameCard";
  * height of each game title when expanded. The measurements are stored in `titleHeights` to dynamically
  * adjust the UI and ensure correct card positioning.
  *
- * State:
- * - `expandedCard`: Tracks the slug of the currently expanded game card or `null` if none is expanded.
- * - `titleRefs`: Stores references to each game's title div for measuring height.
- * - `titleHeights`: Stores the calculated height for each game title (by slug) to apply dynamic styling.
  *
  */
 const TopRatedList = () => {
@@ -82,10 +78,8 @@ const TopRatedList = () => {
         {!loading && gameList.length !== 0 ? (
           gameList.map((game) => (
             <GameCardButton
-              cardType="top_rated"
               key={game.slug}
               slug={game.slug}
-              visibleCard={expandedCard}
               changeVisibleCard={changeVisibleCard}
             >
               <GameCard

@@ -6,7 +6,6 @@ import RecentlyViewed from "@/app/components/forum_components/RecentlyViewed";
 import ForumSideBar from "@/app/components/forum_components/ForumSideBar";
 import { Grid, Typography, Tooltip } from "@mui/material";
 import styles from "@/app/styles/forum.module.css";
-import { cookies } from "next/headers";
 import FallbackProfileImage from "@/app/components/forum_components/FallbackProfileImage";
 import ForumGamePopUp from "@/app/components/forum_components/ForumGamePopUp";
 import { formatDistanceToNow } from "date-fns";
@@ -89,11 +88,18 @@ export const generateMetadata = async ({
   };
 };
 
+/**
+ * Forum Post Detail Page
+ *
+ * This async server component is responsible for rendering a single forum post page
+ * based on the `slug` route parameter. It fetches the post data from the backend using
+ * `getPost(slug)` and gracefully handles cases where the post does not exist by calling
+ * `notFound()`, which triggers the 404 page.
+ *
+ */
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const post: ForumPost = await getPost(slug);
-  const cookieStore = await cookies();
-  const theme = cookieStore.get("theme")?.value;
 
   if (!post) {
     notFound();

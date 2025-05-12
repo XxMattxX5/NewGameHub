@@ -1,24 +1,32 @@
 "use client";
 import React from "react";
 import { useAuth } from "@/app/hooks/useAuth";
-import { Grid, Button, Typography, Tooltip } from "@mui/material";
+import { Button, Typography, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "@/app/styles/forum.module.css";
 import { useTheme } from "../global_components/ThemeProvider";
 import { useRouter } from "next/navigation";
-import { json } from "stream/consumers";
 
 type Props = {
   user_id: string;
   slug: string;
 };
 
+/**
+ * DeleteButton Component
+ *
+ * This component renders a delete button for forum posts. It is only visible
+ * to the user who created the post (based on user ID comparison).
+ *
+ */
 const DeleteButton = ({ user_id, slug }: Props) => {
   const { theme } = useTheme();
   const { userInfo, csrfToken } = useAuth();
   const router = useRouter();
   const id = userInfo?.id.toString();
 
+  // Sends a delete request to the backend
+  // Only works if the user is the author of the post
   const deletePost = () => {
     const headers = {
       "X-CSRFToken": csrfToken,
@@ -46,6 +54,7 @@ const DeleteButton = ({ user_id, slug }: Props) => {
       });
   };
 
+  // Gives a confirm prompt before going through with deletion
   const handleDelete = () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?"

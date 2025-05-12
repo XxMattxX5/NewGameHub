@@ -8,13 +8,18 @@ import {
   Collapse,
   Alert,
 } from "@mui/material";
-import { useTheme } from "./ThemeProvider";
 import LoadingSpinner from "./LoadingSpinner";
 import { useAuth } from "@/app/hooks/useAuth";
 import { EmailFormField } from "@/app/types";
 
+/**
+ * ContactForm Component
+ *
+ * This component provides a contact form where users can submit their full name, email, phone number,
+ * subject, and message content. It includes validation and handles errors as well as successful form submission.
+ *
+ */
 const ContactForm = () => {
-  const { theme } = useTheme();
   const { csrfToken } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,6 +58,8 @@ const ContactForm = () => {
     setContent(e.target.value);
   };
 
+  // Sends a POST request to backend to send email and sets the form button
+  // to a loading state while waiting for process to finish
   const sendEmail = () => {
     if (subject === "select") {
       setFormErrors((prev) => ({ ...prev, subject: "Must select subject" }));
@@ -200,14 +207,7 @@ const ContactForm = () => {
           {formErrors.content}
         </Alert>
       </Collapse>
-      <Button
-        onClick={sendEmail}
-        disabled={sendingEmail ? true : false}
-        sx={{
-          backgroundColor: theme === "dark" ? "var(--gray2)" : "#cacaca",
-          color: theme === "dark" ? "white" : "inherit",
-        }}
-      >
+      <Button onClick={sendEmail} disabled={sendingEmail ? true : false}>
         {sendingEmail ? <LoadingSpinner spinnerSize={25} /> : "Send Email"}
       </Button>
     </Grid>

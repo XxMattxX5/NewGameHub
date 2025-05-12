@@ -16,6 +16,18 @@ def home(request):
 
 class GetPosts(APIView):
     def get(self, request):
+        """
+        Retrieve a paginated list of forum posts filtered by type, search query, and sort order.
+
+        Query Parameters:
+            type (str): Filter by post type. Options: "general", "game", "myposts", "liked".
+            q (str): Optional search query string. Defaults to empty.
+            s (str): Sort order. Options: "relevance", "title", "created(asc)", "created(desc)", "likes". Defaults to "relevance".
+            page (int): Page number for pagination. Defaults to 1.
+
+        Returns:
+            200 OK: JSON with list of serialized posts and total page count.
+        """
         type = request.GET.get("type")
         search = request.GET.get("q", "")
         sort = request.GET.get("s", "relevance")
@@ -43,6 +55,16 @@ class GetPosts(APIView):
 
 class GetPostSuggestions(APIView):
     def get(self, request):
+        """
+        Get post suggestions based on a search query.
+
+        Query Parameters:
+            q (str): The search query string.
+
+        Returns:
+            200 OK: JSON with list of suggested posts.
+            404 NOT FOUND: If no posts match the search query.
+        """
         search = request.GET.get("q", "")
 
         posts = getPostSuggestions(search)
@@ -58,6 +80,22 @@ class LikePost(APIView):
     permission_classes=[IsAuthenticated]
 
     def post(self, request, id):
+        """
+        Like or unlike a post.
+
+        POST Parameters:
+            id (int): ID of the post to like.
+
+        Behavior:
+            - If the post is not yet liked, it will be liked.
+            - If the post is already liked, the like will be removed.
+            - Users cannot like their own posts.
+
+        Returns:
+            200 OK: On successful like/unlike.
+            401 UNAUTHORIZED: If trying to like own post.
+            400 BAD REQUEST: If post doesn't exist or other errors occur.
+        """
         try:
             user = request.user
             post = ForumPost.objects.get(id=id)
@@ -86,7 +124,22 @@ class DislikePost(APIView):
     permission_classes=[IsAuthenticated]
 
     def post(self, request, id):
+        """
+        Dislike or remove dislike from a post.
 
+        POST Parameters:
+            id (int): ID of the post to dislike.
+
+        Behavior:
+            - If the post is not yet disliked, it will be disliked.
+            - If the post is already disliked, the dislike will be removed.
+            - Users cannot dislike their own posts.
+
+        Returns:
+            200 OK: On successful dislike/removal.
+            401 UNAUTHORIZED: If trying to dislike own post.
+            400 BAD REQUEST: If post doesn't exist or other errors occur.
+        """
         try:
             user = request.user
             post = ForumPost.objects.get(id=id)
@@ -114,13 +167,33 @@ class DislikePost(APIView):
 class Post(APIView):
 
     def get(self, request, slug):
-    
+        """
+        Retrieve a single forum post by its slug.
+
+        Args:
+            slug (str): The slug of the post to retrieve.
+
+        Returns:
+            Response: 200 OK with serialized post data or 404 NOT FOUND if post does not exist.
+        """
         post = get_object_or_404(ForumPost, slug=slug)
         data = PostSerializerWithGame(post, context={"user":request.user}).data
         return Response({"data": data}, status=status.HTTP_200_OK)
     
 
     def delete(self, request, slug):
+        """
+        Delete a post if the request user is the post's author.
+
+        Args:
+            slug (str): The slug of the post to delete.
+
+        Returns:
+            Response:
+                - 200 OK on successful deletion.
+                - 403 FORBIDDEN if user is not logged in.
+                - 401 UNAUTHORIZED if user is not the post author.
+        """
         # Ensure user is logged in
         if not request.user.is_authenticated:
             return Response({"error": "Must be logged in"}, status=status.HTTP_403_FORBIDDEN)
@@ -135,6 +208,19 @@ class Post(APIView):
         return Response(status=status.HTTP_200_OK)
     
     def patch(self, request, slug):
+        """
+        Update a post if the request user is the post's author.
+
+        Args:
+            slug (str): The slug of the post to update.
+
+        Returns:
+            Response:
+                - 200 OK on successful update.
+                - 400 BAD REQUEST if form data is invalid.
+                - 403 FORBIDDEN if user is not logged in.
+                - 401 UNAUTHORIZED if user is not the post author.
+        """
         # Ensure user is logged in
         if not request.user.is_authenticated:
             return Response({"error": "Must be logged in"}, status=status.HTTP_403_FORBIDDEN)
@@ -184,6 +270,16 @@ class CreatePost(APIView):
     permission_classes=[IsAuthenticated]
 
     def post(self, request):
+        """
+        Create a new post in the forum.
+
+        The user must be authenticated. Validates the form data and creates a new forum post
+        with the provided content, title, type, associated game (if any), and image (if provided).
+
+        Returns:
+            200 OK: On successful creation of the post.
+            400 BAD REQUEST: If form data is invalid.
+        """
         form = PostForm(request.data, request.FILES)  # Handling form data and image files
 
         if form.is_valid():
@@ -217,14 +313,32 @@ class CreatePost(APIView):
     
 class IncreasePostViews(APIView):
     def post(self, request, slug):
-         post = get_object_or_404(ForumPost, slug=slug)
-         post.increase_views()
-         return Response( status=status.HTTP_200_OK)
+        """
+        Increment the view count of a forum post.
+
+        Args:
+            slug (str): The slug of the post whose views should be increased.
+
+        Returns:
+            200 OK: On successful increment of views.
+        """
+        post = get_object_or_404(ForumPost, slug=slug)
+        post.increase_views()
+        return Response( status=status.HTTP_200_OK)
     
 class GetPostComments(APIView):
 
     def get(self, request, id):
+        """
+        Retrieve the top-level comments for a given post.
 
+        Args:
+            id (int): The ID of the post to get comments for.
+
+        Returns:
+            200 OK: A list of top-level comments for the post.
+            404 NOT FOUND: If the post does not exist.
+        """
         post = get_object_or_404(ForumPost, id=id)
 
         comments = post.comments.filter(parent__isnull=True)
@@ -238,6 +352,18 @@ class CreateComment(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
+        """
+        Create a new comment on a forum post.
+
+        Args:
+            request (Request): The HTTP request object containing the comment content.
+            id (int): The ID of the post to comment on.
+
+        Returns:
+            Response: 
+                - 200 OK if the comment is created successfully.
+                - 400 BAD REQUEST if the form is invalid.
+        """
         form = CommentForm(request.data)
 
         if form.is_valid():
@@ -256,7 +382,17 @@ class Reply(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id): 
-        
+        """
+        Retrieve all replies to a specific comment.
+
+        Args:
+            request (Request): The HTTP request object.
+            id (int): The ID of the comment for which replies are retrieved.
+
+        Returns:
+            Response: 
+                - 200 OK with a list of serialized replies.
+        """
         comment = get_object_or_404(Comment, id=id)
         comments = comment.replies.all()
         data = CommentSerializer(comments, many=True).data
@@ -264,6 +400,18 @@ class Reply(APIView):
         return Response({"data":data}, status=status.HTTP_200_OK)
 
     def post(self, request, id):
+        """
+        Create a reply to a specific comment.
+
+        Args:
+            request (Request): The HTTP request object containing the reply content and comment ID.
+            id (int): The ID of the post being replied to.
+
+        Returns:
+            Response: 
+                - 200 OK if the reply is created successfully.
+                - 400 BAD REQUEST if the form is invalid.
+        """
         form = ReplyForm(request.data)
 
         if form.is_valid():

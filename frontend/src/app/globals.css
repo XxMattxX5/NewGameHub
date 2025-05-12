@@ -667,6 +667,11 @@ html.dark {
 #contact_page_form > button {
   text-transform: none;
   font-weight: bold;
+  background-color: var(--purple);
+  color: white;
+}
+#contact_page_form > button:hover {
+  background-color: #7b10c7;
 }
 
 /* TipTap Editor Styles */

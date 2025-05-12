@@ -34,6 +34,19 @@ type Props = {
   old_type?: string;
 };
 
+/**
+ * CreateEditPost component handles both the creation and editing of forum posts.
+ *
+ * Key Features:
+ * - Controlled form state for post `title`, `type`, `headerImage`, `content`, and associated `game`
+ * - Support for two post types: "General" and "Game"
+ * - Image upload and resizing with size validation (min: 200x200, max: 1200x1200)
+ * - Converts existing image URL to base64 for client-side preview and reuse during edits
+ * - Uses debounced search to fetch game suggestions when user types
+ * - Sends `FormData` with appropriate fields to either create or update a post
+ * - Handles CSRF protection, error handling, and conditional logic for image updates
+ *
+ */
 const CreateEditPost = ({
   formVersion,
   old_title,
@@ -76,6 +89,7 @@ const CreateEditPost = ({
 
   const [sendingRequest, setSendingRequest] = useState(false);
 
+  // Converts image to base64
   const toBase64 = async (imageUrl: string) => {
     const res = await fetch(imageUrl);
     const blob = await res.blob();
@@ -88,7 +102,7 @@ const CreateEditPost = ({
     });
   };
 
-  // Usage
+  // If the user is editing a post and there is an old image the image is converted to base64
   useEffect(() => {
     if (old_header_image) {
       toBase64("/api" + old_header_image).then((base64) => {
@@ -98,6 +112,7 @@ const CreateEditPost = ({
     }
   }, []);
 
+  // Sends the edit post to backend for it to be updated in the database
   const editPost = () => {
     const formData = new FormData();
 
@@ -156,7 +171,8 @@ const CreateEditPost = ({
         setSendingRequest(false);
       });
   };
-
+  // Sends a request to the backend to create a new post and sets the create post button
+  // to a loading state to indicate the request is be processed
   const createPost = () => {
     const formData = new FormData();
 
@@ -230,6 +246,7 @@ const CreateEditPost = ({
     setContent(newContent);
   };
 
+  // Clears out the game type fields when post is changed from game to general
   useEffect(() => {
     if (type === "general") {
       setGame(null);
@@ -248,11 +265,14 @@ const CreateEditPost = ({
   }, []);
 
   const timeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleGameSearchQueryChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (e.target.value.length > 2) {
       setGettingSuggestions(true);
+    } else {
+      setGettingSuggestions(false);
     }
     if (timeoutId.current) clearTimeout(timeoutId.current);
 
@@ -301,6 +321,8 @@ const CreateEditPost = ({
     }
   };
 
+  // Ensures image is at least 200x200px
+  // Resizes the image down to 1200x1200px if either width or height is above 1200px
   function resizeImageFile(
     file: File,
     maxWidth = 1200,
@@ -366,6 +388,7 @@ const CreateEditPost = ({
     return file.type.startsWith("image/");
   }
 
+  // Ensures image file input is valid
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {

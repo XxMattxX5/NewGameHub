@@ -132,6 +132,20 @@ class UserRegistrationForm(forms.Form):
     
 
 class ContactForm(forms.Form):
+    """
+    A form for collecting contact information from users.
+
+    Fields:
+        full_name (CharField): The full name of the user.
+        email (EmailField): The email address of the user.
+        phone_number (CharField): The phone number of the user, validated to be between 10 to 15 digits, optionally starting with a '+'.
+        subject (CharField): The subject of the contact message.
+        content (CharField): The content of the contact message.
+
+    Validates the phone number using a regular expression to ensure it follows the format:
+        - 10 to 15 digits.
+        - Optionally starting with a '+'.
+    """
     full_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(

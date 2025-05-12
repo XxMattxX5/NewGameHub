@@ -68,6 +68,18 @@ const getForumPost = async (
     });
 };
 
+/**
+ * Forum Page Component
+ *
+ * This async server component renders the main forum listing page, allowing users
+ * to browse and search through forum posts. It dynamically fetches forum posts from
+ * the backend using query parameters supplied through `searchParams`, which include:
+ * - `posts`: post category or filter
+ * - `q`: search term
+ * - `s`: sort option
+ * - `page`: pagination index
+ *
+ */
 const Forum = async ({
   searchParams,
 }: {
@@ -76,8 +88,6 @@ const Forum = async ({
   const { posts, q, s, page } = await searchParams;
   const data = await getForumPost(posts, q, s, page);
   const postList: ForumPost[] = data.data;
-  const cookieStore = await cookies();
-  const theme = cookieStore.get("theme")?.value;
 
   const page_amount = data.pages;
 

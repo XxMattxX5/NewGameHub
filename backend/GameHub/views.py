@@ -581,6 +581,17 @@ class UserProfile(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self, request):
+        """
+        Retrieves the authenticated user's profile data.
+
+        Args:
+            request: The HTTP request object containing the user data.
+
+        Returns:
+            Response: A Response object containing the user's profile data.
+                - 200 OK if the user's profile data is successfully retrieved.
+                - 401 Unauthorized if the user is not authenticated.
+        """
         user = request.user
         data = UserInfoSerializer(user).data
 
@@ -589,8 +600,22 @@ class UserProfile(APIView):
 class ViewUserProfile(APIView):
     
     def get(self, request, id):
+        """
+        Retrieves the profile data of a user specified by the user ID.
+
+        Args:
+            request: The HTTP request object containing the user data.
+            id: The ID of the user whose profile is being retrieved.
+
+        Returns:
+            Response: A Response object containing the requested user's profile data.
+                - 200 OK if the profile is visible and successfully retrieved.
+                - 401 Unauthorized if the profile visibility is not "visible".
+                - 404 Not Found if the user with the specified ID does not exist.
+        """
         user = get_object_or_404(User, id=id)
 
+        # Checks to see if user's profile is set to visible
         if (user.profile.profile_visibility != "visible"):
             return Response( status=status.HTTP_401_UNAUTHORIZED)
 
@@ -600,6 +625,17 @@ class ViewUserProfile(APIView):
     
 class SendEmail(APIView):
     def post(self, request):
+        """
+        Handles the submission of the contact form and sends an email with the form data.
+
+        Args:
+            request: The HTTP request object containing the contact form data.
+
+        Returns:
+            Response: A Response object indicating the result of the operation.
+                - 200 OK if the email is successfully sent.
+                - 400 Bad Request if the contact form data is invalid.
+        """
         form = ContactForm(request.data)
         if form.is_valid():
             full_name = form.cleaned_data["full_name"]
@@ -608,7 +644,7 @@ class SendEmail(APIView):
             subject = form.cleaned_data["subject"]
             content = form.cleaned_data["content"]
 
-
+            # Creates email body
             message = f"""
             You have received a new message from your website contact form.
 

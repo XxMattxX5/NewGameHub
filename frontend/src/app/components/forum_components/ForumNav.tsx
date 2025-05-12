@@ -15,6 +15,13 @@ type Props = {
   path: string;
 };
 
+/**
+ * ForumNav Component
+ *
+ * Renders the sidebar navigation for the forum, allowing users to filter posts
+ * by category or navigate to different views such as Home, General Posts, Game Posts,
+ * Liked Posts, and My Posts.
+ */
 const ForumNav = ({ display, theme, isAuthenticated, path }: Props) => {
   return (
     <Grid>

@@ -15,14 +15,30 @@ type Props = {
   activeReplyId: number | null;
   setActiveReplyId: (id: number | null) => void;
   postid: string;
-
   depth?: number;
 };
 
-// Recursive Comment Component
+/**
+ * Comment component displays an individual comment and its replies, allowing users
+ * to reply to a comment and view existing replies. It supports nested replies up to
+ * a depth of 5, with a button to load or hide replies.
+ *
+ * The component manages the reply content input and sends a POST request to create
+ * a reply for a comment. It also fetches existing replies for a comment using a GET request.
+ * The component updates the display of replies dynamically, showing or hiding them as needed.
+ *
+ * It also includes a timestamp for the comment creation and allows users to navigate to
+ * the comment author's profile by clicking on their username.
+ *
+ * The component automatically handles the active reply state to manage showing/hiding the
+ * reply text editor for a given comment and makes sure to clear the reply input when switching
+ * between comments.
+ *
+ * This component is useful for rendering a threaded comment system with support for replies,
+ * managing user interactions, and integrating with backend APIs for comment management.
+ */
 const Comment = ({
   comment,
-  parentUserName,
   activeReplyId,
   setActiveReplyId,
   postid,
@@ -30,6 +46,8 @@ const Comment = ({
   depth = 1,
 }: Props) => {
   const { logout, csrfToken } = useAuth();
+
+  // Makes created_at date into a time ago format
   const parsedDate = new Date(comment.created_at);
   const timeAgo = formatDistanceToNow(parsedDate, { addSuffix: true });
 
@@ -39,6 +57,8 @@ const Comment = ({
 
   const [creatingReply, setCreatingReply] = useState(false);
 
+  // Sends a request to backend to to create a reply and creating reply
+  // to true while waiting for a response
   const createReply = () => {
     setCreatingReply(true);
     fetch(`/api/forum/post/comments/reply/${postid}/`, {
@@ -76,6 +96,8 @@ const Comment = ({
   const handleReplyContentChange = (reply: string) => {
     setReplyContent(reply);
   };
+
+  // Ensures that only 1 reply box is open at a time
   const showReplyBox = () => {
     if (activeReplyId === comment.id) {
       setActiveReplyId(null);
@@ -88,10 +110,12 @@ const Comment = ({
     setActiveReplyId(null);
   };
 
+  // Sets reply input back to empy when visible reply box changes
   useEffect(() => {
     setReplyContent("");
   }, [activeReplyId]);
 
+  // Fetches replies for the given comment
   const fetchReplies = () => {
     fetch(`/api/forum/post/comments/reply/${comment.id}/`, {
       method: "GET",

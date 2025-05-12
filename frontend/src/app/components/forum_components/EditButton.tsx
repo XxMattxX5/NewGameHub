@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useAuth } from "@/app/hooks/useAuth";
-import { Grid, Button, Typography, Tooltip } from "@mui/material";
+import { Button, Typography, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import styles from "@/app/styles/forum.module.css";
 import { useTheme } from "../global_components/ThemeProvider";
@@ -12,6 +12,12 @@ type Props = {
   slug: string;
 };
 
+/**
+ * EditButton Component
+ *
+ * This component renders an "Edit" button for forum posts, allowing the post author
+ * to navigate to the post editing page. The button is only visible to the post's owner.
+ */
 const EditButton = ({ user_id, slug }: Props) => {
   const router = useRouter();
   const { userInfo } = useAuth();

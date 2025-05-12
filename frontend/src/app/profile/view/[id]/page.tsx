@@ -55,6 +55,17 @@ const fetchProfileInfo = async (id: string): Promise<ProfileInfo | void> => {
     });
 };
 
+/**
+ * Profile Page Component
+ *
+ * This async server component renders a user's profile page based on the provided `id` parameter.
+ * It fetches user profile information from the backend using the `fetchProfileInfo()` function
+ * and handles different error scenarios:
+ * - Redirects to an unauthorized page if the response status is 401.
+ * - Redirects to a 404 page if the user profile is not found (status 404).
+ * - Redirects to the home page if the profile information is invalid or missing.
+ *
+ */
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const response = await fetchProfileInfo(id);

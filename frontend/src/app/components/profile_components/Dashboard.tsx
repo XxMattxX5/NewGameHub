@@ -5,6 +5,15 @@ import { ProfileInfo } from "@/app/types";
 import { Grid, Typography } from "@mui/material";
 import styles from "@/app/styles/profile.module.css";
 
+/**
+ * Dashboard component displays the authenticated user's account details.
+ *
+ * Upon mounting, it makes a GET request to `/api/user/profile/` to fetch the user's profile info.
+ * - If the request is successful, the returned data is stored in the `profileInfo` state.
+ * - If the request fails with a 403 status, the user is logged out via the `logout()` function from `useAuth`.
+ * - Other errors are logged to the console.
+ *
+ */
 const Dashboard = () => {
   const { logout } = useAuth();
 

@@ -17,6 +17,14 @@ const ForumNav = dynamic(() => import("../forum_components/ForumNav"), {
   ssr: true,
 });
 
+/**
+ * ForumSideBar Component
+ *
+ * This component renders the collapsible side navigation bar for the forum.
+ * It includes navigation links (via `ForumNav`) and a list of recently viewed posts
+ * retrieved from `localStorage`.
+ *
+ */
 const ForumSideBar = () => {
   const { theme } = useTheme();
   const { isAuthenticated } = useAuth();
@@ -29,6 +37,7 @@ const ForumSideBar = () => {
     []
   );
 
+  // Removes post from list of recently viewed post
   const deleteViewedPost = (slug: string) => {
     const newList = recentlyViewed.filter((item) => item.slug !== slug);
     setRecentlyViewed(newList);

@@ -4,7 +4,6 @@ import styles from "../../styles/games.module.css";
 import Image from "next/image";
 import { Grid, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import { format } from "date-fns";
 
 type Props = {
   game: Game;

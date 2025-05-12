@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Grid, Typography, Button } from "@mui/material";
-import Tiptap from "../global_components/Tiptap";
 import styles from "@/app/styles/forum.module.css";
 import Comment from "./Comment";
 import { PostComment } from "@/app/types";
@@ -13,8 +12,25 @@ type Props = {
   id: string;
 };
 
+/**
+ * Comments component manages and displays all root-level comments for a given post.
+ *
+ * Features:
+ * - Fetches and renders the list of comments associated with a post ID.
+ * - Allows authenticated users to create new comments using a rich text editor (`ReplyPopup`).
+ * - Tracks and manages UI states such as showing the comment box and handling comment creation status.
+ * - Manages active reply state (`activeReplyId`) to support threaded replies from the Comment component.
+ *
+ * Key Behaviors:
+ * - On component mount, it fetches existing root comments using `getComments`.
+ * - When a comment is submitted, it sends a POST request to the backend and refreshes the comment list.
+ * - Prevents comment creation for unauthenticated users and displays a prompt instead.
+ *
+ * This component serves as the entry point for the threaded comment system, coordinating between
+ * displaying top-level comments and allowing new comment submission.
+ */
 const Comments = ({ id }: Props) => {
-  const { isAuthenticated, userInfo, logout, csrfToken } = useAuth();
+  const { isAuthenticated, logout, csrfToken } = useAuth();
   const { theme } = useTheme();
   const [commentList, setCommentList] = useState<PostComment[]>([]);
   const [content, setContent] = useState("");
@@ -30,6 +46,8 @@ const Comments = ({ id }: Props) => {
     setShowCommentBox((prev) => !prev);
   };
 
+  // Sends a request to backend to create a comment and sets creatingComment to true
+  // while waiting for a response to show request is still processing
   const createComment = () => {
     setCreatingComment(true);
     fetch(`/api/forum/post/comments/comment/${id}/`, {
@@ -64,6 +82,7 @@ const Comments = ({ id }: Props) => {
       });
   };
 
+  // Gets a list of root comments for a give post
   const getComments = () => {
     fetch(`/api/forum/post/comments/${id}/`, {
       method: "GET",
@@ -83,9 +102,11 @@ const Comments = ({ id }: Props) => {
         return;
       });
   };
+
   useEffect(() => {
     getComments();
   }, []);
+
   return (
     <Grid id={styles.comment_main_container}>
       <Grid className={styles.make_comment_container}>

@@ -114,6 +114,7 @@ def loadGames():
     }
 
     games = Game.objects.all()
+   
     params = {
         "fields": "id, name, first_release_date, storyline, summary, cover.url, videos.video_id, screenshots.url, rating, genres.name, aggregated_rating",
         "limit": 500,
@@ -148,7 +149,7 @@ def loadGames():
     total_games_loaded = 0
     retries, attempt = 3, 1
 
-    while params["offset"] < 200000:
+    while True:
         try:
             response = post("https://api.igdb.com/v4/games", params=params, headers=headers)
         except requests.exceptions.RequestException as e:

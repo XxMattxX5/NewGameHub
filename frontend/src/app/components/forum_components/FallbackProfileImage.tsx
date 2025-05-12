@@ -10,18 +10,28 @@ type Props = {
   className?: string;
 };
 
-export default function FallbackProfileImage({
+/**
+ * FallbackProfileImage Component
+ *
+ * This component displays a user profile image with automatic fallback handling.
+ * If the provided `src` fails to load (e.g., due to a broken URL), a default
+ * placeholder image is shown instead.
+ *
+ */
+
+const FallbackProfileImage = ({
   src,
   alt = "Profile picture",
   width = 30,
   height = 30,
   className = "",
-}: Props) {
+}: Props) => {
   const [imgSrc, setImgSrc] = useState(src);
 
   useEffect(() => {
     setImgSrc(src);
   }, [src]);
+
   return (
     <Image
       src={imgSrc}
@@ -33,4 +43,6 @@ export default function FallbackProfileImage({
       onError={() => setImgSrc("/images/blank-profile-picture.png")}
     />
   );
-}
+};
+
+export default FallbackProfileImage;

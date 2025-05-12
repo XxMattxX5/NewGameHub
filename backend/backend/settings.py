@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-import requests
 
 LOGIN_URL = '/login/'
 
@@ -20,35 +19,15 @@ ALLOWED_HOSTS=os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 USE_X_FORWARDED_HOST = True
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+
 if CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS.split(",")]
 else:
     CSRF_TRUSTED_ORIGINS = []
 
-EC2_PRIVATE_IP = None
-METADATA_URI = os.environ.get('ECS_CONTAINER_METADATA_URI', 'http://169.254.170.2/v2/metadata')
-
-try:
-    resp = requests.get(METADATA_URI)
-    data = resp.json()
-
-    container_meta = data['Containers'][0]
-    EC2_PRIVATE_IP = container_meta['Networks'][0]['IPv4Addresses'][0]
-except:
-    # silently fail as we may not be in an ECS environment
-    pass
-
-if EC2_PRIVATE_IP:
-    # Be sure your ALLOWED_HOSTS is a list NOT a tuple
-    # or .append() will fail
-    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -68,9 +47,6 @@ if DEBUG:
 }    
     
 INTERNAL_IPS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -119,7 +95,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -134,7 +109,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -160,7 +134,6 @@ CACHES = {
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -172,7 +145,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/api/static/'
 STATIC_ROOT = "/app/static/"
@@ -183,9 +155,10 @@ MEDIA_ROOT = "/app/media/"
 
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Backend
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

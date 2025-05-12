@@ -122,15 +122,7 @@ const Tiptap = ({
   };
 
   return (
-    <Grid
-      id={"editor_container"}
-      // sx={{
-      //   border:
-      //     theme === "dark"
-      //       ? "1px solid rgba(0, 0, 0, 0.7)"
-      //       : "1px solid rgba(0, 0, 0, 0.23)",
-      // }}
-    >
+    <Grid id={"editor_container"}>
       <Grid id="editor_toolbar">
         <Select
           id="editor_font_size"

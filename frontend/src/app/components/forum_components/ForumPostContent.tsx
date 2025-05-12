@@ -7,6 +7,14 @@ type Props = {
   children: React.ReactNode;
 };
 
+/**
+ * ForumPostContent Component
+ *
+ * This component serves as a styled container for displaying the main content
+ * of a single forum post. It wraps its children with a div and applies
+ * dynamic styling based on the current UI theme.
+ *
+ */
 const ForumPostContent = ({ children }: Props) => {
   const { theme } = useTheme();
   return (

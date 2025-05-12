@@ -17,6 +17,16 @@ type Props = {
   creating: boolean;
 };
 
+/**
+ * ReplyPopup Component
+ *
+ * This component displays a modal or popup that allows users to reply to a post or comment. It includes:
+ * - A text editor (Tiptap) for composing the reply.
+ * - A header with the ability to close the popup.
+ * - A submit button that is disabled when the reply is being created.
+ * - Optionally displays the content of the comment being replied to.
+ *
+ */
 const ReplyPopup = ({
   contentCallBack,
   content,

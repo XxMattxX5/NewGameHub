@@ -9,7 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import FilterPopUp from "./FilterPopUp";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useRouter } from "next/navigation";
@@ -28,13 +28,28 @@ type GenreObj = {
 };
 
 /**
- * SearchBar component allows users to search for games by title,
- * filter them by genre, and sort the results.
+ * SearchBar component allows users to search for either games or forum posts based on the
+ * provided `searchType` prop. It supports filtering by genre and sorting the results
+ * based on different criteria. The component dynamically updates the URL with query parameters
+ * for the search term, selected genre, and sort options, ensuring easy integration with routing
+ * or fetching filtered data from the backend.
  *
- * It updates the URL with query parameters based on the search input,
- * selected genre, and sort option—useful for integrating with routing or
- * fetching filtered/sorted data from the backend.
+ * The component handles the state of search input, genre selection, and sorting option. It
+ * automatically synchronizes with the URL, ensuring the state persists across page reloads.
+ * If the user modifies any of the filters or search input, the component updates the URL
+ * query parameters accordingly, reflecting the new search criteria.
  *
+ * The `searchType` prop determines whether the search is for games or forum posts,
+ * which influences the available sorting options and search behavior.
+ * - For games, it includes options like relevance, name, release date, and rating.
+ * - For posts, it includes options like relevance, title, likes, and creation date.
+ *
+ * The component also fetches search suggestions dynamically, providing real-time feedback
+ * as the user types in the search field. It ensures that the user can quickly filter and
+ * sort the results based on their preferences.
+ *
+ * This component is designed to support both game and post searches, making it highly
+ * versatile for use in various search-driven features of the application.
  */
 const SearchBar = ({ genreList, searchType }: Props) => {
   const router = useRouter();
@@ -212,6 +227,8 @@ const SearchBar = ({ genreList, searchType }: Props) => {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 2) {
       setGettingSuggestions(true);
+    } else {
+      setGettingSuggestions(false);
     }
     if (timeoutId.current) clearTimeout(timeoutId.current);
 

@@ -5,40 +5,48 @@ from .models import ForumPost, PostReaction, Comment
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    search_fields = ['user__username', 'post__title', 'content', 'parent__content']  # Search by user, post, comment content, and parent content
-    list_display = ('user', 'post', 'content', 'created_at', 'parent', 'reply_count')  # Show user, post, content, created_at, parent, and reply_count
-    list_filter = ('created_at', 'user', 'parent')  # Filters for user, creation date, and parent comment
-    ordering = ('-created_at',)  # Show newest comments first
-    raw_id_fields = ('post', 'user', 'parent')  # Use raw ID fields for performance (post, user, and parent)
+    search_fields = ['user__username', 'post__title', 'content', 'parent__content']
+    list_display = ('user', 'post', 'content', 'created_at', 'parent', 'reply_count')
+    list_filter = ('created_at', 'user', 'parent')
+    ordering = ('-created_at',)
+    raw_id_fields = ('post', 'user', 'parent')
 
     def delete_model(self, request, obj):
-        # Delete all replies before deleting the comment itself
+        """
+        Delete all replies before deleting the comment itself
+        """
         obj.replies.all().delete()
         super().delete_model(request, obj)
 
     def delete_queryset(self, request, queryset):
-        # Ensure replies of all comments in the queryset are deleted
+        """
+        Ensure replies of all comments in the queryset are deleted
+        """
         for obj in queryset:
             obj.replies.all().delete()
         super().delete_queryset(request, queryset)
 
 @admin.register(ForumPost)
 class ForumPostAdmin(admin.ModelAdmin):
-    search_fields = ['title', 'content', 'user__username', 'game__name']  # Search by user and game name
+    search_fields = ['title', 'content', 'user__username', 'game__name']
     list_display = ('title', 'user', 'game', 'post_type', 'created_at', 'like_count', 'dislike_count', 'comment_count')
-    list_filter = ('post_type', 'created_at', 'user')  # Filters for quicker admin browsing
-    ordering = ('-created_at',)  # Default ordering by created_at (newest first)
+    list_filter = ('post_type', 'created_at', 'user')
+    ordering = ('-created_at',)
     raw_id_fields = ('game', 'user')
 
     def delete_model(self, request, obj):
-        # Start with deleting the parent comments (which will set child comments' parent to NULL)
+        """
+        Start with deleting the parent comments (which will set child comments' parent to NULL)
+        """
         self.delete_root_comments(obj)
         
         # Finally, delete the forum post
         super().delete_model(request, obj)
 
     def delete_queryset(self, request, queryset):
-        # Handle bulk deletion of forum posts and their associated comments
+        """
+        Handle bulk deletion of forum posts and their associated comments
+        """
         for obj in queryset:
             self.delete_root_comments(obj)
         
@@ -60,11 +68,9 @@ class ForumPostAdmin(admin.ModelAdmin):
             # Check again for root comments (they may have become root after cascading deletes)
             root_comments = post.comments.filter(parent__isnull=True)
 
-  
-
 
 @admin.register(PostReaction)
 class PostReactionAdmin(admin.ModelAdmin):
-    search_fields = ['user__username', 'post__title']  # Search by username and post title
-    list_display = ('user', 'post', 'reaction')  # Display key fields in the admin
+    search_fields = ['user__username', 'post__title'] 
+    list_display = ('user', 'post', 'reaction')
     raw_id_fields = ('post', 'user')

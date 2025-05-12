@@ -9,9 +9,16 @@ type Props = {
   game: { slug: string; title: string; cover_image: string };
 };
 
+/**
+ * ForumGamePopUp Component
+ *
+ * Displays a small clickable game preview section within a forum post.
+ * Shows the game's title and cover image, and navigates to the game's page on click.
+ */
 const ForumGamePopUp = ({ game }: Props) => {
   const router = useRouter();
 
+  // Prevents the link parent from being clicked
   const gameClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();

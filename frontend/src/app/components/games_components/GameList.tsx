@@ -4,7 +4,6 @@ import styles from "../../styles/games.module.css";
 import { Grid, Typography } from "@mui/material";
 import { Game } from "@/app/types";
 import GameCardButton from "./GameCardButton";
-// import GameCard from "./GameCard";
 import PageButtons from "@/app/components/global_components/PageButtons";
 import dynamic from "next/dynamic";
 
@@ -65,10 +64,8 @@ const GameList = ({ gameList, pageAmount }: Props) => {
           ) : (
             gameList.map((game) => (
               <GameCardButton
-                cardType="default"
                 key={game.slug}
                 slug={game.slug}
-                visibleCard={expandedCard}
                 changeVisibleCard={changeVisibleCard}
               >
                 <GameCard

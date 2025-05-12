@@ -2,8 +2,6 @@ import React from "react";
 import { Grid, Typography, Tooltip } from "@mui/material";
 import styles from "@/app/styles/forum.module.css";
 import { ForumPost } from "@/app/types";
-import Link from "next/link";
-
 import CommentIcon from "@mui/icons-material/Comment";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { formatDistanceToNow } from "date-fns";
@@ -15,6 +13,19 @@ type Props = {
   forumPost: ForumPost;
 };
 
+/**
+ * NormalPostTemplate Component
+ *
+ * This component is used to display a forum post in the normal layout. It displays:
+ * - The profile picture and username of the post's author
+ * - The time the post was created, in a "time ago" format (e.g., "2 hours ago")
+ * - The title and content of the post
+ * - The post's header image (if available)
+ * - The like and dislike buttons, with their respective counts
+ *
+ * It also handles the dynamic display of game-related content and post reactions.
+ *
+ */
 const NormalPostTemplate = async ({ forumPost }: Props) => {
   const parsedDate = new Date(forumPost.created_at);
   const timeAgo = formatDistanceToNow(parsedDate, { addSuffix: true });

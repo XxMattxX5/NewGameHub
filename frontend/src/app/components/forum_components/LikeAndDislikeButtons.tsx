@@ -16,6 +16,13 @@ type Props = {
   reaction: string | null;
 };
 
+/**
+ * LikeAndDislikeButtons Component
+ *
+ * This component allows users to like or dislike a post. It displays the current
+ * counts for likes and dislikes, and manages the user's reaction state.
+ *
+ */
 const LikeAndDislikeButtons = ({
   postId,
   like_count,
@@ -46,6 +53,8 @@ const LikeAndDislikeButtons = ({
     setDislikeCount(dislike_count);
   }, [reaction, like_count, dislike_count]);
 
+  // Sends reaction to backend to be stored then changes the like and dislike count
+  // on frontend based on user action
   const reactToPost = (action: "like" | "dislike") => {
     const url =
       action === "like"

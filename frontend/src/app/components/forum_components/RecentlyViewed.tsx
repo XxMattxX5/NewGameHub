@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import react, { useEffect } from "react";
 import { RecentlyViewedPost } from "@/app/types";
 import { useAuth } from "@/app/hooks/useAuth";
 
@@ -9,14 +9,31 @@ type Props = {
   post_title: string;
 };
 
+/**
+ * RecentlyViewed Component
+ *
+ * This component tracks the posts that the user has recently viewed. It:
+ * - Retrieves the list of recently viewed posts from `localStorage`.
+ * - Checks if the current post has already been viewed. If not, it sends a request to the server to register the view.
+ * - Adds the current post to the front of the recently viewed list and stores it back in `localStorage`.
+ * - Limits the recently viewed list to a maximum of 5 posts.
+ *
+ * Features:
+ * - Retrieves and updates the list of recently viewed posts from `localStorage`.
+ * - Sends a view request to the backend for posts that have not been viewed yet.
+ * - Ensures that the list does not exceed 5 posts by trimming older entries.
+ *
+ */
 const RecentlyViewed = ({ slug, user_profile_picture, post_title }: Props) => {
   const { csrfToken } = useAuth();
+
   useEffect(() => {
     const raw = localStorage.getItem("recent_viewed");
     let list: RecentlyViewedPost[] = raw ? JSON.parse(raw) : [];
 
     const alreadyViewed = list.some((item) => item.slug === slug);
 
+    // If the post isn't already in recently viewed post view count on post is increased
     if (!alreadyViewed) {
       fetch("/api/forum/post/view/" + slug + "/", {
         method: "POST",
