@@ -41,7 +41,9 @@ const HomeForumSection = () => {
               Explore a variety of posts and find something that sparks your
               interest.
             </Typography>
-            <Link href="/forum">Explore Posts</Link>
+            <Link href="/forum">
+              <Typography component={"p"}>Explore Posts</Typography>
+            </Link>
           </Grid>
         </Grid>
         <Grid>
@@ -59,7 +61,9 @@ const HomeForumSection = () => {
               Connect with others who share your passion and chat about the
               games you love.
             </Typography>
-            <Link href="/forum/post/create-post">Create Post</Link>
+            <Link href="/forum/post/create-post">
+              <Typography component={"p"}>Create Post</Typography>
+            </Link>
           </Grid>
         </Grid>
         <Grid>
@@ -76,7 +80,9 @@ const HomeForumSection = () => {
             <Typography component={"p"}>
               Found a cool post? Join the conversation and share your thoughts.
             </Typography>
-            <Link href="/forum">Start Chatting</Link>
+            <Link href="/forum">
+              <Typography component={"p"}>Start Chatting</Typography>
+            </Link>
           </Grid>
         </Grid>
       </Grid>
