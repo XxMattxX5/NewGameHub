@@ -7,9 +7,9 @@ from django.db.models import F
 from .models import ForumPost
 from .serializer import PostSerializerWithGame
 
-CACHE_TIMEOUT = 3600
+CACHE_TIMEOUT = 600
 
-def getPostList(posts,search_word,sort,type, page, user):
+def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
     """
     Retrieves a paginated, filtered, and sorted list of forum posts based on search and sort criteria.
 
@@ -60,11 +60,13 @@ def getPostList(posts,search_word,sort,type, page, user):
         page = 1
 
     # # Create a cache key based on the search parameters
-    cache_key = f"search_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}'.encode()).hexdigest()}"
+    user_id = user.id if user.is_authenticated else "anon"
+    
+    cache_key = f"search_forum_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}_{user_id}'.encode()).hexdigest()}"
     cached_results = cache.get(cache_key)
 
     # # Returns cached results if they exist
-    if cached_results:
+    if cached_results and not skip_cache:
         return cached_results["forum_page"], cached_results["pages"]
     
     # Sets sort to created(desc) if sort is "relevance" and there is no search word
@@ -128,7 +130,7 @@ def getPostList(posts,search_word,sort,type, page, user):
         post_count = cached_count
     else:
         post_count = posts.count()
-        if post_count > 100:
+        if post_count > 50 and not skip_cache:
             cache.set(cache_count_key, post_count, timeout=CACHE_TIMEOUT)
         
 
@@ -147,7 +149,7 @@ def getPostList(posts,search_word,sort,type, page, user):
     }
 
     # Cache the result for future queries if results contain at least 20 games
-    if (post_count >= 20):
+    if (post_count >= 2 and not skip_cache):
         cache.set(cache_key, result, timeout=CACHE_TIMEOUT)
 
     return result['forum_page'], result['pages']

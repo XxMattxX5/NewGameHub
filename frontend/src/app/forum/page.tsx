@@ -33,6 +33,7 @@ const getForumPost = async (
 ) => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionid")?.value;
+  const skip_cache = cookieStore.get("skip_forum_cache")?.value;
   const backendUrl = process.env.BACKEND_URL || "http://localhost";
 
   const params = new URLSearchParams();
@@ -44,7 +45,7 @@ const getForumPost = async (
   return fetch(`${backendUrl}/api/forum/get-posts/?${params.toString()}`, {
     method: "GET",
     headers: {
-      Cookie: `sessionid=${sessionId}`,
+      Cookie: `sessionid=${sessionId}; skip_forum_cache=${skip_cache}`,
       Accept: "application/json",
     },
   })
@@ -56,15 +57,15 @@ const getForumPost = async (
       }
     })
     .then((data) => {
-      if (data) {
+      if (data && Array.isArray(data.data)) {
         return data;
       } else {
-        return [];
+        return { data: [], pages: 0 };
       }
     })
     .catch((err) => {
       console.error(err);
-      return [];
+      return { data: [], pages: 0 };
     });
 };
 

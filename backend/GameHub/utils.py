@@ -273,7 +273,7 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
         page = 1
 
     # Create a cache key based on the search parameters
-    cache_key = f"search_{hashlib.md5(f'{search_word}_{genre}_{sort_option}_{page}_{perPage}'.encode()).hexdigest()}"
+    cache_key = f"search_games{hashlib.md5(f'{search_word}_{genre}_{sort_option}_{page}_{perPage}'.encode()).hexdigest()}"
 
     
     cached_results = cache.get(cache_key)

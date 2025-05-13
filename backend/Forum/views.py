@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from .utils import getPostList, getPostSuggestions
 from .forms import PostForm, CommentForm, ReplyForm
 from GameHub.models import Game
+from datetime import timedelta
 
 # Create your views here.
 def home(request):
@@ -48,7 +49,9 @@ class GetPosts(APIView):
         else: 
             posts = ForumPost.objects.all()
 
-        data, pages = getPostList(posts,search,sort,type,page,request.user)
+        skip_cache = request.COOKIES.get('skip_forum_cache') == 'True'
+
+        data, pages = getPostList(posts,search,sort,type,page,request.user, skip_cache)
 
         return Response({"data": data, "pages":pages}, status=status.HTTP_200_OK)
     
@@ -262,7 +265,19 @@ class Post(APIView):
 
             post.save()  # Save the updated post
 
-            return Response(status=status.HTTP_200_OK)
+            response = Response(status=status.HTTP_200_OK)
+
+            # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
+            response.set_cookie(
+                'skip_forum_cache',  
+                'True',                  
+                max_age=timedelta(minutes=10),
+                httponly=True,            
+                secure=True,              
+                samesite='Strict',        
+            )
+
+            return response
         else:
             return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -305,7 +320,19 @@ class CreatePost(APIView):
 
             ForumPost.objects.create(**post_data)
 
-            return Response(status=status.HTTP_200_OK)
+            response = Response(status=status.HTTP_200_OK)
+
+            # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
+            response.set_cookie(
+                'skip_forum_cache',  
+                'True',                  
+                max_age=timedelta(minutes=10),
+                httponly=True,            
+                secure=True,              
+                samesite='Strict',        
+            )
+
+            return response
 
         # If form is not valid, return the errors
         return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
