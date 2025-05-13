@@ -51,6 +51,9 @@ class GetPosts(APIView):
 
         skip_cache = request.COOKIES.get('skip_forum_cache') == 'True'
 
+        if type in ("liked", "myposts"):
+            skip_cache = True
+
         data, pages = getPostList(posts,search,sort,type,page,request.user, skip_cache)
 
         return Response({"data": data, "pages":pages}, status=status.HTTP_200_OK)

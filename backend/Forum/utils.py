@@ -60,9 +60,8 @@ def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
         page = 1
 
     # # Create a cache key based on the search parameters
-    user_id = user.id if user.is_authenticated else "anon"
-    
-    cache_key = f"search_forum_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}_{user_id}'.encode()).hexdigest()}"
+  
+    cache_key = f"search_forum_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}'.encode()).hexdigest()}"
     cached_results = cache.get(cache_key)
 
     # # Returns cached results if they exist
