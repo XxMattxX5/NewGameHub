@@ -7,9 +7,9 @@ from django.db.models import F
 from .models import ForumPost
 from .serializer import PostSerializerWithGame
 
-CACHE_TIMEOUT = 600
+CACHE_TIMEOUT = 300
 
-def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
+def getPostList(posts,search_word,sort,type, page, user):
     """
     Retrieves a paginated, filtered, and sorted list of forum posts based on search and sort criteria.
 
@@ -61,12 +61,12 @@ def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
 
     # # Create a cache key based on the search parameters
   
-    cache_key = f"search_forum_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}'.encode()).hexdigest()}"
-    cached_results = cache.get(cache_key)
+    # cache_key = f"search_forum_{hashlib.md5(f'{search_word}_{type}_{sort}_{page}_{perPage}'.encode()).hexdigest()}"
+    # cached_results = cache.get(cache_key)
 
     # # Returns cached results if they exist
-    if cached_results and not skip_cache:
-        return cached_results["forum_page"], cached_results["pages"]
+    # if cached_results and not skip_cache:
+    #     return cached_results["forum_page"], cached_results["pages"]
     
     # Sets sort to created(desc) if sort is "relevance" and there is no search word
     if not search_word and sort == "relevance":
@@ -120,16 +120,17 @@ def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
        posts = posts.order_by(F('created_at').desc(nulls_last=True), F('title').asc())
         
 
-    cache_count_key = f"results_count_{hashlib.md5(f'{search_word}_{type}'.encode()).hexdigest()}"
+    user_id = user.id if user.is_authenticated else "anon"
+    cache_count_key = f"results_count_{hashlib.md5(f'{user_id}_{search_word}_{type}'.encode()).hexdigest()}"
     cached_count = cache.get(cache_count_key)
 
-    # If game_count is greater then 100 the game_count gets cached
+    # If game_count is greater then 50 the game_count gets cached
     # to speed up search times
     if cached_count is not None:
         post_count = cached_count
     else:
         post_count = posts.count()
-        if post_count > 50 and not skip_cache:
+        if post_count > 50:
             cache.set(cache_count_key, post_count, timeout=CACHE_TIMEOUT)
         
 
@@ -147,9 +148,9 @@ def getPostList(posts,search_word,sort,type, page, user, skip_cache=False):
         'pages': pages
     }
 
-    # Cache the result for future queries if results contain at least 20 games
-    if (post_count >= 2 and not skip_cache):
-        cache.set(cache_key, result, timeout=CACHE_TIMEOUT)
+    # # Cache the result for future queries if results contain at least 20 games
+    # if (post_count >= 2 and not skip_cache):
+    #     cache.set(cache_key, result, timeout=CACHE_TIMEOUT)
 
     return result['forum_page'], result['pages']
 

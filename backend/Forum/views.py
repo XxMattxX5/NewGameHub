@@ -49,12 +49,12 @@ class GetPosts(APIView):
         else: 
             posts = ForumPost.objects.all()
 
-        skip_cache = request.COOKIES.get('skip_forum_cache') == 'True'
+        # skip_cache = request.COOKIES.get('skip_forum_cache') == 'True'
 
-        if type in ("liked", "myposts"):
-            skip_cache = True
+        # if type in ("liked", "myposts"):
+        #     skip_cache = True
 
-        data, pages = getPostList(posts,search,sort,type,page,request.user, skip_cache)
+        data, pages = getPostList(posts,search,sort,type,page,request.user)
 
         return Response({"data": data, "pages":pages}, status=status.HTTP_200_OK)
     
@@ -270,15 +270,15 @@ class Post(APIView):
 
             response = Response(status=status.HTTP_200_OK)
 
-            # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
-            response.set_cookie(
-                'skip_forum_cache',  
-                'True',                  
-                max_age=timedelta(minutes=10),
-                httponly=True,            
-                secure=True,              
-                samesite='Strict',        
-            )
+            # # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
+            # response.set_cookie(
+            #     'skip_forum_cache',  
+            #     'True',                  
+            #     max_age=timedelta(minutes=10),
+            #     httponly=True,            
+            #     secure=True,              
+            #     samesite='Strict',        
+            # )
 
             return response
         else:
@@ -325,15 +325,15 @@ class CreatePost(APIView):
 
             response = Response(status=status.HTTP_200_OK)
 
-            # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
-            response.set_cookie(
-                'skip_forum_cache',  
-                'True',                  
-                max_age=timedelta(minutes=10),
-                httponly=True,            
-                secure=True,              
-                samesite='Strict',        
-            )
+            # # Set the skip_forum_cache cookie to True with an expiration of 15 minutes
+            # response.set_cookie(
+            #     'skip_forum_cache',  
+            #     'True',                  
+            #     max_age=timedelta(minutes=10),
+            #     httponly=True,            
+            #     secure=True,              
+            #     samesite='Strict',        
+            # )
 
             return response
 
