@@ -704,13 +704,12 @@
   font-size: 14px;
   color: #b9b9b9;
   padding: 0;
-  margin-left: 10px;
 }
 
 .comment_reply_button {
   text-transform: none;
   padding: 0;
-
+  margin-right: 10px;
   min-width: 0;
 }
 

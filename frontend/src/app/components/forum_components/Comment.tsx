@@ -45,7 +45,7 @@ const Comment = ({
 
   depth = 1,
 }: Props) => {
-  const { logout, csrfToken } = useAuth();
+  const { logout, csrfToken, isAuthenticated } = useAuth();
 
   // Makes created_at date into a time ago format
   const parsedDate = new Date(comment.created_at);
@@ -178,7 +178,7 @@ const Comment = ({
             dangerouslySetInnerHTML={{ __html: comment.content }}
           ></Typography>
           <Grid className={styles.comment_bottom_bar}>
-            {depth < 5 ? (
+            {depth < 5 && isAuthenticated ? (
               <Button
                 className={styles.comment_reply_button}
                 onClick={showReplyBox}
