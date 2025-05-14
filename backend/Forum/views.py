@@ -409,7 +409,6 @@ class CreateComment(APIView):
             return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class Reply(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, id): 
         """
@@ -442,6 +441,10 @@ class Reply(APIView):
                 - 200 OK if the reply is created successfully.
                 - 400 BAD REQUEST if the form is invalid.
         """
+        # Ensure user is logged in
+        if not request.user.is_authenticated:
+            return Response({"error": "Must be logged in"}, status=status.HTTP_403_FORBIDDEN)
+        
         form = ReplyForm(request.data)
 
         if form.is_valid():
