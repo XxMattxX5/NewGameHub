@@ -99,6 +99,10 @@ const Comment = ({
 
   // Ensures that only 1 reply box is open at a time
   const showReplyBox = () => {
+    if (!isAuthenticated) {
+      alert("Must be signed to make a reply");
+      return;
+    }
     if (activeReplyId === comment.id) {
       setActiveReplyId(null);
     } else {
@@ -178,7 +182,7 @@ const Comment = ({
             dangerouslySetInnerHTML={{ __html: comment.content }}
           ></Typography>
           <Grid className={styles.comment_bottom_bar}>
-            {depth < 5 && isAuthenticated ? (
+            {depth < 5 ? (
               <Button
                 className={styles.comment_reply_button}
                 onClick={showReplyBox}
