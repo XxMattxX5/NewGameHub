@@ -117,10 +117,10 @@ class Game(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['title']),
-            models.Index(fields=['release']),
-            models.Index(fields=['rating']),
-            models.Index(fields=['title', 'release']),
+             models.Index(fields=["title"]),
+            models.Index(fields=["release", "title"]),
+            models.Index(fields=["-release", "title"], name="release_title_idx"),
+            models.Index(fields=["-rating", "title"], name="rating_title_idx"),
             GinIndex(fields=['title'], name='title_trigram_idx', opclasses=['gin_trgm_ops']),
             GinIndex(fields=['search_vector'], name='game_search_vector_idx'),
         ]

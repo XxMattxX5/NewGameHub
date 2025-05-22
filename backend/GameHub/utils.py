@@ -319,7 +319,7 @@ def getGameList(search_word ,perPage, page, sort_option, genre):
         games = Game.objects.all()
         
 
-    games.only("game_id","slug","title", "cover_image", "release","rating")
+    games = games.only("game_id","slug","title", "cover_image", "release","rating")
     
     # Filters by games that contain the selected genre
     if genre != "All":
