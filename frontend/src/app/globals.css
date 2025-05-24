@@ -895,6 +895,12 @@ html.dark {
   min-height: 800px;
 }
 
+@media (max-width: 1200px) {
+  .main_nav_logo_container {
+    margin-left: 100px;
+  }
+}
+
 @media (max-width: 1100px) {
   #nav_link_container {
     display: none;
@@ -955,12 +961,12 @@ html.dark {
   #contact_page_main_container {
     min-height: 500px;
   }
-}
-
-@media (max-width: 500px) {
   .main_nav_logo_container > p {
     display: none;
   }
+}
+
+@media (max-width: 500px) {
   .main_nav_logo_container {
     display: none;
   }

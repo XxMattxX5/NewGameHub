@@ -74,7 +74,6 @@
   align-items: center;
 }
 .game_card_release > svg {
-  /* color: #ffd700; */
   color: var(--purple);
   margin-right: 3px;
 }
@@ -107,7 +106,6 @@
 }
 .game_card_rating > svg {
   color: var(--purple);
-  /* color: #ffd700; */
 }
 .game_card_rating > p {
   margin-left: 3px;
@@ -193,7 +191,161 @@
   width: 100%;
 }
 
+#games_loading_container {
+  display: flex;
+  flex-direction: column;
+  margin: 60px 3%;
+  margin-top: 80px;
+}
+
+#games_loading_h1 {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  width: 95%;
+  height: 70px;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-bottom: 60px;
+}
+
+#games_loading_content {
+  display: flex;
+  flex-direction: row;
+  column-gap: 30px;
+  position: relative;
+}
+
+#games_loading_top_rated {
+  background-color: var(--gray2);
+  width: 450px;
+  height: 800px;
+}
+
+#games_loading_top_rated {
+  background-color: var(--gray2);
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  height: 800px;
+  flex-shrink: 0;
+}
+#games_loading_top_rated > p {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  height: 50px;
+  width: 95%;
+  max-width: 350px;
+  margin: 0 auto;
+  margin-top: 25px;
+}
+#games_loading_top_rated > div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
+#games_loading_top_rated > div > div {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+  width: 160px;
+  height: 210px;
+  flex-shrink: 0;
+}
+
+#games_loading_games {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 0 20px;
+  align-content: flex-start;
+}
+#games_loading_games > div {
+  width: 250px;
+  height: 320px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+  position: relative;
+}
+
+.games_loading_info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.games_loading_info_rating {
+  background-color: var(--gray2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+
+.games_loading_info_rating > p {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin: 0 auto;
+  height: 18px;
+  width: 45px;
+  margin: 5px;
+}
+
+.games_loading_info_title {
+  background-color: var(--gray2);
+  height: 90px;
+  width: 100%;
+  padding: 10px 10px;
+}
+.games_loading_info_title > p {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  width: 90%;
+  height: 20px;
+  margin-top: 10px;
+}
+
 @media (max-width: 1400px) {
+  #games_loading_content {
+    flex-wrap: wrap-reverse;
+  }
+  #games_loading_top_rated {
+    height: fit-content;
+    margin-top: 30px;
+    flex-grow: 1;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 200px;
+  }
+
+  #games_loading_top_rated > div {
+    flex-direction: row;
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    width: 96%;
+    margin: 0 auto;
+    min-width: 0;
+  }
+  #games_loading_container {
+    margin: 0;
+    margin-top: 60px;
+  }
+
   #games_container {
     margin: 30px 0;
   }
@@ -219,7 +371,26 @@
     height: 270px;
   }
 }
+
 @media (max-width: 800px) {
+  #games_loading_games {
+    padding: 0 10px;
+    gap: 15px;
+  }
+  #games_loading_games > div {
+    width: 170px;
+    height: 230px;
+  }
+
+  .games_loading_info_rating > p {
+    height: 15px;
+    width: 40px;
+    margin: 5px;
+  }
+
+  .games_loading_info_title {
+    height: 65px;
+  }
   .game_card_info {
     max-height: 200px;
   }
@@ -237,7 +408,6 @@
   .game_card_box {
     height: 230px;
     width: 170px;
-    /* width: auto; */
   }
 
   .game_card_box p {
@@ -263,6 +433,13 @@
 }
 
 @media (max-width: 400px) {
+  #games_loading_games {
+    padding: 0 2px;
+    row-gap: 10px;
+    column-gap: 2px;
+    justify-content: space-around;
+  }
+
   #no_games_found {
     font-size: 30px;
   }
@@ -276,5 +453,14 @@
   }
   .game_card_info {
     margin-top: 2px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
