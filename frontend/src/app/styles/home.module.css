@@ -53,12 +53,15 @@
   display: block;
   text-decoration: none;
   text-align: center;
-
   animation: fadeInFromLeft 1s ease-out;
   border-radius: 4px;
 }
 .home_landing_box_content > div > a:hover {
   background-color: #7b10c7;
+}
+
+.home_landing_box_content > div > a > p {
+  font-size: 22px;
 }
 
 .home_page_main_container {
@@ -85,10 +88,11 @@
   transform: translateY(-10px);
   line-height: 1.2;
 }
-.home_page_game_section_info p {
+.home_page_game_section_info > div > p {
   font-size: 24px;
   margin-top: 10px;
 }
+
 .home_page_game_section_info img {
   float: right;
   display: none;
@@ -104,6 +108,9 @@
   display: block;
   width: 250px;
   text-align: center;
+}
+.home_page_game_section_info > a > p {
+  font-size: 22px;
 }
 
 .home_page_game_section_image img {

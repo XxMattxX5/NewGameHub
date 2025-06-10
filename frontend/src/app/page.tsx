@@ -34,7 +34,9 @@ const Home = () => {
                 jump into discussions with a passionate gaming community. Your
                 next favorite game—and the people who love it—are waiting.
               </Typography>
-              <Link href="/games">Start Exploring Games</Link>
+              <Link href="/games">
+                <Typography>Start Exploring Games</Typography>
+              </Link>
             </Grid>
           </Grid>
         </Grid>
@@ -57,7 +59,9 @@ const Home = () => {
                 something fresh and exciting to play.
               </Typography>
             </Grid>
-            <Link href="/games">Start Searching Now</Link>
+            <Link href="/games">
+              <Typography>Start Searching Now</Typography>
+            </Link>
           </Grid>
           <Grid className={styles.home_page_game_section_image}>
             <picture>
