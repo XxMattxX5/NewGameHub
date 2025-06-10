@@ -96,6 +96,8 @@
 .home_page_game_section_info img {
   float: right;
   display: none;
+  height: auto;
+  width: auto;
 }
 .home_page_game_section_info a {
   font-size: 25px;
@@ -303,6 +305,7 @@
     width: 95%;
     padding-left: 5px;
     padding-right: 5px;
+    padding: 5px 8px;
   }
   .home_page_game_section {
     margin: 100px 0px;
@@ -338,10 +341,12 @@
     animation: none;
   }
   .home_landing_box_content > div > a {
-    font-size: 16px;
-    padding: 7px 10px;
     width: 200px;
+    padding: 7px 10px;
     animation: none;
+  }
+  .home_landing_box_content > div > a > p {
+    font-size: 18px;
   }
 }
 @media (max-width: 400px) {
