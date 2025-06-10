@@ -38,8 +38,8 @@ const FallbackProfileImage = ({
       alt={alt}
       width={width}
       height={height}
-      unoptimized
       className={className}
+      unoptimized
       onError={() => setImgSrc("/images/blank-profile-picture.png")}
     />
   );

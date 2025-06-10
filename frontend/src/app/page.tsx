@@ -3,6 +3,7 @@ import styles from "./styles/home.module.css";
 import { Grid, Typography, Link } from "@mui/material";
 import dynamic from "next/dynamic";
 import LoadingSpinner from "./components/global_components/LoadingSpinner";
+import Image from "next/image";
 
 const HomeForumSection = dynamic(
   () => import("@/app/components/global_components/HomeForumSection"),
@@ -48,7 +49,12 @@ const Home = () => {
               Explore Our Vast Library Of Games
             </Typography>
             <Grid>
-              <img src="/images/games_image3.png" alt="Game Preview" />
+              <Image
+                src="/images/games_image3.png"
+                alt="Game Preview"
+                width={600}
+                height={600}
+              />
               <Typography component={"p"}>
                 Discover an ever-growing collection of games spanning every
                 genre and platform. Whether you're into action-packed

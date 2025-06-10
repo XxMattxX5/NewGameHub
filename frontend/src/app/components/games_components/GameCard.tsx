@@ -35,12 +35,13 @@ const GameCard = ({ game, titleRef, cardInfoHeight, cardType }: Props) => {
       </Typography>
       <Image
         src={
-          game.cover_image ? game.cover_image : "/images/no_image_found.webp"
+          game.cover_image
+            ? "https:" + game.cover_image
+            : "/images/no_image_found.webp"
         }
         height={320}
         width={270}
         alt={`${game.title} cover`}
-        unoptimized
       />
       <Grid
         className={styles.game_card_info}
