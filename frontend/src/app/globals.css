@@ -17,6 +17,11 @@ body {
   margin: 0;
 }
 
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
 html.dark {
   background-color: #202124;
   color: white;
