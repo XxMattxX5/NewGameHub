@@ -14,6 +14,8 @@ import ImageCropper from "./ImageCropper";
  *
  */
 const ProfileImage = () => {
+  const hostname = process.env.NEXT_PUBLIC_HOST_NAME || "";
+  const isProd = process.env.NEXT_PUBLIC_IS_PRODUCTION === "true";
   const { userInfo } = useAuth();
   const [showImageCropper, setShowImageCropper] = useState(false);
 
@@ -27,13 +29,13 @@ const ProfileImage = () => {
         <Image
           src={
             userInfo
-              ? userInfo.profile_picture
+              ? `${isProd ? "https" : "http"}://${hostname}` +
+                userInfo.profile_picture
               : "/image/blank-profile-picture.png"
           }
           alt="User's profile picture"
           width={120}
           height={120}
-          unoptimized
         />
         <Button
           onClick={toggleImageCropper}

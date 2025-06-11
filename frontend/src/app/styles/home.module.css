@@ -1,9 +1,7 @@
 .home_landing_container {
-  background-image: url("/images/home_background.jpg");
   width: 100%;
   min-height: 1000px;
   position: relative;
-  background-size: cover;
 }
 .home_landing_box {
   width: 100%;
@@ -62,6 +60,13 @@
 
 .home_landing_box_content > div > a > p {
   font-size: 22px;
+}
+
+#home_landing_background_image {
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
 }
 
 .home_page_main_container {

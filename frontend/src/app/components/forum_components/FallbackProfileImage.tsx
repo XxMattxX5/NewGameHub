@@ -26,6 +26,8 @@ const FallbackProfileImage = ({
   height = 30,
   className = "",
 }: Props) => {
+  const hostname = process.env.NEXT_PUBLIC_HOST_NAME || "";
+  const isProd = process.env.NEXT_PUBLIC_IS_PRODUCTION === "true";
   const [imgSrc, setImgSrc] = useState(src);
 
   useEffect(() => {
@@ -34,12 +36,11 @@ const FallbackProfileImage = ({
 
   return (
     <Image
-      src={imgSrc}
+      src={`${isProd ? "https" : "http"}://${hostname}` + imgSrc}
       alt={alt}
       width={width}
       height={height}
       className={className}
-      unoptimized
       onError={() => setImgSrc("/images/blank-profile-picture.png")}
     />
   );

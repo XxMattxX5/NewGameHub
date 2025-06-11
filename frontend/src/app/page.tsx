@@ -41,6 +41,14 @@ const Home = () => {
             </Grid>
           </Grid>
         </Grid>
+        <Image
+          src="/images/home_background.jpg"
+          alt="Two Game Controllers"
+          width={1920}
+          height={1200}
+          id={styles.home_landing_background_image}
+          priority={true}
+        />
       </Grid>
       <Grid className={styles.home_page_main_container}>
         <Grid className={styles.home_page_game_section}>

@@ -20,6 +20,8 @@ import Image from "next/image";
  *
  */
 const ProfileSection = () => {
+  const hostname = process.env.NEXT_PUBLIC_HOST_NAME || "";
+  const isProd = process.env.NEXT_PUBLIC_IS_PRODUCTION === "true";
   const { theme } = useTheme();
   const { userInfo, logout } = useAuth();
   const path = usePathname();
@@ -64,11 +66,14 @@ const ProfileSection = () => {
                 <Grid id="profile_image_placeholder"></Grid>
               ) : userInfo?.profile_picture ? (
                 <Image
-                  src={userInfo.profile_picture}
+                  src={
+                    `${isProd ? "https" : "http"}://${hostname}` +
+                    userInfo.profile_picture
+                  }
                   alt="User's profile picture"
                   width={50}
                   height={50}
-                  unoptimized
+                  priority={true}
                 />
               ) : null}
             </Grid>
