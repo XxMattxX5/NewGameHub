@@ -11,7 +11,7 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 type Props = {
   display?: string | null;
   theme: string | null;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
   path: string;
 };
 

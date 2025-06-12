@@ -134,6 +134,30 @@ html.dark {
   align-items: center;
 }
 
+#nav_profile_placeholder_container {
+  height: 50px;
+  width: 50px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+#nav_profile_placeholder_container:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #f0f0f0 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
 #nav_login_register_container {
   display: flex;
   flex-direction: row;

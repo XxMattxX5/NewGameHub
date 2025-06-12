@@ -21,7 +21,7 @@ type AuthContextType = {
   logout: () => void;
   userInfo: UserInfo | null;
   csrfToken: string;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
 };
 
 type Props = { children: React.ReactNode };
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: Props) => {
   const csrfToken = cookies.get("csrftoken") || "";
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   // When the user enters the page or refresh auth is check with a request to the backend
   // and if logged user information is grabbed for either local storage or from backend
@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }: Props) => {
           fetchUserInfo();
         }
       } else {
+        setIsAuthenticated(false);
         sessionStorage.removeItem("userInfo");
       }
     };

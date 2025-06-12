@@ -23,7 +23,7 @@ const ProfileSection = () => {
   const hostname = process.env.NEXT_PUBLIC_HOST_NAME || "";
   const isProd = process.env.NEXT_PUBLIC_IS_PRODUCTION === "true";
   const { theme } = useTheme();
-  const { userInfo, logout } = useAuth();
+  const { userInfo, logout, isAuthenticated } = useAuth();
   const path = usePathname();
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -52,7 +52,7 @@ const ProfileSection = () => {
 
   return (
     <Grid container>
-      {userInfo ? (
+      {userInfo && isAuthenticated ? (
         <Grid id="nav_profile">
           <Grid
             component={"div"}
@@ -157,6 +157,8 @@ const ProfileSection = () => {
             </Grid>
           ) : null}
         </Grid>
+      ) : isAuthenticated === null ? (
+        <Grid id="nav_profile_placeholder_container"></Grid>
       ) : (
         <Grid id="nav_login_register_container">
           <Grid id="nav_login_btn">
